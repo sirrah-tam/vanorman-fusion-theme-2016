@@ -55,12 +55,12 @@
 
 @font-face {
   font-family: 'Font Awesome Brands';
-  src: url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular-webfont.eot?v=#{$bt-version}');
-  src: url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular-webfont.eot?#iefix&v=#{$bt-version}') format('embedded-opentype'),
-    url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular-webfont.woff2?v=#{$bt-version}') format('woff2'),
-    url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular-webfont.woff?v=#{$bt-version}') format('woff'),
-    url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular-webfont.ttf?v=#{$bt-version}') format('truetype'),
-    url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular-webfont.svg?v=#{$bt-version}#font_awesome_brandsregular') format('svg');
+  src: url('#{$bt-font-path}/light/FontAwesomeBrands-Regular-webfont.eot?v=#{$bt-version}');
+  src: url('#{$bt-font-path}/light/FontAwesomeBrands-Regular-webfont.eot?#iefix&v=#{$bt-version}') format('embedded-opentype'),
+    url('#{$bt-font-path}/light/FontAwesomeBrands-Regular-webfont.woff2?v=#{$bt-version}') format('woff2'),
+    url('#{$bt-font-path}/light/FontAwesomeBrands-Regular-webfont.woff?v=#{$bt-version}') format('woff'),
+    url('#{$bt-font-path}/light/FontAwesomeBrands-Regular-webfont.ttf?v=#{$bt-version}') format('truetype'),
+    url('#{$bt-font-path}/light/FontAwesomeBrands-Regular-webfont.svg?v=#{$bt-version}#font_awesome_brandsregular') format('svg');
 //  src: url('#{$bt-font-path}/brands/FontAwesomeBrands-Regular.otf') format('opentype'); // used when developing fonts
   font-weight: normal;
   font-style: normal;

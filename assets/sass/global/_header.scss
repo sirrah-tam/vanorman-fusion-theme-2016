@@ -24,12 +24,10 @@ header {
 .main-nav {
 	position: relative;
 	@include clearfix();
-	max-height: $navbar-height;
+	padding: 10px 0;
+	min-height: $navbar-height;
 	background-color: #444;
 	width: 100%;
-	@media (max-width: 1330px) {
-		max-height: $mobile-navbar-height;
-	} 
 }
 
 /**
@@ -231,7 +229,6 @@ header {
 			color: $text-color;
 			&:hover,
 			&.on {
-				background-color: $dark-pink;
 				color: #fff;
 			}
 			@media (max-width: 1330px) { padding: 23px 0; }
@@ -315,7 +312,6 @@ header {
 .search-overlay,
 .newsletter-overlay {
 	@include abs-pos($top: 100%, $left: 0);
-	background-color: $dark-pink;
 	display: none;
 	z-index: 99999;
 	width: 100%;
@@ -382,7 +378,6 @@ header {
 	}
 	.newsletter-bottom {
 		@include clearfix();
-		color: $pink;
 		font-size: 22px;
 		text-align: left;
 		.form-group {

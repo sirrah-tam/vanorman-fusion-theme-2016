@@ -1,0 +1,85 @@
+$footer-background: $brand-secondary !default;
+$footer-home-color: $gray-dark !default;
+$footer-color: $gray !default;
+$footer-contact-color: $gray-light !default;
+
+.footer {
+	position: relative;
+	color: $footer-home-color;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	padding: 70px 0 0;
+	background-color: $footer-background;
+	a {
+		color: #fff;
+	}
+	@media (max-width: $screen-sm-max) {
+		text-align: center;
+		img { margin: 0 auto; }
+	}
+
+	.address,
+	.copy,
+	.links {
+		p {
+			text-align: center;
+			font-weight: 300;
+			margin: 0;
+			@media (max-width: $screen-sm-max) {
+				margin: 10px 0;
+			}
+		}
+	}
+	.copy {
+		padding: 25px 0;
+		font-size: 12px;
+		a {
+			color: $footer-home-color;
+			&:hover {
+				color: $brand-primary;
+				text-decoration: underline;
+			}
+		}
+	}
+	.links {
+		font-family: $navbar-font-family;
+		padding: 55px 0;
+		margin: 0;
+		text-align: center;
+		border-top: 1px solid #cccccc;
+		border-bottom: 1px solid #cccccc; 
+		li {
+			display: inline-block;
+			text-align: center;
+			padding: 0 30px;
+			margin: 0;
+			line-height: 1;
+			@media (max-width: $screen-sm-max) {
+				padding: 5px 10px;
+			}
+			&:first-child {
+				padding-left: 0;
+				@media (max-width: $screen-sm-max) {
+					padding: 5px 10px;
+				}
+			}
+			&:last-child {
+				padding-right: 0;
+				@media (max-width: $screen-sm-max) {
+					padding: 5px 10px;
+				}
+			}
+			a {
+				color: $footer-home-color;
+				&:hover {
+					color: $brand-primary;
+				}
+			}
+		}
+	}
+}
+
+.footer-content {
+	@extend %col-md-8;
+	@include position-column(md,offset,2);
+}

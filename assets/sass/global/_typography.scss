@@ -12,49 +12,31 @@ h6 a {
 	@extend .btn-primary;
 }
 
-h1,
-h2 {
-	font-weight: 300;
-}
-
 h1 {
-	color: $gray;
-	font-family: $navbar-font-family;
 	line-height: 1;
 	letter-spacing: 0.020em;
 }
 
 h2 {
-	color: #4f4f4f;
 	font-family: $headings-font-family;
-	line-height: 1.478;
 	letter-spacing: 0.01em;
 }
 
 h2,
 h3 {
-	font-weight: 300;
+	font-weight: $headings-font-weight;
 }
 
 h3 {
-	font-family: $navbar-font-family;
-	color: $gray;
-	line-height: 1.417;
 	letter-spacing: 0.032em;
 }
 
 h4 {
-	font-family: $navbar-font-family;
-	color: $brand-secondary;
 	letter-spacing: 0.06em;
 	line-height: 1;
-	font-weight: 300;
 }
 
 h5 {
-	color: #4b4b4b;
-	font-family: $font-family-spec;
-	font-weight: 400;
 	line-height: 1.034;
 	margin-bottom: 1rem;
 }
@@ -69,6 +51,7 @@ h5 {
 p {
 	line-height: 1.5;
 	letter-spacing: 0.032em;
+	font-weight: $font-weight-base;
 }
 
 label {
@@ -127,31 +110,7 @@ ul.no-list-style {
 	text-align: center; 
 	font-weight: 600;
 	letter-spacing: 0.060em;
-}
-
-.btn-primary,
-%btn-primary,
-.btn-primary:hover,
-.btn-primary:active,
-.btn-primary:active:hover,
-.btn-primary:focus {
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
-}
-
-.btn-secondary,
-%btn-secondary,
-.btn-secondary:hover,
-.btn-secondary:active,
-.btn-secondary:active:hover,
-.btn-secondary:focus {
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
-}
-.btn-secondary:hover {
-	border-bottom: 2px solid $brand-secondary;
+	text-transform: uppercase;
 }
 
 button {
@@ -180,7 +139,7 @@ button[type="submit"] {
 /** Social **/
 
 .social {
-	padding: 35px 0 43px;
+	padding: rem(15px) 0;
 	margin: 0 auto;
 	text-align: center;
 	width: 100%;
@@ -206,8 +165,9 @@ button[type="submit"] {
 		margin: 5px 0px;
 	}
 }
-.social-outline {
-	background-color: #c1d72e;
+
+.btn-outline {
+	background-color: $brand-primary;
 	border: 0;
 	padding: 10px;
 	border-radius: 100%; 
@@ -215,8 +175,25 @@ button[type="submit"] {
 	&:hover,
 	&:active,
 	&:focus {
-		background-color: $brand-primary;
+		color: #fff;
+		background-color: $brand-tertiary;
 		transition: all .3s cubic-bezier(.77, .06, .12, .98);
 	}
 }
 
+.btn-social {
+	width: 50px;
+    height: 50px;
+    border: 2px solid $brand-primary;
+    border-radius: 100%;
+    text-align: center;
+    font-size: 20px;
+    line-height: 45px;
+    color: #fff;
+    background-color: $gray-dark;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    &:hover {
+    	transform: scale(1.1);
+    	border: 2px solid $brand-secondary;
+    }
+}

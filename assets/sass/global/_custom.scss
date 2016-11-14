@@ -94,6 +94,11 @@
 	text-align: center;
 }
 
+.img-circle-primary {
+	border: 2px solid $brand-tertiary;
+	box-shadow: $shadow;
+}
+
 .left {
 	float: left;
 }
@@ -138,6 +143,16 @@ ul.inline {
 	li {
 		list-style: none;
 		margin: 0;
+	}
+}
+
+hr.small {
+	border-width: 2px;
+	width: 50px;
+	margin: 25px auto;
+	text-align: center; 
+	.panel & {
+		margin: 25px auto 0;
 	}
 }
 
@@ -323,7 +338,6 @@ ul.inline {
 // 9. Text on Dark Background
 %page-title { // 6
 	color: #fff;
-	font-family: $font-family-spec;
 	font-size: rem(58px);
 	font-weight: 300;
 	line-height: rem(60px);
@@ -332,7 +346,6 @@ ul.inline {
 
 %page-title-lg { // 7
 	color: #fff;
-	font-family: $font-family-spec;
 	font-size: rem(86px);
 	line-height: 1em;
 	letter-spacing: 0;
@@ -340,7 +353,6 @@ ul.inline {
 
 %page-title-md { // 1
 	color: $brand-secondary;
-	font-family: $font-family-spec;
 	font-size: rem(46px);
 	line-height: rem(46px);
 	letter-spacing: 0;
@@ -386,10 +398,7 @@ ul.inline {
 	h1, h2, h3, h4, h5, h6 { color: inherit; }
 }
 
-%pink-bg-text {
-	color: #fff;
-	h5 { color: $pink; }
-}
+
 
 %content-spacing {
 	h1 {
@@ -412,7 +421,6 @@ ul.inline {
 
 %gradient-section-pink { // 8
 	@include linear-gradient(-113deg, rgb(71,18,39) 0%, rgb(71,18,39) 20%, rgb(71,18,39) 80%, rgb(186,69,117) 100%);
-	@extend %pink-bg-text;
 }
 
 %styled-text {
@@ -596,18 +604,28 @@ ul.inline {
 // Breadcrumbs
 .bct-wrapper {
 	@include clearfix();
+	background-color: $gray-lightest;
+	margin-bottom: 25px;
 	.bct {
 		@include multi-column(12,12,12,12);
-		background-color: #efefef;
-		padding: 15px 0;
+		padding: 0 15px;
 		ul {
 			padding: 0;
 			margin: 0;
 			li {
+				display: inline-block;
+				padding: 15px 0 15px 3px;
 				margin: 0;
+				&:before {
+					content: $bct-divider;
+				}
+				&:first-child:before {
+					content: none;
+				}
+
 				a,
-				span {
-					color: $brand-primary;
+				i {
+					color: $brand-secondary;
 				}
 			}
 		}
@@ -754,7 +772,6 @@ ul.inline {
 			&:empty { display: none; }
 			&:before {
 				@extend .ysc-icon;
-				color: $blue-light;
 				font-size: rem(30px);
 				height: 30px;
 				width: 30px;
@@ -822,16 +839,7 @@ ul.inline {
 // Main Content Wrapper
 .main-cnt,
 .main-content {
-	margin-top: $navbar-height + $contact-navbar-height;
-	.home & {
-		margin-top: $navbar-height + $contact-navbar-height;
-	}
-	@media (max-width: 1330px) {
-		.home & {
-			margin-top: $mobile-navbar-height;
-		}
-		margin-top: $mobile-navbar-height;
-	}
+	margin-top: $navbar-height + 5px;
 }
 
 // Content Wrapper
@@ -1218,7 +1226,6 @@ ul.inline {
 // Footer CTA Inline List
 //
 .footer-ctas {
-	background: $accent-color;
 	color: #fff;
 	font-family: $navbar-font-family;
 	font-size: rem(22px);
@@ -1229,21 +1236,20 @@ ul.inline {
 	}
 	.cta-item {
 		@include multi-column(6,6,6,3);
-		border-bottom: 2px solid $accent-color-light;
+		border-bottom: 2px solid $border-color;
 		padding: 0;
 		text-align: center;
 		transition: $transition;
-		&:hover { background-color: $accent-color-light; }
+		&:hover { background-color: $border-color; }
 		@include breakpoint-up(xs) { border-bottom: 0; }
 		@include breakpoint-between(xs,md) {
-			&:nth-child(odd){ border-right: 2px solid $accent-color-light; }
+			&:nth-child(odd){ border-right: 2px solid $border-color; }
 		}
 		@include breakpoint-up(lg) {
-			border-left: 2px solid $accent-color-light;
-			&:last-child { border-right: 2px solid $accent-color-light; }
+			border-left: 2px solid $border-color;
+			&:last-child { border-right: 2px solid $border-color; }
 		}
 		.ysc-icon {
-			color: $blue-light;
 			font-size: rem(36px);
 			margin-bottom: rem(18px);
 			transition: $transition;
@@ -1459,7 +1465,6 @@ ul.inline {
 			}
 		}
 		h4 {
-			color: $blue-light;
 			font-size: rem(24px);
 			letter-spacing: 0.032em;
 			margin-bottom: rem(40px);
@@ -1489,7 +1494,6 @@ ul.inline {
 // 3. Set specific width to properly align arrows and keep center mode effect with other slides showing on sides
 .section-slider-pink,
 %section-slider-pink {
-	@extend %gradient-section-pink;
 	overflow: hidden; // 2
 	padding: rem(70px) 0 rem(120px);
 	.section-header {

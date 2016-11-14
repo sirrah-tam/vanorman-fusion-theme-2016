@@ -1,0 +1,24 @@
+%base-pad { padding: 70px 0; }
+%contrast-light-text { color: #f6f6f6; }
+%contrast-dark-text { color: $gray; }
+
+.intro {
+	background-color: #f6f6f6;
+	@extend %base-pad;
+	color: $brand-tertiary;
+	.img-circle {
+		background-color: #f6f6f6;
+	}
+}
+
+.blog-section {
+	background-color: $brand-tertiary;
+	@extend %base-pad;
+	@extend %contrast-light-text;
+	h3 a {
+		@extend %contrast-dark-text;
+	}
+	.panel-body {
+		@extend %contrast-dark-text;
+	}
+}
