@@ -2,22 +2,16 @@
 
 @php($categories = categories('blog'))
 
-<div class="main-content">
-    <div class="container">
-        <div class="row">
-            <div class="col-centered col-md-10">
-                @section('header')
-                    {{ $entry->title }}
-                @stop
-                @section('subheader')
-                    by {{ $entry->creator->full_name }}
-                @stop
-            </div>
-        </div>
-    </div>
-
-
-    @section('content')
+@section('header')
+    {{ $entry->title }}
+@stop
+@section('subheader')
+    <hr class="small">
+    <i class="btl bt-user bt-fw"></i> {{ $entry->creator->full_name }}
+@stop
+    
+@section('content')
+    <div class="content">
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
@@ -50,5 +44,5 @@
                 </div>
             </div>
         </div>
-    @stop
-</div>
+    </div>
+@stop

@@ -4268,11 +4268,12 @@ header {
   transition: all .2s ease, transform .2s ease, background .1s ease, height .2s ease, -webkit-transform .2s ease; }
 
 .footer {
+  color: #f6f6f6;
+  background-color: #373a3c;
   position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding: 70px 0;
-  height: 100%; }
+  padding: 70px 0; }
   @media (max-width: 991px) {
     .footer {
       text-align: center; }
@@ -4290,7 +4291,7 @@ header {
       .footer .links p {
         margin: 10px 0; } }
   .footer .copy a {
-    color: #818a91; }
+    color: #f6f6f6; }
     .footer .copy a:hover {
       color: #132758;
       text-decoration: underline; }
@@ -4321,7 +4322,7 @@ header {
           .footer .links li:last-child {
             padding: 5px 10px; } }
       .footer .links li a {
-        color: #818a91; }
+        color: #f6f6f6; }
         .footer .links li a:hover {
           color: #132758; }
 
@@ -4530,7 +4531,7 @@ hr.small {
   background-color: #9BBF68; }
 
 /* 2a. Placeholders/Extends */
-.masthead-text {
+.masthead-text, .page-header {
   color: #fff;
   font-size: 3.625rem;
   font-weight: 300;
@@ -4929,7 +4930,7 @@ hr.small {
     min-height: 1px;
     padding-right: 0.9375rem;
     padding-left: 0.9375rem;
-    padding: 0 15px; }
+    padding: 0; }
     @media (min-width: 480px) {
       .bct-wrapper .bct {
         float: left;
@@ -4959,7 +4960,7 @@ hr.small {
           content: none; }
         .bct-wrapper .bct ul li a,
         .bct-wrapper .bct ul li i {
-          color: #9BBF68; }
+          color: #132758; }
 
 .masthead-wrapper {
   position: relative;

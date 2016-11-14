@@ -1,3 +1,6 @@
+.page-header {
+	@extend %page-title;
+}
 .intro {
 	background-color: #f6f6f6;
 	@extend %base-pad;

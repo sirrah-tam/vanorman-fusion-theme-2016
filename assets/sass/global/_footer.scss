@@ -1,15 +1,15 @@
-$footer-background: $brand-primary !default;
-$footer-home-color: $gray-light !default;
+$footer-background: $gray-dark !default;
+$footer-home-color: #f6f6f6 !default;
 $footer-color: $gray-light !default;
 $footer-contact-color: $gray-light !default;
 
 .footer {
+	color: $footer-home-color;
+	background-color: $footer-background;
 	position: relative;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	padding: 70px 0;
-	// background-color: $footer-background;
-	height: 100%;
 	@media (max-width: $screen-sm-max) {
 		text-align: center;
 		img { margin: 0 auto; }

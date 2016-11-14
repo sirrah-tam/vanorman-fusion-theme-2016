@@ -612,7 +612,7 @@ hr.small {
 	margin-bottom: 25px;
 	.bct {
 		@include multi-column(12,12,12,12);
-		padding: 0 15px;
+		padding: 0;
 		ul {
 			padding: 0;
 			margin: 0;
@@ -629,7 +629,7 @@ hr.small {
 
 				a,
 				i {
-					color: $brand-secondary;
+					color: $brand-primary;
 				}
 			}
 		}
