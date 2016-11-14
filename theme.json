@@ -1,0 +1,9 @@
+{
+	"name": "Vanorman",
+	"slug": "vanorman",
+	"description": "Van Orman 2016",
+	"author": "Cameron Van Orman",
+	"version": "1.0",
+	"public_theme": true,
+	"admin_theme": false
+}

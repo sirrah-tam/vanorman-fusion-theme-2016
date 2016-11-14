@@ -1,0 +1,475 @@
+// Variables
+//
+// Copy settings from this file into `_settings.scss` or `_custom.scss` to override
+// the defaults without modifying key, versioned files.
+
+// Table of Contents
+//
+// 0. Dependent Functions
+// 1. Options
+// 2. Colors
+// 3. Spacing
+// 4. Body
+// 5. Links
+// 6. Breakpoints and Media Queries
+// 7. Grid containers
+// 8. Grid columns
+// 9. Typography
+// 10. Lists
+// 11. General Style Components
+// 12. Tables
+// 13. Breadcrumbs
+// 14. Buttons
+// 15. Images and Figures
+// 16. Bars, Navigation and Dropdowns
+// 17. Code
+
+// 0. Dependent Functions
+//
+// Functions required for variable conversions
+// Calculate rem units from px
+@function rem($size) {
+    $remSize: $size / $font-size-root;
+    @return #{$remSize}rem;
+}
+
+// 1. Options
+//
+// Grid 
+$is-fluid:                   true !default;
+$enable-responsive:          true !default;
+
+// Classes
+$generate-grid-classes:      true !default;
+$generate-extra-btns:        true !default;
+$generate-bct-classes:       true !default;
+$generate-nav-classes:       true !default;
+$generate-embed-classes:     true !default;
+
+// Utilities
+$enable-utility-clear:       true !default;
+$enable-utility-display:     true !default;
+$enable-utility-images:      true !default;
+$enable-utility-print:       true !default;
+$enable-utility-sr:          true !default;
+$enable-utility-tables:      true !default;
+$enable-utility-text:        true !default;
+$enable-utility-visibility:  true !default;
+
+// Styles
+$enable-table-styles:        true !default;
+$enable-table-responsive:    true !default;
+$enable-colored-ol:          true !default;
+$enable-header-bullets:      false !default;
+$enable-footer-bullets:      false !default;
+$enable-blockquotes:         true !default;
+$enable-code-styles:         true !default;
+$enable-print-styles:        true !default;
+
+// Effects
+$enable-transitions:         true !default;
+$enable-table-hover:         false !default;
+
+// Pixel value used to responsively scale all typography, paddings, margins etc. Applied to the `<html>` element.
+// Necessary for use with rem values
+$font-size-root:             18px !default;
+
+
+// 2. Colors
+//
+// Neutral Grays
+$gray-dark:                 #252525 !default;
+$gray:                      #343434 !default;
+$gray-light:                #848484 !default;
+$gray-lighter:              #ededec !default;
+$gray-lightest:             #e1e1e1 !default;
+
+// Base Colors
+$brand-primary:             #66BBFF !default;
+$brand-secondary:           #bbff66 !default;
+$brand-tertiary:            #fff !default;
+
+$accent-color:              #007d8e;
+$accent-color-light:        #24a1b2;
+
+$blue-light:                #33ffff;
+$pink:                      #c796aa;
+$dark-pink:                 #48172b;
+
+$border-color:              #bfbfbe;
+
+// Alert Colors
+$brand-success:             #5cb85c !default;
+$brand-info:                #5bc0de !default;
+$brand-warning:             #f0ad4e !default;
+$brand-danger:              #d9534f !default;
+$brand-inverse:             $gray-dark !default;
+
+
+// 3. Spacing
+//
+// Control the default styling of most Hydrogen elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+$spacer:       1.5rem !default;
+$spacer-x:     $spacer !default;
+$spacer-y:     $spacer !default;
+
+$border-width: 1px !default;
+
+
+// 4. Body
+//
+// Settings for the `<body>` element.
+$body-bg:             #fff !default;
+$body-bg-img:         none !default;
+$body-bg-size:        auto !default;
+$body-bg-position:    center !default;
+$body-bg-attachment:  none;
+$text-color:          #5e5e61 !default;
+
+
+// 5. Links
+//
+// Style anchor elements.
+$link-color:            $brand-primary !default;
+$link-decoration:       none !default;
+$link-hover-color:      #b1c335 !default;
+$link-hover-decoration: none !default;
+$link-transition:       all 0.3s ease;
+
+
+// 6. Breakpoints and Media Queries
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes.
+
+// Use specifically for generating grid system
+$grid-breakpoints: (
+    xs: 480px,
+    sm: 768px,
+    md: 992px,
+    lg: 1200px
+) !default;
+
+// Breakpoints to use in media queries
+// Extra small screen / phone
+// Note: Deprecated $screen-xs and $screen-phone
+$screen-xs:                  map-get($grid-breakpoints, xs) !default;
+$screen-phone:               $screen-xs !default;
+
+// Small screen / tablet
+// Note: Deprecated $screen-sm and $screen-tablet
+$screen-sm:                  map-get($grid-breakpoints, sm) !default;
+$screen-tablet:              $screen-sm !default;
+
+// Medium screen / desktop
+// Note: Deprecated $screen-md and $screen-desktop
+$screen-md:                  map-get($grid-breakpoints, md) !default;
+$screen-desktop:             $screen-md !default;
+
+// Large screen / wide desktop
+// Note: Deprecated $screen-lg and $screen-lg-desktop
+$screen-lg:                  map-get($grid-breakpoints, lg) !default;
+$screen-lg-desktop:          $screen-lg !default;
+
+// So media queries don't overlap when required, provide a maximum
+$screen-xxs-max:             ($screen-xs - 1) !default;
+$screen-xs-max:              ($screen-sm - 1) !default;
+$screen-sm-max:              ($screen-md - 1) !default;
+$screen-md-max:              ($screen-lg - 1) !default;
+
+
+// 7. Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+$container-max-widths: (
+    xs: 600px,
+    sm: 750px,
+    md: 970px,
+    lg: 1200px
+) !default;
+
+
+// 8. Grid columns
+//
+// Set the number of columns and specify the width of the gutters.
+$grid-columns:      12 !default;
+$grid-gutter-width: 30px !default; // Keep this a pixel value for doing calculations
+$grid-padding:      rem(($grid-gutter-width / 2)) !default;
+
+
+// 9. Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+$font-family-base:       'PT Sans', sans-serif !default;
+$font-family-spec:       'PT Sans Narrow', sans-serif !default;
+$font-family-monospace:  Menlo, Monaco, Consolas, "Courier New", monospace !default; // Used for code
+$navbar-font-family:     'PT Sans Narrow', sans-serif !default;
+$font-weight-base:       400 !default;
+
+$font-size-base:         1rem !default;
+$small-font-size:        80% !default;
+
+$line-height-base:       1.4 !default;
+$letter-spacing-base:    normal !default;
+
+// Headers
+$font-size-h1:           rem(50px) !default;
+$font-size-h2:           rem(23px) !default;
+$font-size-h3:           rem(24px) !default;
+$font-size-h4:           rem(22px) !default;
+$font-size-h5:           rem(58px) !default;
+$font-size-h6:           rem(16px) !default;
+
+$headings-margin-bottom: ($spacer / 2) !default;
+$headings-font-family:   'PT Sans Narrow', serif !default;
+$headings-font-weight:   600 !default;
+$headings-line-height:   1.1 !default;
+$headings-color:         inherit !default;
+
+// Leads/Mastheads
+$lead-font-size:          1.5rem !default;
+$lead-font-weight:        300 !default;
+
+// Block Quotes
+$blockquote-small-color:  $gray-light !default;
+$blockquote-font-size:    ($font-size-base * 1.25) !default;
+$blockquote-border-color: $gray-lighter !default;
+$blockquote-border-width: 0.25rem !default;
+
+// Horizontal Ruler
+$hr-border-color:         $border-color !default;
+$hr-border-width:         $border-width !default;
+
+
+// 10. Lists
+//
+// Unordered lists
+$list-style:           disc !default; // set to "img" to use background image bullet
+$list-bullet-img:      '../graphics/list-bullet.png';
+$list-padding-left:    rem(30px) !default;
+$list-inline-margin:   rem(5px) !default;
+
+//Ordered List Color (if $enable-colored-ol is true)
+$ol-number-color:      $brand-primary !default;
+
+
+// 11. General Style Components
+//
+// Define additional common padding and border radius, transitions, shadows, sizes and more 
+// to be used with other style variables below or in css
+$line-height-lg:         (4 / 3) !default;
+$line-height-sm:         1 !default;
+
+$border-radius:          rem(5px) !default;
+$border-radius-lg:       rem(50px) !default;
+$border-radius-sm:       rem(3px) !default;
+
+$component-active-color: #fff !default;
+$component-active-bg:    $brand-primary !default;
+
+$shadow:                 1px 1px 3px 1px rgba(0,0,0,0.1);
+
+$transition-speed:       0.3s;
+$transition-function:    ease;
+$transition:             all $transition-speed $transition-function;
+
+
+// 12. Tables
+//
+$table-cell-padding:    rem(15px) !default;
+$table-sm-cell-padding: rem(15px) !default;
+
+$table-bg:              #fff !default;
+$table-bg-accent:       rgba(0,0,0,.05) !default;
+$table-bg-hover:        rgba(0,0,0,.075) !default;
+
+$table-border-width:    $border-width !default;
+$table-border-color:    $gray-lighter !default;
+
+
+// 13. Breadcrumbs
+//
+$bct-divider:          '>' !default; 
+
+$bct-padding-y:        $spacer-y !default;
+$bct-padding-x:        $spacer-x !default;  
+$breadcrumb-padding-y: 0 !default; 
+$breadcrumb-padding-x: rem(5px) !default;
+
+
+// 14. Buttons
+//
+// For each buttons, define text, background and border color.
+$btn-padding-x:                  $spacer-x !default;
+$btn-padding-y:                  ($spacer-y / 2) !default;
+$btn-margin:                     rem(15px) rem(15px) rem(15px) 0 !default;
+$btn-font:                       $navbar-font-family !default;
+$btn-font-size:                  rem(19px) !default;
+$btn-font-weight:                normal !default;
+$btn-line-height:                1.25 !default;
+$btn-box-shadow:                 none !default;
+$btn-active-box-shadow:          none !default;
+
+// NOTE: border and border hover styles for each shold be full property, eg. $btn-primary-border: 1px solid $brand-primary.
+// Brand primary color button
+$btn-primary-color:              #fff !default;
+$btn-primary-bg:                 $brand-primary !default;
+$btn-primary-border:             2px solid darken($brand-primary, 5%) !default;
+$btn-primary-hover:              $brand-primary !default;
+$btn-primary-bg-hover:           transparent !default;
+$btn-primary-border-hover:       2px solid darken($brand-primary, 5%) !default;
+$btn-primary-radius:             $border-radius-sm !default;
+
+// Brand secondary color button
+$btn-secondary-color:            #fff !default;
+$btn-secondary-bg:               $brand-secondary !default;
+$btn-secondary-border:           2px solid darken($brand-secondary, 5%) !default;
+$btn-secondary-hover:            #fff !default;
+$btn-secondary-bg-hover:         darken($btn-secondary-bg, 5%) !default;
+$btn-secondary-border-hover:     2px solid darken($brand-secondary, 5%) !default;
+$btn-secondary-radius:           $border-radius-sm !default;
+
+// Brand tertiary color button
+$btn-tertiary-color:             #fff !default;
+$btn-tertiary-bg:                $brand-tertiary !default;
+$btn-tertiary-border:            0 !default;
+$btn-tertiary-hover:             #fff !default;
+$btn-tertiary-bg-hover:          darken($btn-tertiary-bg, 5%) !default;
+$btn-tertiary-border-hover:      0 !default;
+$btn-tertiary-radius:            $border-radius-sm !default;
+
+// Default/neutral button
+$btn-default-color:              #fff !default;
+$btn-default-bg:                 $gray-dark !default;
+$btn-default-border:             2px solid $brand-primary !default;
+$btn-default-hover:              $gray-dark !default;
+$btn-default-bg-hover:           transparent !default;
+$btn-default-border-hover:       2px solid darken($brand-primary, 5%) !default;
+$btn-default-radius:             $border-radius-sm !default;
+
+// Info color button
+$btn-info-color:                 #fff !default;
+$btn-info-bg:                    transparent !default;
+$btn-info-border:                2px solid #fff !default;
+$btn-info-hover:                 $gray !default;
+$btn-info-bg-hover:              #fff !default;
+$btn-info-border-hover:          2px solid #fff !default;
+$btn-info-radius:                $border-radius-lg !default;
+
+// Success button
+$btn-success-color:              #fff !default;
+$btn-success-bg:                 $brand-success !default;
+$btn-success-border:             0 !default;
+$btn-success-hover:              #fff !default;
+$btn-success-bg-hover:           darken($btn-success-bg, 5%) !default;
+$btn-success-border-hover:       0 !default;
+$btn-success-radius:             $border-radius !default;
+
+// Warning button
+$btn-warning-color:              #fff !default;
+$btn-warning-bg:                 $brand-warning !default;
+$btn-warning-border:             0 !default;
+$btn-warning-hover:              #fff !default;
+$btn-warning-bg-hover:           darken($btn-warning-bg, 5%) !default;
+$btn-warning-border-hover:       0 !default;
+$btn-warning-radius:             $border-radius !default;
+
+// Danger button
+$btn-danger-color:               #fff !default;
+$btn-danger-bg:                  $brand-danger !default;
+$btn-danger-border:              0 !default;
+$btn-danger-hover:               #fff !default;
+$btn-danger-bg-hover:            darken($btn-danger-bg, 5%) !default;
+$btn-danger-border-hover:        0 !default;
+$btn-danger-radius:              $border-radius !default;
+
+// Brand primary color button
+$btn-link-disabled-color:        $gray-lighter !default;
+
+// 15. Images and Figures
+//
+$figure-caption-font-size:  90% !default;
+$figure-caption-color:      $gray-light !default;
+
+
+// 16. Bars Navigation and Dropdowns
+//
+// Bar
+$bar-bg:                     $gray !default;
+$bar-padding:                0 !default;
+$bar-font:                   inherit !default;
+$bar-font-size:              1rem !default;
+
+// Navigation Menu 
+//
+// Navbar height
+$navbar-height: 			 75px !default;
+$mobile-navbar-height:       50px !default;
+$contact-navbar-height:      60px !default;
+
+$navbar-font-size:           rem(20px) !default;
+
+// <ul>
+$nav-padding:                0 !default;
+$nav-margin:                 0 !default;
+
+// <li>
+$nav-item-padding:           0 !default;
+
+// <a>
+$nav-link-padding:           0.5rem !default; 
+$nav-link-bg:                transparent !default;
+$nav-link-hover-bg:          $gray-lighter !default;
+$nav-link-color:             $link-color !default;
+$nav-link-hover-color:       $link-hover-color !default;
+
+// Dropdown Menu 
+//
+// <ul>
+$drowdown-on-hover:          true !default; // This will later be used to implement hover vs click menu
+$dropdown-min-width:         rem(200px) !default;
+$dropdown-padding:           0 !default;
+$dropdown-bg:                $gray-lighter !default;
+$dropdown-border:            0 !default;
+
+// <li>
+$dropdown-item-padding:      0 !default;
+$dropdown-item-margin:       0 !default;
+
+// <a>
+$dropdown-link-padding:      0.5rem !default;
+$dropdown-link-color:        $gray-dark !default;
+$dropdown-link-hover-color:  #fff !default;
+$dropdown-link-bg:           transparent !default;
+$dropdown-link-hover-bg:     $gray !default;
+
+$dropdown-link-active-color: $component-active-color !default;
+$dropdown-link-active-bg:    $component-active-bg !default;
+
+
+// Z-index master list for navigation and bars
+$zindex-bar:                 1000 !default;
+$zindex-bar-fixed:           1000 !default;
+$zindex-bar-sticky:          1030 !default;
+$zindex-dropdown:            1030 !default;
+
+
+// 17. Code
+//
+$code-font-size:              90% !default;
+$code-padding-x:              0.4rem !default;
+$code-padding-y:              0.2rem !default;
+$code-color:                  #bd4147 !default;
+$code-bg:                     #f7f7f9 !default;
+$code-border-radius:          rem(5px) !default;
+
+$kbd-color:                   #fff !default;
+$kbd-bg:                      #333 !default;
+$nested-kbd-font-weight:      bold !default;
+
+$pre-bg:                      #f7f7f9 !default;
+$pre-color:                   $gray-dark !default;
+$pre-border-color:            #ccc !default;
+$pre-scrollable-max-height:   340px !default;

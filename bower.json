@@ -1,0 +1,30 @@
+{
+  "name": "Van Orman Design",
+  "description": "Van Orman 2016 ",
+  "private": true,
+  "dependencies": {
+    "hydrogen": "git@github.com:efellemedia/hydrogen.git#v2.0.0",
+    "jquery": "~2.2.0",
+    "font-awesome": "fontawesome#~4.5.0",
+    "simpleWeather": "^3.1.0",
+    "instantclick": "^3.1.0",
+    "vue": "^1.0.24"
+  },
+  "devDependencies": {
+    "vue-resource": "^1.0.3"
+  },
+  "authors": [
+    "Cameron Van Orman <cameron.vanorman@gmail.com>"
+  ],
+  "main": "",
+  "license": "MIT",
+  "homepage": "vanorman.design",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/",
+    "test",
+    "tests"
+  ]
+}

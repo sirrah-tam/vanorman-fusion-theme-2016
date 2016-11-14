@@ -1,0 +1,183 @@
+$icon-advocate: "\e900";
+$icon-attend-event: "\e901";
+$icon-audio-video: "\e902";
+$icon-chat-bubbles: "\e903";
+$icon-date: "\e904";
+$icon-donate: "\e905";
+$icon-education: "\e906";
+$icon-faq: "\e907";
+$icon-feed: "\e908";
+$icon-find: "\e909";
+$icon-fundraise: "\e90a";
+$icon-giving: "\e90b";
+$icon-locate: "\e90c";
+$icon-make-donation: "\e90d";
+$icon-memorial: "\e90e";
+$icon-newsletter: "\e90f";
+$icon-pdf: "\e910";
+$icon-phone: "\e911";
+$icon-print: "\e912";
+$icon-programs: "\e913";
+$icon-resources: "\e914";
+$icon-share: "\e915";
+$icon-time: "\e916";
+$icon-topic: "\e917";
+$icon-website: "\e918";
+$icon-workplace: "\e919";
+$icon-ysc: "\e91a";
+
+.ysc-icon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'YSC-Icons' !important;
+
+  display: inline-block;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  speak: none;
+  transform: translate(0,0);
+  text-rendering: auto;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-advocate {
+  &:before {
+    content: $icon-advocate;
+  }
+}
+.icon-attend-event {
+  &:before {
+    content: $icon-attend-event;
+  }
+}
+.icon-audio-video {
+  &:before {
+    content: $icon-audio-video;
+  }
+}
+.icon-chat-bubbles {
+  &:before {
+    content: $icon-chat-bubbles;
+  }
+}
+.icon-date {
+  &:before {
+    content: $icon-date;
+  }
+}
+.icon-donate {
+  &:before {
+    content: $icon-donate;
+  }
+}
+.icon-education {
+  &:before {
+    content: $icon-education;
+  }
+}
+.icon-faq {
+  &:before {
+    content: $icon-faq;
+  }
+}
+.icon-feed {
+  &:before {
+    content: $icon-feed;
+  }
+}
+.icon-find {
+  &:before {
+    content: $icon-find;
+  }
+}
+.icon-fundraise {
+  &:before {
+    content: $icon-fundraise;
+  }
+}
+.icon-giving {
+  &:before {
+    content: $icon-giving;
+  }
+}
+.icon-locate {
+  &:before {
+    content: $icon-locate;
+  }
+}
+.icon-make-donation {
+  &:before {
+    content: $icon-make-donation;
+  }
+}
+.icon-memorial {
+  &:before {
+    content: $icon-memorial;
+  }
+}
+.icon-newsletter {
+  &:before {
+    content: $icon-newsletter;
+  }
+}
+.icon-pdf {
+  &:before {
+    content: $icon-pdf;
+  }
+}
+.icon-phone {
+  &:before {
+    content: $icon-phone;
+  }
+}
+.icon-print {
+  &:before {
+    content: $icon-print;
+  }
+}
+.icon-programs {
+  &:before {
+    content: $icon-programs;
+  }
+}
+.icon-resources {
+  &:before {
+    content: $icon-resources;
+  }
+}
+.icon-share {
+  &:before {
+    content: $icon-share;
+  }
+}
+.icon-time {
+  &:before {
+    content: $icon-time;
+  }
+}
+.icon-topic {
+  &:before {
+    content: $icon-topic;
+  }
+}
+.icon-website {
+  &:before {
+    content: $icon-website;
+  }
+}
+.icon-workplace {
+  &:before {
+    content: $icon-workplace;
+  }
+}
+.icon-ysc {
+  &:before {
+    content: $icon-ysc;
+  }
+}

@@ -1,0 +1,447 @@
+%light-select {
+	-webkit-appearance: none;
+    -moz-appearance: none;
+	padding: 6px 7px;
+	padding-right: 30px;
+	position: relative;
+	background: #fff;
+	border: 0;
+	border-radius: $border-radius-lg;
+	&:focus,
+	&:active { outline: 0; }
+}
+%gray-select {
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    background: $gray-lighter complete_url('/graphics/select-arrow.png') no-repeat right 32px center;
+    border-radius: $border-radius-lg;
+    color: $gray;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.064em;
+    padding: 15px 40px 15px 35px;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+// Formbuilder Page
+.form_description {
+	margin-bottom: rem(50px);
+}
+// Forms
+.form-control {
+	padding: 15px;
+	border-radius: $border-radius-sm;
+	background-color: #f6f6f6;
+	border: 0;
+	border-top: 2px solid #e2e2e2;
+	width: 100%;
+	&:focus,
+	&:active {
+		outline: 0;
+		box-shadow: 0;
+	}
+}
+
+div.tip-error,
+div.tip-darkgray {
+	color: #fff;
+	padding: 15px;
+	box-shadow: 0 5px 5px 0 rgba(0,0,0,.06);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	z-index: 99999;
+	&:before {
+		position: absolute;
+		content: "";
+		width: 0;
+		height: 0;
+		top: 15px;
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent;
+	}
+}
+
+div.tip-error {
+	background-color: $brand-secondary;
+	background-image: none;
+	&:before {
+		background-image: none;
+		border-right: 10px solid $brand-secondary;
+		right: -10px;
+		transform: rotate(180deg);
+	}
+}
+div.tip-darkgray {
+	background-color: $gray-dark;
+	width: 250px;
+	&:before {
+		border-right: 10px solid $gray-dark;
+		left: -10px;
+	}
+}
+
+.tip-error .tip-arrow-top,
+.tip-error .tip-arrow-right,
+.tip-error .tip-arrow-bottom,
+.tip-error .tip-arrow-left {
+	background: none !important;
+}
+
+input[type="submit"] {
+	@extend .btn-primary;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="complete_url"],
+textarea,
+.formbuilderv2_fileupload .qq-uploader {
+	@extend .form-control;
+	color: $gray;
+	font-weight: 300;
+}
+
+.newsletter-section {
+	input[type="text"],
+	input[type="email"],
+	textarea {
+		text-transform: uppercase;
+	}
+}
+
+.form-control::-webkit-input-placeholder,
+input[type="text"]::-webkit-input-placeholder,
+input[type="email"]::-webkit-input-placeholder,
+input[type="search"]::-webkit-input-placeholder,
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+	color: $text-color !important;
+	font-weight: 300;
+}
+
+[type="search"] {
+	-moz-appearance: textfield;
+	-webkit-appearance: textfield;
+	appearance: textfield;
+}
+
+input[type="search"]::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #fff;
+}
+input[type="search"]:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color: #fff;
+   opacity:  1;
+}
+input[type="search"]::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color: #fff;
+   opacity:  1;
+}
+input[type="search"]:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: #fff;
+}
+
+span.form_field_required {
+	color: #d12c0a;
+}
+span.form_field_not_required {
+	display: none;
+}
+#formbuilderv2 ul {
+	list-style-type: none;
+	padding-left: 0;
+}
+#formbuilderv2 ul li {
+	background-image: none;
+	padding-left: 0;
+	margin: 0;
+}
+.form_field_title {
+	@extend h4;
+	color: $gray;
+}
+img.ui-datepicker-trigger {
+	padding-top: 4px;
+}
+input[type="checkbox"],
+input[type="radio"] {
+	margin-right: 7px;
+}
+
+.form_field_element li label {
+	position: relative;
+	padding-left: 30px;
+}
+
+input[type="checkbox"] {
+	display: none;
+}
+input[type="checkbox"] + label:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: 4px;
+	background-color: #fff;
+	border: 2px solid #dedede;
+	display: inline-block;
+	transition-duration: 0.3s;
+	width: 16px;
+	height: 16px;
+}
+input[type="checkbox"]:checked + label:before {
+	background-color: $brand-primary;
+}
+
+.formbuilderv2_form_field {
+	margin-bottom: rem(30px);
+	@include clearfix();
+}
+
+.form_field_element {
+	position: relative;
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		text-indent: 0;
+		li {
+			list-style: none;
+			text-indent: 0;
+			&:before { display: none; }
+		}
+	}
+}
+
+.form_field_element input[type="text"],
+.form_field_element input[type="email"],
+.form_field_element input[type="complete_url"],
+.form_field_element select,
+.form_field_element textarea {
+	width: 100%;
+}
+
+.form_field_element textarea {
+	height: 200px;
+	padding-top: rem(30px);
+	padding-bottom: rem(30px);
+}
+
+select {
+	-webkit-appearance: normal;
+	border-radius: $border-radius-lg;
+	@extend .form-control;
+}
+.form_field_element select {
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    background: $gray-lighter url('/graphics/select-arrow.png') no-repeat right 32px center;
+    color: $gray;
+    padding-right: 40px;
+    width: 100%;
+}
+
+.form_field_hint {
+	font-size: 70%;
+	width: 90%;
+	display: none;
+}
+.form_field_element input.form_field_half {
+	width: 49%;
+}
+.form_field_element input.form_field_half:last-child {
+	float: right;
+	margin-right: 0;
+}
+
+@media only screen and (max-width : 768px) {
+	.formbuilderv2_form_field {
+		padding-left: 5%;
+	}
+}
+/***Section Headers***/
+.form_submit {
+	@extend .col-xs-12;
+	@extend .col-sm-12;
+}
+.form_submit input[type="submit"] {
+	float: right;
+	margin-top: 30px;
+}
+
+/*** Contact Us Specific ***/
+
+#contact-us .formbuilderv2_form_field {
+	@extend .col-sm-12;
+	@extend .col-xs-12;
+	padding: 4px 0px;
+}
+#contact-us .form_field_element input[type="text"],
+#contact-us .form_field_element input[type="email"],
+#contact-us .form_field_element input[type="complete_url"],
+#contact-us .form_field_element select,
+#contact-us .form_field_element textarea {
+	width: 100%;
+}
+.form_field_element input.form_field_half {
+	width: 49%;
+	float: left;
+	margin-right: 2%;
+}
+.form_field_element input.form_field_half:last-child {
+	float: left;
+}
+#contact-us .cont-txt {
+	margin-bottom: 40px;
+}
+#contact-us .cont-spot {
+	padding-top: 54px;
+	padding-bottom: 40px;
+}
+@media only screen and (min-width : 769px) {
+	#contact-us .cont-spot {
+		padding-left: 40px;
+	}
+}
+.google-maps {
+		position: relative;
+		padding-bottom: 75%; // This is the aspect ratio
+		height: 0;
+		overflow: hidden;
+}
+.google-maps iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100% !important;
+		// height: 100% !important;
+		height: 300px !important;
+}
+.gmaps-row {
+	height: 300px;
+	overflow: hidden;
+}
+@media only screen and (max-width : 420px) {
+	.gmaps-row {
+		height: 225px;
+	}
+}
+#contact-us .main-cnt {
+	padding-bottom: 0;
+}
+
+.mp3-filter-all label {
+	position: relative;
+	display: block;
+	margin-bottom: 0;
+	color: #fff;
+	&:hover,
+	&:active {
+		&:after {
+			background-color: $brand-primary;
+			transition: all .3s linear;
+		}
+	}
+	&:after {
+		position: absolute;
+		background-color: $brand-secondary;
+		content: "\25be";
+		right: 0;
+		top: 0;
+		padding: 9px 15px;
+		pointer-events: none;
+		transition: all .3s linear;
+	}
+	&:before {
+		content: '';
+		right: 4px;
+		top: 0;
+		width: 23px;
+		height: 18px;
+		background: transparent;
+		position: absolute;
+		pointer-events: none;
+		display: block;
+	}
+}
+
+// Uploader Button
+.qq-upload-button {
+	@extend %btn;
+	@extend %btn-secondary;
+	border: 0;
+	position: relative;
+	top: -14px;
+	float: right;
+	margin: 0;
+	width: 120px;
+	&:hover { border: 0; }
+}
+.qq-upload-list {
+	margin: 0 10px;
+	li {
+		background-color: $brand-primary;
+		color: #fff;
+		list-style-type: none;
+	}
+}
+.qq-upload-cancel,
+.qq-upload-retry { color: $gray; margin-left: 10px; }
+.ui-widget-header { color: #000!important; }
+
+
+// FormAssembly specific styles
+
+.wForm {
+	.section {
+		width: 100%;
+	}
+	.oneField {
+		margin: 15px 0;
+	}
+	.oneChoice {
+		label {
+			padding-left: 30px;
+		}
+	}
+	.label {
+		@extend .form_field_title;
+		position: relative;
+		display: inline-block;
+	}
+	.preField {
+		width: 100% !important;
+	}
+	input[type="text"] {
+		width: 100% !important;
+	}
+	textarea {
+		height: 200px;
+		width: 100% !important;
+	}
+	input[type="file"] {
+		@extend .qq-upload-button;
+		appearance: none;
+		float: none;
+		width: 100% !important;
+	}
+	span {
+		display: block;
+	}
+}
+
+// Newsletter sign up page
+.newsletterv3_simple {
+	max-width: 600px;
+	margin: 0 auto;
+
+	input {
+		width: 100%;
+	}
+
+	.btn-primary {
+		display: block;
+		margin: 30px auto 0;
+		width: 250px;
+	}
+}

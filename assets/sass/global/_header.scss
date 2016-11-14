@@ -1,0 +1,408 @@
+/**
+ * Header Wrapper
+ */
+header {
+	position: fixed;
+	font-family: $navbar-font-family;
+	font-size: rem(17px);
+	background-color: #fff;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	z-index: $zindex-bar-fixed;
+	transition: all .3s ease-in-out 0s, transform .4s ease;
+	box-shadow: 0 5px 5px 0 rgba(0, 0, 0, .06);
+	&.scroll {
+		transition: all .2s ease,transform .4s ease,background .1s ease,height .2s ease;
+	}
+}
+
+/**
+ * Main Nav
+ */
+.main-nav {
+	position: relative;
+	@include clearfix();
+	max-height: $navbar-height;
+	background-color: #444;
+	width: 100%;
+	@media (max-width: 1330px) {
+		max-height: $mobile-navbar-height;
+	} 
+}
+
+/**
+ * Logo
+ */
+.nav-logo {
+	@include multi-column(3,3,3,3);
+	padding: rem(15px);
+	width: auto;
+	@media (max-width: 1330px) {
+		@include make-col(10);
+		margin: 0 auto;
+		padding: 0 rem(15px);
+		width: auto;	
+	}
+	@media (max-width: $screen-xxs-max) {
+		@include make-col(8);
+		width: auto;
+	}
+	img {
+		max-width: 45px;
+	}
+	
+}
+
+.mobile-logo {
+	border-bottom: 1px solid $border-color;
+	padding: 0 15px 15px;
+	img { 
+		margin: 0 auto; 
+		max-width: 200px;
+	}
+}
+
+.main-nav-links {
+	@include clearfix();
+	position: relative;
+	width: 100%;
+	clear: both;
+}
+
+.mobile-nav-links {
+	display: none;
+	@include clearfix();
+	@media (max-width: 1190px) {
+		display: block;
+	}
+}
+
+.mobile-mega-menu {
+	display: none;
+}
+
+// Mega menu wrapper and base styles
+.main-menu {
+	@include make-col(7);
+	padding: 0 0 0 rem(15px);
+	margin: 0;
+	> li {
+		float: left;
+		margin: 0;
+		transition: all .3s ease;
+		&:hover {
+			background-color: $brand-secondary;
+			.main-submenu {
+				> li > a { color: #fff; }
+				>li > ul {
+					border-top: 1px solid $border-color;
+					max-height: 100vh;
+					opacity: 1;
+					padding-top: 37px;
+					padding-bottom: 35px;
+					transition: all 0.4s ease 0.2s;
+					box-shadow: 0 5px 5px 0 rgba(0,0,0,.06);
+				}
+			}
+		}
+	}
+}
+
+// Shared styles between all mega menu submenu items
+.main-submenu {
+	margin: 0;
+	> li.active-state > a {
+		color: $brand-secondary;
+	}
+	> li > a {
+		color: $text-color;
+		font-size: $navbar-font-size;
+		text-transform: uppercase;
+		padding: rem(33px) rem(39px);
+		display: block;
+	}
+	> li > ul {
+		@include abs-pos( $top: 100%, $left: 0); 
+		background: #fff;
+		max-height: 0;
+		margin: 0;
+		opacity: 0;
+		overflow: hidden;
+		padding: 0 12% 0;
+		transition: all 0.3s ease;
+		text-align: center;
+		width: 100%;
+		> li {
+			text-align: left;
+			> a  {
+				display: block;
+				color: $gray;
+				font-family: $navbar-font-family;
+				font-size: rem(20px);
+				line-height: 1;
+				padding-bottom: 11px;
+			}
+			&.submenu-donate > a {
+				color: #fff;
+			}
+			> ul {
+				max-width: 180px;
+				li a {
+					color: $text-color;
+					display: block;
+					font-family: $font-family-base;
+					font-size: 15px;
+					padding-bottom: 8px;
+				}
+			}
+		}
+	}
+	&.submenu-donate { 
+		> li > ul { 
+			background-color: $brand-tertiary; 
+			color: #fff; 
+			> li > a { color: #fff; }
+		}
+	}
+}
+
+// Large mega menu layout, 5 in a row w/ children
+.submenu-lg {
+	> li > ul > li {
+		float: left;
+		width: 20%;
+		&:last-child { float: right; } // Make small FAQ link appear on right
+	}
+}
+
+// Medium mega menu layout, 3 in a row w/ children 
+.submenu-md {
+	> li > ul > li {
+		display: inline-block;
+		vertical-align: top;
+		width: 20%;
+	}
+}
+
+// Small mega menu layout, 2 in a row w/no children
+.submenu-sm {
+	> li > ul {
+		padding: 0 30%;
+		> li {
+			display: inline-block;
+			float: left;
+			width: 45%;
+		}
+	}
+}
+
+// Search and Newsletter buttons
+.nav-actions {
+	@include multi-column(4,4,2,2);
+	margin: 0;
+	height: 100%;
+	padding-right: 0;
+	@media (max-width: 1330px) {
+		@include make-col(1);
+		position: static;
+	}
+	@media (max-width: $screen-xxs-max) {
+		@include make-col(2);
+		position: static;
+	}
+	li {
+		float: left;
+		width: 50%;
+		border-left: 1px solid $gray-lighter;
+		@media (max-width: 1330px) {
+			border: 0;
+			float: none;
+			width: auto;
+		}
+		&:hover,
+		&.on {
+			background-color: #fff;
+		}
+		a {
+			display: block;
+			padding: rem(34px) 0;
+			color: $text-color;
+			&:hover,
+			&.on {
+				background-color: $dark-pink;
+				color: #fff;
+			}
+			@media (max-width: 1330px) { padding: 23px 0; }
+		}
+		img {
+			margin: 0 auto;
+		}
+	}
+}
+
+// Header icons
+.nav-icon {
+	display: block;
+	font-size: rem(25px);
+	text-align: center;
+	@extend .btl;
+}
+
+.nav-menu-toggle {
+	@include multi-column(1,1,1,1);
+	@media (max-width: $screen-xxs-max) {
+		@include make-col(2);
+	}
+}
+
+/**
+ * Nav Toggle
+ */
+.nav-toggle {
+	position: absolute;
+	color: $text-color;
+	float: none;
+	top: 15px;
+	left: 15px;
+	width: 40px;
+	margin: 0;
+	&:before,
+	span,
+	&:after {
+		height: 2px;
+		width: 40px;
+		left: 0;
+		background: $gray;
+		transition-duration: .3s;
+	}
+	.one,
+	.two,
+	.three {
+		transition-duration: .2s;
+		margin: 7px auto;
+		background: $gray;
+		width: 40px;
+		height: 2px;
+	}
+	&:before {
+		top: 9px;
+	}
+	&:after {
+		bottom: 9px;
+	}
+	span {
+		margin-top: -1px;
+	}
+	.mm-opened & ,
+	&.on {
+		.one { 
+			transform: rotate(45deg) translate(3px, 4px); 
+			position: relative;
+			top: 2px;
+		}
+		.two { opacity: 0; }
+		.three { 
+			transform: rotate(-45deg) translate(6px, -7px);
+			position: relative;
+			top: -2px; 
+		}
+	}
+}
+
+// Search and Newsletter Dropdowns
+.search-overlay,
+.newsletter-overlay {
+	@include abs-pos($top: 100%, $left: 0);
+	background-color: $dark-pink;
+	display: none;
+	z-index: 99999;
+	width: 100%;
+	overflow: hidden;
+	opacity: 1;
+	transition: opacity, height .3s ease;
+	padding: rem(60px) rem(30px);
+	font-family: $navbar-font-family;
+	text-align: center;
+	button[type="submit"] { 
+		width: auto; 
+		vertical-align: middle;
+	}
+	.nav-search-input {
+		display: inline-block;
+		width: 336px;
+		margin: 0 5px;
+		max-width: 100%;
+		vertical-align: middle;
+	}
+	.close-btn {
+		cursor: pointer;
+		display: inline-block;
+		width: 40px;
+		height: 40px;
+		position: relative;
+		vertical-align: middle;
+		&:before {
+			@include abs-pos($top: 20px, $left:0);
+			border-top: 2px solid #fff;
+			content: '';
+			display: block;
+			height: 1px;
+			width: 40px;
+			transform: rotate(45deg);
+		}
+		&:after {
+			@include abs-pos($top: 20px, $right:0);
+			border-top: 2px solid #fff;
+			content: '';
+			display: block;
+			height: 1px;
+			width: 40px;
+			transform: rotate(-45deg);
+		}
+	}
+}
+// Header newsletter form styles
+.newsletter-header {
+	.input-group { 
+		display: block; 
+		margin: 0 auto;
+		width: 885px;
+	}
+	.newsletter-top {
+		input {
+			display: inline-block;
+			&.input-sm { 
+				margin-right: 10px;
+				width: 240px; 
+			}
+			&.input-md { width: 351px;}
+		}
+	}
+	.newsletter-bottom {
+		@include clearfix();
+		color: $pink;
+		font-size: 22px;
+		text-align: left;
+		.form-group {
+			display: inline-block;
+			margin-top: 25px;
+		}
+		label { margin: 0 15px; }
+		input[type="checkbox"] { 
+			display: inline-block; 
+			margin-left: 15px;
+		}
+	}
+	button[type="submit"] { float: right; }
+}
+
+.no-scroll {
+	position: fixed;
+	overflow: hidden;
+	width: 100%;
+}
+.scroll {
+	transition: all .2s ease, transform .2s ease, background .1s ease, height .2s ease;
+}
