@@ -4419,7 +4419,7 @@ ul.inline {
 hr.small {
   border-width: 2px;
   width: 50px;
-  margin: 25px auto;
+  margin: 15px auto;
   text-align: center; }
   .panel hr.small {
     margin: 25px auto 0; }
@@ -4807,6 +4807,15 @@ hr.small {
     
     .accent-title {
       padding: 0.625rem 3.125rem; } }
+
+.intro, .blog-section {
+  padding: 70px 0; }
+
+.blog-section {
+  color: #f6f6f6; }
+
+.blog-section h3 a, .blog-section .h3 a, .blog-section .panel-body {
+  color: #55595c; }
 
 .dropdown-sort {
   position: relative;
@@ -6400,15 +6409,6 @@ hr.small {
     content: '';
     position: absolute;
     width: 100%; }
-
-.intro, .blog-section {
-  padding: 70px 0; }
-
-.blog-section {
-  color: #f6f6f6; }
-
-.blog-section h3 a, .blog-section .h3 a, .blog-section .panel-body {
-  color: #55595c; }
 
 .intro {
   background-color: #f6f6f6;

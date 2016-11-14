@@ -149,7 +149,7 @@ ul.inline {
 hr.small {
 	border-width: 2px;
 	width: 50px;
-	margin: 25px auto;
+	margin: 15px auto;
 	text-align: center; 
 	.panel & {
 		margin: 25px auto 0;
@@ -476,6 +476,10 @@ hr.small {
 	top: -30px;
 	@include breakpoint-up(md) { padding: rem(10px) rem(50px); }
 }
+
+%base-pad { padding: 70px 0; }
+%contrast-light-text { color: #f6f6f6; }
+%contrast-dark-text { color: $gray; }
 
 // Filter dropdown - Profiles/Portfolio filters
 //
