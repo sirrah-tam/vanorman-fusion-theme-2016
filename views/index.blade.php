@@ -1,124 +1,57 @@
 @extends(Theme::getLayout())
 
+@php($posts = (matrix_exists('blog') ? matrix_entries('blog')->findAll()->reverse()->slice(0, 5) : null))
+
 @section('content')
-    <div class="jumbotron">
+    <div class="intro">
         <div class="container">
-            <h1>Hello, universe!</h1>
-            <p>This is a Bootstrap template for a simple marketing or informational website. Use it as a starting point to create something more unique or scrap it altogether and start fresh!</p>
-			<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+            <div class="row">
+                <div class="col-centered text-center">
+                    <img class="img-responsive img-circle img-circle-primary center-block" src="/asset/582971196dfb7?w=300" alt="Cameron Van Orman - Mugshot">
+                    <br>
+                    <h1>Cameron Van Orman</h1>
+                    <h2>Web Developer</h2>
+                    <h4>Seattle, WA</h4>
+                    <hr class="small">
+                    <ul class="social list-inline">
+                        <li><a href="//www.linkedin.com/in/vanormandesign" target="_blank" class="btn-social btn-outline"><i class="fab fab-linkedin-alt bt-fw"></i></a></li>
+                        <li><a href="//github.com/cam-vanorman" target="_blank" class="btn-social btn-outline"><i class="fab fab-github bt-fw"></i></a></li>
+                        <li><a href="mailto:cameron.vanorman@gmail.com" class="btn-social btn-outline"><i class="btl bt-paper-plane bt-fw"></i></a></li>
+                        <li><a href="//open.spotify.com/user/1238806903" class="btn-social btn-outline" target="_blank"><i class="fab fab-spotify bt-fw"></i></a></li>
+                    </ul> 
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Included Templates</h2>
-
-                <p><b>Modern</b> includes templates for various common matrix collections and pages to be used as reference. Below you will find a run down of each and what they provide.</p>
+    <div class="blog-section">
+        <div class="container">
+            <div class="row">    
+                <h2 class="title h3 text-center"><i class="btl bt-book-open bt-fw"></i> Latest Ramblings</h2>
+                <hr class="small">
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <h3>About</h3>
-
-                <p>Showcase who you and your team are, and what you do.</p>
-
-                <h4>Views</h4>
-                <ul>
-                    <li><code>about</code></li>
-                </ul>
-            </div>
-
-            <div class="col-md-4">
-                <h3>Blog</h3>
-
-                <p>What is a marketing or informational site without a blog?</p>
-
-                <h4>Views</h4>
-                <ul>
-                    <li><code>blog.category</code></li>
-                    <li><code>blog.index</code></li>
-                    <li><code>blog.post</code></li>
-                </ul>
-
-                <h4>Features</h4>
-                <span class="label label-default">Categories</span>
-                <span class="label label-default">Pagination</span>
-            </div>
-
-            <div class="col-md-4">
-                <h3>Portfolio</h3>
-
-                <p>Show off your projects in this simple 3-column portfolio.</p>
-
-                <h4>Views</h4>
-                <ul>
-                    <li><code>portfolio.index</code></li>
-                    <li><code>portfolio.project</code></li>
-                </ul>
-
-                <h4>Features</h4>
-                <span class="label label-default">Categories</span>
-                <span class="label label-default">Pagination</span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <h3>Recipes</h3>
-
-                <p>Useful for showcasing and documenting common tasks.</p>
-
-                <h4>Views</h4>
-                <ul>
-                    <li><code>recipes.category</code></li>
-                    <li><code>recipes.index</code></li>
-                    <li><code>recipes.show</code></li>
-                </ul>
-
-                <h4>Features</h4>
-                <span class="label label-default">Categories</span>
-                <span class="label label-default">Pagination</span>
-            </div>
-
-            <div class="col-md-4">
-                <h3>FAQ</h3>
-
-                <p>Collect and maintain all of your frequently asked questions.</p>
-
-                <h4>Views</h4>
-                <ul>
-                    <li><code>faq.index</code></li>
-                </ul>
-
-                <h4>Features</h4>
-                <span class="label label-default">Categories</span>
-            </div>
-
-            <div class="col-md-4">
-                <h3>Errors</h3>
-
-                <p>Every site will run into errors, but it doesn't have to be ugly!</p>
-
-                <h4>Views</h4>
-                <ul>
-                    <li><code>errors.404</code></li>
-                </ul>
-            </div>
-        </div>
-
-        <hr>
-
-        <div class="well">
             <div class="row">
-                <div class="col-md-8">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias, expedita, saepe, vero rerum deleniti beatae veniam harum neque nemo praesentium cum alias asperiores commodi.</p>
-                </div>
-
-                <div class="col-md-4">
-                    <a href="#" class="btn btn-default btn-block">Call to Action</a>
-                </div>
+                @if (! is_null($posts))
+                    @foreach ($posts as $post)
+                        <div class="col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading text-center">
+                                    <h3><a href="{{ url($post->uri) }}">{{ $post->title }}</a></h3>
+                                    <p>
+                                        <small><i class="btl bt-calendar bt-fw"></i> {{ $post->created_at->format(setting('date_format')) }}</small>
+                                        <small><i class="btl bt-user bt-fw"></i> {{ $post->creator->full_name }}</small>
+                                    </p>
+                                    <hr class="small">
+                                </div>
+                                <div class="panel-body">
+                                    {!! $post->excerpt !!}
+                                </div>
+                                <div class="panel-footer">
+                                    <a href="{{ url($post->uri) }}" class="btn btn-primary center-block">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

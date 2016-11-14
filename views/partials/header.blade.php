@@ -1,5 +1,5 @@
 <!-- Top Header -->
-<header role="navigation" class="main-page-header FixedTop">
+<header role="navigation">
 	<!-- Main Navigation (Mobile + Desktop) -->
 	<div class="main-nav">
 		<div class="wrapper">
@@ -15,9 +15,9 @@
 				</div>
 
 				<!-- Main Menu - Bottom -->
-				<ul class="nav navbar-nav navbar-left main-menu">
+				<ul class="nav navbar-nav navbar-left">
 					@if (menu_exists('header'))
-						@include('vanorman::partials.nav', ['items' => menu('main-menu')->roots()])
+						@include('vanorman::partials.nav', ['items' => menu('header')->roots()])
 					@endif
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

@@ -1,18 +1,15 @@
-$footer-background: $brand-secondary !default;
-$footer-home-color: $gray-dark !default;
-$footer-color: $gray !default;
+$footer-background: $brand-primary !default;
+$footer-home-color: $gray-light !default;
+$footer-color: $gray-light !default;
 $footer-contact-color: $gray-light !default;
 
 .footer {
 	position: relative;
-	color: $footer-home-color;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	padding: 70px 0 0;
-	background-color: $footer-background;
-	a {
-		color: #fff;
-	}
+	padding: 70px 0;
+	// background-color: $footer-background;
+	height: 100%;
 	@media (max-width: $screen-sm-max) {
 		text-align: center;
 		img { margin: 0 auto; }
@@ -31,8 +28,6 @@ $footer-contact-color: $gray-light !default;
 		}
 	}
 	.copy {
-		padding: 25px 0;
-		font-size: 12px;
 		a {
 			color: $footer-home-color;
 			&:hover {

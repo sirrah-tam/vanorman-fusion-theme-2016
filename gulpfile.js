@@ -33,12 +33,13 @@ var paths = {
     'jquery': config.bowerPath + '/jquery/',
     'vue': config.bowerPath + '/vue/dist/',
     'vueresource': config.bowerPath + '/vue-resource/dist/',
+    'blacktie': elixir.config.assetsPath + '/sass/vendor/black-tie/'
 };
 
 elixir(function(mix) {
     mix.sass('./assets/sass/app.scss', 'assets/css', {
         includePaths: [
-            paths.blacktie + 'scss/',
+            paths.blacktie,
             paths.hydrogen + 'scss/'
         ]
     });

@@ -2,13 +2,9 @@
  * Header Wrapper
  */
 header {
-	position: fixed;
 	font-family: $navbar-font-family;
 	font-size: rem(17px);
 	background-color: #fff;
-	top: 0;
-	left: 0;
-	right: 0;
 	width: 100%;
 	z-index: $zindex-bar-fixed;
 	transition: all .3s ease-in-out 0s, transform .4s ease;
