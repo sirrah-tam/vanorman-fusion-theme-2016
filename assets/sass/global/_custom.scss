@@ -147,6 +147,7 @@ ul.inline {
 }
 
 hr.small {
+	background: $brand-secondary;
 	border-width: 2px;
 	width: 50px;
 	margin: 15px auto;
@@ -665,12 +666,12 @@ hr.small {
 	position: relative;
 	text-align: center;
 	padding: 50px 0;
-	background-color: #000;
+	background-color: $gray-dark;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 360px;
+	height: 100vh;
 	&:before {
 		content: "";
 		position: absolute;

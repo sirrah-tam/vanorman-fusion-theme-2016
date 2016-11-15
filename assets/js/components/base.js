@@ -76,3 +76,36 @@ Vue.config.devtools = true;
 var vm = new Vue({
 	el: 'body'
 });
+
+var FUSION = {
+
+	/**
+	 * Main Menu Toggle (Mobile and Frontpage)
+	 *
+	 * Listens to click event and fire animation classes on click.
+	 */
+	navToggle: function(header) {
+		var $header = $(header);
+		var $navToggle = $('.nav-toggle');
+		var $menuOverlay = $('.menu-overlay');
+		var $menuOverlayItems = $('.menu-overlay > ul');
+		var $body = $('body');
+		$navToggle.on('click', function(event) {
+			$body.toggleClass('no-scroll');
+			$navToggle.toggleClass('on');
+			$menuOverlay.toggleClass('on');
+			$menuOverlayItems.toggleClass('hidden');
+			event.preventDefault();
+		});
+
+		$(document).keyup(function(e) {
+			if (e.keyCode === 27 && $navToggle.hasClass('on')) {
+				$navToggle.toggleClass('on');
+				$menuOverlay.toggleClass('on');
+				event.preventDefault();
+			}
+		});
+	
+	}
+
+};
