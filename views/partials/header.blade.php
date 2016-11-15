@@ -1,26 +1,15 @@
-<!-- Top Header -->
-<header role="navigation">
-	<!-- Main Navigation (Mobile + Desktop) -->
-	<div class="main-nav">
-		<div class="wrapper">
-		
-			<!-- Mobile Navigation Toggle -->
-			<nav id="navbar" class="navbar-collapse collapse main-nav-links">
-
-				<!-- Young Survival Coalition Brand Logo -->
-				<div class="nav-logo">
-					<a class="nav-logo-link" href="/">
-						<img src="{{ variable('logo') }}" alt="{{ setting('website_title') }}">
-					</a>
-				</div>
-
-				<!-- Main Menu - Bottom -->
-				<ul class="nav navbar-nav navbar-left">
+<!-- <nav class="menu-overlay">
+	<div class="wrapper">
+		<div class="row">
+			<div class="col-md-6">
+				<ul class="mobile-nav">
 					@if (menu_exists('header'))
 						@include('vanorman::partials.nav', ['items' => menu('header')->roots()])
 					@endif
 				</ul>
-				<ul class="nav navbar-nav navbar-right">
+			</div>
+			<div class="col-md-6">
+				<ul class="mobile-nav">
 					@if ($currentUser)
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -29,15 +18,15 @@
 							</a>
 
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="/settings"><i class="fa fa-user fa-fw"></i> Account Settings</a></li>
+								<li><a href="/settings"><i class="btl bt-user bt-fw"></i> Account Settings</a></li>
 
 								@can('core.access.admin')
 									<li class="divider"></li>
-									<li><a href="/admin"><i class="fa fa-dashboard fa-fw"></i> Admin CP</a></li>
+									<li><a href="/admin"><i class="btl bt-dashboard bt-fw"></i> Admin CP</a></li>
 									<li class="divider"></li>
 								@endcan
 
-								<li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+								<li><a href="/logout"><i class="btl bt-sign-out bt-fw"></i> Logout</a></li>
 							</ul>
 						</li>
 					@else
@@ -71,15 +60,36 @@
 								</li>
 							</ul>
 						</li>
-
-						<li class="navbar-right">
+						<li>
 							<a href="/register">Register</a>
 						</li>
 					@endif
 				</ul>
-			</nav>
+			</div>
 		</div>
 	</div>
+</nav>
 
-	<!-- Search Overlay -->
+<header class="main-header" role="navigation">
+	<div class="wrapper">
+		<div class="row">
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-8">
+				<a class="nav-logo-link" href="/">
+					<img src="{{ variable('logo') }}" alt="{{ setting('website_title') }}">
+				</a>
+			</div>
+			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-4">
+				<div class="nav navbar-nav navbar-right">
+					<a class="js-nav-toggle nav-toggle" href="#" title="Mobile Menu">
+						<div class="icon">
+							<div class="one"></div>
+							<div class="two"></div>
+							<div class="three"></div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </header>
+ -->

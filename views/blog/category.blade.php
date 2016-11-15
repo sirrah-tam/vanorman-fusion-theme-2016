@@ -55,14 +55,6 @@
             </div>
 
             <div class="col-md-3">
-                <div class="form-group">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search blog...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
-                        </span>
-                    </div>
-                </div>
 
                 @if (isset($categories))
                     <div class="panel panel-default">
@@ -80,6 +72,13 @@
                         </div>
                     </div>
                 @endif
+
+                <div class="list-group">
+                  <div class="list-group-item"><i class="btl bt-home bt-fw"></i> Home</div>
+                  <div class="list-group-item"><i class="btl bt-book bt-fw"></i> Library</div>
+                  <div class="list-group-item"><i class="btl bt-pencil bt-fw"></i> Applications</div>
+                  <div class="list-group-item"><i class="btl bt-gear bt-fw"></i> Settings</div>
+                </div>
             </div>
         </div>
     </div>

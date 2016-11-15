@@ -32,7 +32,7 @@
         <div class="masthead">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 masthead-text">
                         <h1 class="page-header">@yield('header')</h1>
                         <h2 class="page-subtitle"><small>@yield('subheader')</small></h2>
                     </div>

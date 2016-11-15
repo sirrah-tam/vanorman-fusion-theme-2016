@@ -39,8 +39,15 @@
                                     </a>
                                 @endforeach
                             </div>
+
                         </div>
                     @endif
+                    <div class="list-group">
+                      <div class="list-group-item"><i class="btl bt-home bt-fw"></i> Home</div>
+                      <div class="list-group-item"><i class="btl bt-book bt-fw"></i> Library</div>
+                      <div class="list-group-item"><i class="btl bt-pencil bt-fw"></i> Applications</div>
+                      <div class="list-group-item"><i class="btl bt-gear bt-fw"></i> Settings</div>
+                    </div>
                 </div>
             </div>
         </div>
