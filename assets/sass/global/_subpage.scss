@@ -8,6 +8,10 @@
 	}
 }
 
+.quote {
+	@extend %section-intro;
+}
+
 .blog-section {
 	@extend %gradient-section-blue;
 	@extend %base-pad;

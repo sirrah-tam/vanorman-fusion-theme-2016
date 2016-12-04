@@ -28,6 +28,16 @@
             
         </div>
     </div>
+    <div class="spotlight-list">
+        <div class="wrapper">
+            <div class="caption">
+                <blockquote>
+                    "I am not a genius. I am just a tremendous bundle of experience."
+                </blockquote>
+                <h4>— Buckminster Fuller</h4>
+            </div>
+        </div>
+    </div>
    <!--  <div class="cta about-section">
         <div class="wrapper">
             <div class="row">

@@ -2256,14 +2256,14 @@ body {
 h1, .h1, h2, .h2,
 .section-title p,
 .center-intro-text p,
-.intro-text p,
+.intro-text p, .quote p,
 .intro-text-sm p, h3, .h3, h4, .h4, .spotlight-list .section-header p, h5, .h5, .section-slider-pink .section-header h2, .section-slider-pink .section-header .h2, .section-slider-pink .section-header
 .section-title p,
 .section-title .section-slider-pink .section-header p, .section-slider-pink .section-header
 .center-intro-text p,
 .center-intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
 .intro-text p,
-.intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
+.intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header .quote p, .quote .section-slider-pink .section-header p, .section-slider-pink .section-header
 .intro-text-sm p,
 .intro-text-sm .section-slider-pink .section-header p, h6, .h6 {
   margin-top: 0; }
@@ -2280,6 +2280,7 @@ h2,
 .section-title p,
 .center-intro-text p,
 .intro-text p,
+.quote p,
 .intro-text-sm p,
 h3,
 .h3,
@@ -2299,6 +2300,8 @@ h5,
 .section-slider-pink .section-header
 .intro-text p,
 .intro-text .section-slider-pink .section-header p,
+.section-slider-pink .section-header .quote p,
+.quote .section-slider-pink .section-header p,
 .section-slider-pink .section-header
 .intro-text-sm p,
 .intro-text-sm .section-slider-pink .section-header p,
@@ -2316,7 +2319,7 @@ h1, .h1 {
 h2, .h2,
 .section-title p,
 .center-intro-text p,
-.intro-text p,
+.intro-text p, .quote p,
 .intro-text-sm p {
   font-size: 1.6rem; }
 
@@ -2332,7 +2335,7 @@ h5, .h5, .section-slider-pink .section-header h2, .section-slider-pink .section-
 .center-intro-text p,
 .center-intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
 .intro-text p,
-.intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
+.intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header .quote p, .quote .section-slider-pink .section-header p, .section-slider-pink .section-header
 .intro-text-sm p,
 .intro-text-sm .section-slider-pink .section-header p {
   font-size: 0.9rem; }
@@ -2874,6 +2877,7 @@ pre {
   .section-title p,
   .center-intro-text p,
   .intro-text p,
+  .quote p,
   .intro-text-sm p,
   h3,
   .h3 {
@@ -2882,7 +2886,7 @@ pre {
   h2, .h2,
   .section-title p,
   .center-intro-text p,
-  .intro-text p,
+  .intro-text p, .quote p,
   .intro-text-sm p,
   h3,
   .h3 {
@@ -4255,7 +4259,7 @@ h1, .h1 {
 h2, .h2,
 .section-title p,
 .center-intro-text p,
-.intro-text p,
+.intro-text p, .quote p,
 .intro-text-sm p {
   font-family: "Source Sans Pro", sans-serif;
   letter-spacing: 0.01em; }
@@ -4263,7 +4267,7 @@ h2, .h2,
 h2, .h2,
 .section-title p,
 .center-intro-text p,
-.intro-text p,
+.intro-text p, .quote p,
 .intro-text-sm p,
 h3,
 .h3 {
@@ -4282,7 +4286,7 @@ h5, .h5, .section-slider-pink .section-header h2, .section-slider-pink .section-
 .center-intro-text p,
 .center-intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
 .intro-text p,
-.intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
+.intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header .quote p, .quote .section-slider-pink .section-header p, .section-slider-pink .section-header
 .intro-text-sm p,
 .intro-text-sm .section-slider-pink .section-header p {
   line-height: 1.034;
@@ -5837,7 +5841,7 @@ hr.small {
 .intro-text .h2, .intro-text p {
   line-height: 1.565; }
 
-
+.quote h1, .quote .h1,
 .intro-text-sm h1,
 .intro-text-sm .h1 {
   margin-bottom: 1.05rem; }
@@ -5914,7 +5918,9 @@ hr.small {
   .intro-text p,
   .intro-text .masthead p, .blog-section
   .intro-text p,
-  .intro-text .blog-section p, .footer-top
+  .intro-text .blog-section p, .footer-top .quote p, .quote .footer-top p, .info-masthead .quote p, .quote .info-masthead p, .footer-form .quote p, .quote .footer-form p, .section-slider-blue .quote p, .quote .section-slider-blue p,
+  .about-slider-section .quote p, .quote
+  .about-slider-section p, #loader-wrapper .quote p, .quote #loader-wrapper p, .footer .quote p, .quote .footer p, .masthead .quote p, .quote .masthead p, .blog-section .quote p, .quote .blog-section p, .footer-top
   .intro-text-sm p,
   .intro-text-sm .footer-top p, .info-masthead
   .intro-text-sm p,
@@ -6066,7 +6072,11 @@ hr.small {
   .intro-text .section-slider-pink .section-header p,
   .intro-text .section-slider-pink .section-header .masthead p, .blog-section
   .intro-text .section-slider-pink .section-header p,
-  .intro-text .section-slider-pink .section-header .blog-section p, .footer-top .section-slider-pink .section-header
+  .intro-text .section-slider-pink .section-header .blog-section p, .footer-top .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .footer-top p, .info-masthead .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .info-masthead p, .footer-form .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .footer-form p, .section-slider-blue .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .section-slider-blue p,
+  .about-slider-section .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote
+  .about-slider-section p, #loader-wrapper .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote #loader-wrapper p, .footer .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .footer p, .masthead .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .masthead p, .blog-section .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .blog-section p, .footer-top .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .footer-top p, .info-masthead .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .info-masthead p, .footer-form .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .footer-form p, .section-slider-blue .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .section-slider-blue p,
+  .about-slider-section .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header
+  .about-slider-section p, #loader-wrapper .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header #loader-wrapper p, .footer .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .footer p, .masthead .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .masthead p, .blog-section .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .blog-section p, .footer-top .section-slider-pink .section-header
   .intro-text-sm p, .section-slider-pink .section-header
   .intro-text-sm .footer-top p, .info-masthead .section-slider-pink .section-header
   .intro-text-sm p, .section-slider-pink .section-header
@@ -6118,7 +6128,7 @@ hr.small {
 .section-title {
   margin-bottom: 5px; }
 
-.section-slider-blue .slider-blue,
+.quote, .section-slider-blue .slider-blue,
 .section-slider-blue .about-slider,
 .about-slider-section .slider-blue,
 .about-slider-section .about-slider {
@@ -6127,35 +6137,35 @@ hr.small {
   padding-right: 0.75rem;
   padding-left: 0.75rem; }
   @media (min-width: 480px) {
-    .section-slider-blue .slider-blue,
+    .quote, .section-slider-blue .slider-blue,
     .section-slider-blue .about-slider,
     .about-slider-section .slider-blue,
     .about-slider-section .about-slider {
       float: left;
       width: 100%; } }
   @media (min-width: 768px) {
-    .section-slider-blue .slider-blue,
+    .quote, .section-slider-blue .slider-blue,
     .section-slider-blue .about-slider,
     .about-slider-section .slider-blue,
     .about-slider-section .about-slider {
       float: left;
       width: 100%; } }
   @media (min-width: 992px) {
-    .section-slider-blue .slider-blue,
+    .quote, .section-slider-blue .slider-blue,
     .section-slider-blue .about-slider,
     .about-slider-section .slider-blue,
     .about-slider-section .about-slider {
       float: left;
       width: 83.3333333333%; } }
   @media (min-width: 1200px) {
-    .section-slider-blue .slider-blue,
+    .quote, .section-slider-blue .slider-blue,
     .section-slider-blue .about-slider,
     .about-slider-section .slider-blue,
     .about-slider-section .about-slider {
       float: left;
       width: 83.3333333333%; } }
   @media (min-width: 992px) {
-    .section-slider-blue .slider-blue,
+    .quote, .section-slider-blue .slider-blue,
     .section-slider-blue .about-slider,
     .about-slider-section .slider-blue,
     .about-slider-section .about-slider {
@@ -6682,7 +6692,7 @@ hr.small {
   .intro-text p,
   .intro-text .content p, .cta
   .intro-text p,
-  .intro-text .cta p, .content
+  .intro-text .cta p, .content .quote p, .quote .content p, .cta .quote p, .quote .cta p, .content
   .intro-text-sm p,
   .intro-text-sm .content p, .cta
   .intro-text-sm p,
@@ -6817,6 +6827,10 @@ hr.small {
     margin-right: 10px; }
 
 /* 4a. Page Structure Bases */
+.quote {
+  text-align: center;
+  padding: 0 1.5rem 3.65rem; }
+
 .sidebar {
   position: relative;
   min-height: 1px;
@@ -7339,7 +7353,7 @@ hr.small {
     .intro-text p, .section-slider-pink .section-header
     .intro-text .section-slider-blue .slider-item p, .section-slider-blue .slider-item
     .intro-text .section-slider-pink .section-header p,
-    .intro-text .section-slider-pink .section-header .section-slider-blue .slider-item p, .section-slider-blue .slider-item .section-slider-pink .section-header
+    .intro-text .section-slider-pink .section-header .section-slider-blue .slider-item p, .section-slider-blue .slider-item .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote .section-slider-blue .slider-item p, .section-slider-blue .slider-item .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header .section-slider-blue .slider-item p, .section-slider-blue .slider-item .section-slider-pink .section-header
     .intro-text-sm p, .section-slider-pink .section-header
     .intro-text-sm .section-slider-blue .slider-item p, .section-slider-blue .slider-item
     .intro-text-sm .section-slider-pink .section-header p,
@@ -7373,6 +7387,10 @@ hr.small {
     .section-slider-blue .about-item
     .intro-text .section-slider-pink .section-header p,
     .intro-text .section-slider-pink .section-header
+    .section-slider-blue .about-item p,
+    .section-slider-blue .about-item .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote
+    .section-slider-blue .about-item p,
+    .section-slider-blue .about-item .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header
     .section-slider-blue .about-item p,
     .section-slider-blue .about-item .section-slider-pink .section-header
     .intro-text-sm p, .section-slider-pink .section-header
@@ -7412,6 +7430,10 @@ hr.small {
     .intro-text .section-slider-pink .section-header p,
     .intro-text .section-slider-pink .section-header
     .about-slider-section .slider-item p,
+    .about-slider-section .slider-item .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote
+    .about-slider-section .slider-item p,
+    .about-slider-section .slider-item .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header
+    .about-slider-section .slider-item p,
     .about-slider-section .slider-item .section-slider-pink .section-header
     .intro-text-sm p, .section-slider-pink .section-header
     .intro-text-sm
@@ -7449,6 +7471,10 @@ hr.small {
     .about-slider-section .about-item
     .intro-text .section-slider-pink .section-header p,
     .intro-text .section-slider-pink .section-header
+    .about-slider-section .about-item p,
+    .about-slider-section .about-item .section-slider-pink .section-header .quote p, .section-slider-pink .section-header .quote
+    .about-slider-section .about-item p,
+    .about-slider-section .about-item .quote .section-slider-pink .section-header p, .quote .section-slider-pink .section-header
     .about-slider-section .about-item p,
     .about-slider-section .about-item .section-slider-pink .section-header
     .intro-text-sm p, .section-slider-pink .section-header
@@ -7508,7 +7534,7 @@ hr.small {
     .center-intro-text p,
     .center-intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
     .intro-text p,
-    .intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header
+    .intro-text .section-slider-pink .section-header p, .section-slider-pink .section-header .quote p, .quote .section-slider-pink .section-header p, .section-slider-pink .section-header
     .intro-text-sm p,
     .intro-text-sm .section-slider-pink .section-header p {
       font-size: 3.4rem;
