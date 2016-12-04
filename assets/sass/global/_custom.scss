@@ -686,7 +686,7 @@ hr.small {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100vh;
+	height: 30vh;
 	&:before {
 		content: "";
 		position: absolute;
@@ -738,6 +738,7 @@ hr.small {
 	@extend %gradient-section;
 	padding: rem(50px) 0 rem(35px);
 	a { color: inherit; }
+	min-height: 25vh;
 	.wrapper {
 		@include breakpoint-between(sm,md) {
 			padding-left: rem(40px);
@@ -756,7 +757,7 @@ hr.small {
 		@include multi-column(12,6,6,5);
 		@include position-column(sm, pull, 6);
 		@include position-column(lg, offset, 1);
-		padding-top: rem(60px);
+		padding-top: rem(35px);
 		text-align: center;
 		@include breakpoint-up(sm) { text-align: left; }
 	}

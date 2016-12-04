@@ -2305,7 +2305,7 @@ h5,
 h6,
 .h6 {
   margin-bottom: 0.75rem;
-  font-family: "Open Sans Condensed", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: 300;
   line-height: 1.1;
   color: inherit; }
@@ -4257,7 +4257,7 @@ h2, .h2,
 .center-intro-text p,
 .intro-text p,
 .intro-text-sm p {
-  font-family: "Open Sans Condensed", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   letter-spacing: 0.01em; }
 
 h2, .h2,
@@ -5521,7 +5521,7 @@ header {
   transition: all .3s ease, transform .2s ease, background .1s ease, height .2s ease, -webkit-transform .2s ease; }
 
 .footer {
-  font-family: "Open Sans Condensed", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   color: #818a91;
   position: relative;
   -webkit-font-smoothing: antialiased;
@@ -6410,7 +6410,7 @@ hr.small {
   align-items: center;
   -webkit-box-pack: center;
   justify-content: center;
-  height: 100vh; }
+  height: 30vh; }
   .masthead:before {
     content: "";
     position: absolute;
@@ -6438,13 +6438,14 @@ hr.small {
   position: relative; }
   .home .masthead-text {
     color: #fff;
-    font-family: "Open Sans Condensed", sans-serif;
+    font-family: "Source Sans Pro", sans-serif;
     font-size: 3rem;
     line-height: 1.133;
     text-shadow: 0px 5px 29px rgba(0, 0, 0, 0.004); }
 
 .info-masthead {
-  padding: 2.5rem 0 1.75rem; }
+  padding: 2.5rem 0 1.75rem;
+  min-height: 25vh; }
   .info-masthead a {
     color: inherit; }
 
@@ -6484,7 +6485,7 @@ hr.small {
     min-height: 1px;
     padding-right: 0.75rem;
     padding-left: 0.75rem;
-    padding-top: 3rem;
+    padding-top: 1.75rem;
     text-align: center; }
     @media (min-width: 480px) {
       .info-masthead .info-col {

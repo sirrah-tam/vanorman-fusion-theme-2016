@@ -1,9 +1,9 @@
 @extends(Theme::getLayout())
 
 @section('content')
-    <div class="info-masthead">
+    <div class="masthead">
         <div class="wrapper">
-            <div class="center-intro-text">   
+            <div class="masthead-text">   
                 <h1>{{ $entry->title }}</h1>
                 <p>{{ $entry->subtitle }}</p>
             </div>
