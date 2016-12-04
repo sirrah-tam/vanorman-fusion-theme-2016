@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search blog...">
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-default" type="button"><i class="btl bt-search bt-fw"></i></button>
                         </span>
                     </div>
                 </div>
@@ -61,7 +61,6 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">Categories</h3>
                         </div>
-
                         <div class="list-group">
                             @foreach($categories as $category)
                                 <a href="{{ url($category->uri) }}" class="list-group-item">
