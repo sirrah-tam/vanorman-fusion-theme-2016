@@ -95,7 +95,7 @@
 }
 
 .img-circle-primary {
-	border: 2px solid $brand-tertiary;
+	border: 2px solid $gray-lightest;
 	box-shadow: $shadow;
 }
 
@@ -397,9 +397,14 @@ hr.small {
 %dark-bg-text { // 9
 	color: #fff;
 	h1, h2, h3, h4, h5, h6 { color: inherit; }
+	hr { background-color: inherit; }
 }
 
-
+%section-title,
+.section-title {
+	@extend %center-intro-text;
+	margin-bottom: 5px;
+}
 
 %content-spacing {
 	h1 {
@@ -416,7 +421,17 @@ hr.small {
 }
 
 %gradient-section { // 8
-	@include linear-gradient(130deg, #086a7b 0%, #086a7b 20%, #138186 80%, #138186 100%);
+	@include linear-gradient(120deg, $gray-dark 0%, $gray-dark 20%, $gray-darker 80%, $gray-darker 100%);
+	@extend %dark-bg-text;
+}
+
+%gradient-section-green { // 8
+	@include linear-gradient(150deg, $brand-secondary 0%, $brand-secondary 20%, $brand-tertiary 80%, $brand-tertiary 100%);
+	@extend %dark-bg-text;
+}
+
+%gradient-section-blue { // 8
+	@include linear-gradient(150deg, $blue 0%, $blue 20%, $blue-dark 80%, $blue-dark 100%);
 	@extend %dark-bg-text;
 }
 
@@ -478,8 +493,8 @@ hr.small {
 	@include breakpoint-up(md) { padding: rem(10px) rem(50px); }
 }
 
-%base-pad { padding: 70px 0; }
-%contrast-light-text { color: #f6f6f6; }
+%base-pad { padding: rem(70px) 0; }
+%contrast-light-text { color: $gray-lightest; }
 %contrast-dark-text { color: $gray; }
 
 // Filter dropdown - Profiles/Portfolio filters
@@ -488,8 +503,8 @@ hr.small {
 	position: relative;
 	vertical-align: top;
 	.sidebar-header {
-		color: #fff;
-		background-color: $gray;
+		color: $gray-light;
+		background-color: $gray-lightest;
 		cursor: pointer;
 		font-size: 13px;
 		padding: 11px 13px;
@@ -666,7 +681,7 @@ hr.small {
 	position: relative;
 	text-align: center;
 	padding: 50px 0;
-	background-color: $gray-dark;
+	@extend %gradient-section-green;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -699,7 +714,7 @@ hr.small {
 
 // Masthead Title
 .masthead-text {
-	@extend %page-title;
+	@extend %page-title-lg;
 	z-index: 1;
 	position: relative;
 	.home & {
@@ -721,7 +736,7 @@ hr.small {
 // 2. Columns used for chamber fusion module
 .info-masthead {
 	@extend %gradient-section;
-	padding: rem(25px) 0 rem(35px);
+	padding: rem(50px) 0 rem(35px);
 	a { color: inherit; }
 	.wrapper {
 		@include breakpoint-between(sm,md) {
@@ -735,7 +750,6 @@ hr.small {
 		img {
 			border-radius: 50%;
 			margin: 0 auto;
-			@include breakpoint-up(sm) { margin: 0; }
 		}
 	}
 	.info-col { // 1
@@ -776,7 +790,7 @@ hr.small {
 			padding-bottom: rem(11px);
 			&:empty { display: none; }
 			&:before {
-				@extend .ysc-icon;
+				@extend .btl;
 				font-size: rem(30px);
 				height: 30px;
 				width: 30px;

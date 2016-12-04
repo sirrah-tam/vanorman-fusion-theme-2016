@@ -1,15 +1,15 @@
 .page-header {
-	@extend %page-title;
+	@extend %page-title-lg;
 }
 .intro {
 	@extend %base-pad;
 	.img-circle {
-		background-color: #f6f6f6;
+		background-color: $gray-lightest;
 	}
 }
 
 .blog-section {
-	background-color: $brand-tertiary;
+	@extend %gradient-section-blue;
 	@extend %base-pad;
 	@extend %contrast-light-text;
 	h3 a {

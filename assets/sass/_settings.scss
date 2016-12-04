@@ -85,11 +85,11 @@ $font-size-root:             20px !default;
 // As hex codes */
 
 
-$color-primary-0: #2E4272;  // Main Primary color */
-$color-primary-1: #828CA6;
-$color-primary-2: #53648C;
-$color-primary-3: #132758;
-$color-primary-4: #05153E;
+$violet-dark: #828CA6;
+$violet: #53648C;
+$blue: #2E4272;  // Main Primary color */
+$blue-dark: #132758;
+$blue-darker: #05153E;
 
 $color-secondary-1-0: #802B67;  // Main Secondary color (1) */
 $color-secondary-1-1: #BB8EAD;
@@ -114,9 +114,9 @@ $gray-lighter:              #eceeef !default;
 $gray-lightest:             #f7f7f9 !default;
 
 // Base Colors
-$brand-primary:             $color-primary-3 !default;
+$brand-primary:             $blue !default;
 $brand-secondary:           $color-secondary-2-2 !default;
-$brand-tertiary:            $color-secondary-2-2 !default;
+$brand-tertiary:            $color-secondary-2-3 !default;
 
 // Alert Colors
 $brand-success:             #5cb85c !default;
@@ -230,6 +230,7 @@ $grid-padding:      rem(($grid-gutter-width / 2)) !default;
 //
 // Font, line-height, and color for body text, headings, and more.
 $font-family-base:      'Source Sans Pro', sans-serif !default;
+$font-family-spec:      'Open Sans Condensed', sans-serif !default;
 $font-family-monospace:  Menlo, Monaco, Consolas, "Courier New", monospace !default; // Used for code
 $font-weight-base:       400 !default;
 
@@ -252,7 +253,7 @@ $navbar-font-size:       $font-size-root !default;
 $mobile-navbar-height:   60px !default;
 
 $headings-margin-bottom: ($spacer / 2) !default;
-$headings-font-family:   inherit !default;
+$headings-font-family:   $font-family-spec !default;
 $headings-font-weight:   300 !default;
 $headings-line-height:   1.1 !default;
 $headings-color:         inherit !default;
@@ -334,7 +335,7 @@ $breadcrumb-padding-x: rem(5px) !default;
 $btn-padding-x:                  $spacer-x !default;
 $btn-padding-y:                  ($spacer-y / 2) !default;
 $btn-margin:                     rem(15px) rem(15px) rem(15px) 0 !default;
-$btn-font:                       $headings-font-family !default;
+$btn-font:                       $font-family-base !default;
 $btn-font-size:                  rem(14px) !default;
 $btn-font-weight:                normal !default;
 $btn-line-height:                1.25 !default;
@@ -370,12 +371,12 @@ $btn-tertiary-border-hover:      0 !default;
 $btn-tertiary-radius:            $border-radius-sm !default;
 
 // Default/neutral button
-$btn-default-color:              #fff !default;
-$btn-default-bg:                 $gray !default;
-$btn-default-border:             0 !default;
+$btn-default-color:              $gray !default;
+$btn-default-bg:                 $gray-lightest !default;
+$btn-default-border:             1px solid transparent !default;
 $btn-default-hover:              #fff !default;
-$btn-default-bg-hover:           darken($btn-default-bg, 5%) !default;
-$btn-default-border-hover:       0 !default;
+$btn-default-bg-hover:           transparent !default;
+$btn-default-border-hover:       1px solid #fff !default;
 $btn-default-radius:             $border-radius-sm !default;
 
 // Info color button

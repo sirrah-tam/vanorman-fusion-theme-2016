@@ -1,15 +1,16 @@
-$footer-background: $gray-dark !default;
-$footer-home-color: #f6f6f6 !default;
+$footer-background: $gray-lighter !default;
+$footer-home-color: $gray-light !default;
 $footer-color: $gray-light !default;
 $footer-contact-color: $gray-light !default;
-
+$footer-font: $headings-font-family;
 .footer {
+	font-family: $footer-font;
 	color: $footer-home-color;
-	background-color: $footer-background;
+	@extend %gradient-section-green;
+	@include clearfix();
 	position: relative;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	padding: 70px 0;
 	@media (max-width: $screen-sm-max) {
 		text-align: center;
 		img { margin: 0 auto; }
@@ -20,7 +21,6 @@ $footer-contact-color: $gray-light !default;
 	.links {
 		p {
 			text-align: center;
-			font-weight: 300;
 			margin: 0;
 			@media (max-width: $screen-sm-max) {
 				margin: 10px 0;
@@ -73,8 +73,15 @@ $footer-contact-color: $gray-light !default;
 		}
 	}
 }
-
+.footer-top {
+	position: relative;
+	padding: rem(25px) 0;
+	@extend %gradient-section;
+	color: $gray-lighter;
+}
 .footer-content {
+	position: relative;
+	padding: rem(50px) 0;
 	@extend %col-md-8;
 	@include position-column(md,offset,2);
 }
