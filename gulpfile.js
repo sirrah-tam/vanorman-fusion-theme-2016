@@ -33,7 +33,9 @@ var paths = {
     'jquery': config.bowerPath + '/jquery/',
     'vue': config.bowerPath + '/vue/dist/',
     'vueresource': config.bowerPath + '/vue-resource/dist/',
-    'blacktie': elixir.config.assetsPath + '/sass/vendor/black-tie/'
+    'blacktie': elixir.config.assetsPath + '/sass/vendor/black-tie/',
+    'instantclick': config.bowerPath + '/instantclick/',
+    'simpleWeather': config.bowerPath + '/simpleWeather/'
 };
 
 elixir(function(mix) {
@@ -56,6 +58,10 @@ elixir(function(mix) {
         paths.jquery + 'dist/jquery.js',
         paths.vue + 'vue.js',
         paths.vueresource + 'vue-resource.js',
+        paths.hydrogen + 'js/plugins/',
+        paths.hydrogen + 'js/app.js',
+        paths.instantclick + 'instantclick.js',
+        paths.simpleWeather + 'jquery.simpleWeather.js',
         './assets/js/fx-kit.js',
         './assets/js/components/*.js'
     ]);

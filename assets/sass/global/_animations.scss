@@ -20,6 +20,16 @@
 	}
 }
 
+// star animation
+@keyframes animStar {
+	from {
+		transform: translateY(0px);
+	}
+	to {
+		transform: translateY(-2000px);
+	}
+}
+
 /* Fade in top */
 @-webkit-keyframes fadeInTop {
   0% {

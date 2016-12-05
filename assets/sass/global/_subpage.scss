@@ -13,7 +13,7 @@
 }
 
 .blog-section {
-	@extend %gradient-section-blue;
+	@extend %gradient-section;
 	@extend %base-pad;
 	@extend %contrast-light-text;
 	h3 a {

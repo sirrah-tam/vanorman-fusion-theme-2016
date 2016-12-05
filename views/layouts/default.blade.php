@@ -53,6 +53,7 @@
 
     <!-- Javascript -->
     <script src="/themes/vanorman/assets/js/all.js"></script>
+    <script data-no-instant>InstantClick.init();</script>
 
     @yield('javascript')
 </body>

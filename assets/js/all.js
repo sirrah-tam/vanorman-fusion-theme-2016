@@ -21574,6 +21574,4236 @@ if (typeof window !== 'undefined' && window.Vue) {
 return plugin;
 
 })));
+/*!
+* jQuery Cycle2; version: 2.1.6 build: 20141007
+* http://jquery.malsup.com/cycle2/
+* Copyright (c) 2014 M. Alsup; Dual licensed: MIT/GPL
+*/
+
+/* Cycle2 core engine */
+;(function($) {
+"use strict";
+
+var version = '2.1.6';
+
+$.fn.cycle = function( options ) {
+    // fix mistakes with the ready state
+    var o;
+    if ( this.length === 0 && !$.isReady ) {
+        o = { s: this.selector, c: this.context };
+        $.fn.cycle.log('requeuing slideshow (dom not ready)');
+        $(function() {
+            $( o.s, o.c ).cycle(options);
+        });
+        return this;
+    }
+
+    return this.each(function() {
+        var data, opts, shortName, val;
+        var container = $(this);
+        var log = $.fn.cycle.log;
+
+        if ( container.data('cycle.opts') )
+            return; // already initialized
+
+        if ( container.data('cycle-log') === false || 
+            ( options && options.log === false ) ||
+            ( opts && opts.log === false) ) {
+            log = $.noop;
+        }
+
+        log('--c2 init--');
+        data = container.data();
+        for (var p in data) {
+            // allow props to be accessed sans 'cycle' prefix and log the overrides
+            if (data.hasOwnProperty(p) && /^cycle[A-Z]+/.test(p) ) {
+                val = data[p];
+                shortName = p.match(/^cycle(.*)/)[1].replace(/^[A-Z]/, lowerCase);
+                log(shortName+':', val, '('+typeof val +')');
+                data[shortName] = val;
+            }
+        }
+
+        opts = $.extend( {}, $.fn.cycle.defaults, data, options || {});
+
+        opts.timeoutId = 0;
+        opts.paused = opts.paused || false; // #57
+        opts.container = container;
+        opts._maxZ = opts.maxZ;
+
+        opts.API = $.extend ( { _container: container }, $.fn.cycle.API );
+        opts.API.log = log;
+        opts.API.trigger = function( eventName, args ) {
+            opts.container.trigger( eventName, args );
+            return opts.API;
+        };
+
+        container.data( 'cycle.opts', opts );
+        container.data( 'cycle.API', opts.API );
+
+        // opportunity for plugins to modify opts and API
+        opts.API.trigger('cycle-bootstrap', [ opts, opts.API ]);
+
+        opts.API.addInitialSlides();
+        opts.API.preInitSlideshow();
+
+        if ( opts.slides.length )
+            opts.API.initSlideshow();
+    });
+};
+
+$.fn.cycle.API = {
+    opts: function() {
+        return this._container.data( 'cycle.opts' );
+    },
+    addInitialSlides: function() {
+        var opts = this.opts();
+        var slides = opts.slides;
+        opts.slideCount = 0;
+        opts.slides = $(); // empty set
+        
+        // add slides that already exist
+        slides = slides.jquery ? slides : opts.container.find( slides );
+
+        if ( opts.random ) {
+            slides.sort(function() {return Math.random() - 0.5;});
+        }
+
+        opts.API.add( slides );
+    },
+
+    preInitSlideshow: function() {
+        var opts = this.opts();
+        opts.API.trigger('cycle-pre-initialize', [ opts ]);
+        var tx = $.fn.cycle.transitions[opts.fx];
+        if (tx && $.isFunction(tx.preInit))
+            tx.preInit( opts );
+        opts._preInitialized = true;
+    },
+
+    postInitSlideshow: function() {
+        var opts = this.opts();
+        opts.API.trigger('cycle-post-initialize', [ opts ]);
+        var tx = $.fn.cycle.transitions[opts.fx];
+        if (tx && $.isFunction(tx.postInit))
+            tx.postInit( opts );
+    },
+
+    initSlideshow: function() {
+        var opts = this.opts();
+        var pauseObj = opts.container;
+        var slideOpts;
+        opts.API.calcFirstSlide();
+
+        if ( opts.container.css('position') == 'static' )
+            opts.container.css('position', 'relative');
+
+        $(opts.slides[opts.currSlide]).css({
+            opacity: 1,
+            display: 'block',
+            visibility: 'visible'
+        });
+        opts.API.stackSlides( opts.slides[opts.currSlide], opts.slides[opts.nextSlide], !opts.reverse );
+
+        if ( opts.pauseOnHover ) {
+            // allow pauseOnHover to specify an element
+            if ( opts.pauseOnHover !== true )
+                pauseObj = $( opts.pauseOnHover );
+
+            pauseObj.hover(
+                function(){ opts.API.pause( true ); }, 
+                function(){ opts.API.resume( true ); }
+            );
+        }
+
+        // stage initial transition
+        if ( opts.timeout ) {
+            slideOpts = opts.API.getSlideOpts( opts.currSlide );
+            opts.API.queueTransition( slideOpts, slideOpts.timeout + opts.delay );
+        }
+
+        opts._initialized = true;
+        opts.API.updateView( true );
+        opts.API.trigger('cycle-initialized', [ opts ]);
+        opts.API.postInitSlideshow();
+    },
+
+    pause: function( hover ) {
+        var opts = this.opts(),
+            slideOpts = opts.API.getSlideOpts(),
+            alreadyPaused = opts.hoverPaused || opts.paused;
+
+        if ( hover )
+            opts.hoverPaused = true; 
+        else
+            opts.paused = true;
+
+        if ( ! alreadyPaused ) {
+            opts.container.addClass('cycle-paused');
+            opts.API.trigger('cycle-paused', [ opts ]).log('cycle-paused');
+
+            if ( slideOpts.timeout ) {
+                clearTimeout( opts.timeoutId );
+                opts.timeoutId = 0;
+                
+                // determine how much time is left for the current slide
+                opts._remainingTimeout -= ( $.now() - opts._lastQueue );
+                if ( opts._remainingTimeout < 0 || isNaN(opts._remainingTimeout) )
+                    opts._remainingTimeout = undefined;
+            }
+        }
+    },
+
+    resume: function( hover ) {
+        var opts = this.opts(),
+            alreadyResumed = !opts.hoverPaused && !opts.paused,
+            remaining;
+
+        if ( hover )
+            opts.hoverPaused = false; 
+        else
+            opts.paused = false;
+
+    
+        if ( ! alreadyResumed ) {
+            opts.container.removeClass('cycle-paused');
+            // #gh-230; if an animation is in progress then don't queue a new transition; it will
+            // happen naturally
+            if ( opts.slides.filter(':animated').length === 0 )
+                opts.API.queueTransition( opts.API.getSlideOpts(), opts._remainingTimeout );
+            opts.API.trigger('cycle-resumed', [ opts, opts._remainingTimeout ] ).log('cycle-resumed');
+        }
+    },
+
+    add: function( slides, prepend ) {
+        var opts = this.opts();
+        var oldSlideCount = opts.slideCount;
+        var startSlideshow = false;
+        var len;
+
+        if ( $.type(slides) == 'string')
+            slides = $.trim( slides );
+
+        $( slides ).each(function(i) {
+            var slideOpts;
+            var slide = $(this);
+
+            if ( prepend )
+                opts.container.prepend( slide );
+            else
+                opts.container.append( slide );
+
+            opts.slideCount++;
+            slideOpts = opts.API.buildSlideOpts( slide );
+
+            if ( prepend )
+                opts.slides = $( slide ).add( opts.slides );
+            else
+                opts.slides = opts.slides.add( slide );
+
+            opts.API.initSlide( slideOpts, slide, --opts._maxZ );
+
+            slide.data('cycle.opts', slideOpts);
+            opts.API.trigger('cycle-slide-added', [ opts, slideOpts, slide ]);
+        });
+
+        opts.API.updateView( true );
+
+        startSlideshow = opts._preInitialized && (oldSlideCount < 2 && opts.slideCount >= 1);
+        if ( startSlideshow ) {
+            if ( !opts._initialized )
+                opts.API.initSlideshow();
+            else if ( opts.timeout ) {
+                len = opts.slides.length;
+                opts.nextSlide = opts.reverse ? len - 1 : 1;
+                if ( !opts.timeoutId ) {
+                    opts.API.queueTransition( opts );
+                }
+            }
+        }
+    },
+
+    calcFirstSlide: function() {
+        var opts = this.opts();
+        var firstSlideIndex;
+        firstSlideIndex = parseInt( opts.startingSlide || 0, 10 );
+        if (firstSlideIndex >= opts.slides.length || firstSlideIndex < 0)
+            firstSlideIndex = 0;
+
+        opts.currSlide = firstSlideIndex;
+        if ( opts.reverse ) {
+            opts.nextSlide = firstSlideIndex - 1;
+            if (opts.nextSlide < 0)
+                opts.nextSlide = opts.slides.length - 1;
+        }
+        else {
+            opts.nextSlide = firstSlideIndex + 1;
+            if (opts.nextSlide == opts.slides.length)
+                opts.nextSlide = 0;
+        }
+    },
+
+    calcNextSlide: function() {
+        var opts = this.opts();
+        var roll;
+        if ( opts.reverse ) {
+            roll = (opts.nextSlide - 1) < 0;
+            opts.nextSlide = roll ? opts.slideCount - 1 : opts.nextSlide-1;
+            opts.currSlide = roll ? 0 : opts.nextSlide+1;
+        }
+        else {
+            roll = (opts.nextSlide + 1) == opts.slides.length;
+            opts.nextSlide = roll ? 0 : opts.nextSlide+1;
+            opts.currSlide = roll ? opts.slides.length-1 : opts.nextSlide-1;
+        }
+    },
+
+    calcTx: function( slideOpts, manual ) {
+        var opts = slideOpts;
+        var tx;
+
+        if ( opts._tempFx )
+            tx = $.fn.cycle.transitions[opts._tempFx];
+        else if ( manual && opts.manualFx )
+            tx = $.fn.cycle.transitions[opts.manualFx];
+
+        if ( !tx )
+            tx = $.fn.cycle.transitions[opts.fx];
+
+        opts._tempFx = null;
+        this.opts()._tempFx = null;
+
+        if (!tx) {
+            tx = $.fn.cycle.transitions.fade;
+            opts.API.log('Transition "' + opts.fx + '" not found.  Using fade.');
+        }
+        return tx;
+    },
+
+    prepareTx: function( manual, fwd ) {
+        var opts = this.opts();
+        var after, curr, next, slideOpts, tx;
+
+        if ( opts.slideCount < 2 ) {
+            opts.timeoutId = 0;
+            return;
+        }
+        if ( manual && ( !opts.busy || opts.manualTrump ) ) {
+            opts.API.stopTransition();
+            opts.busy = false;
+            clearTimeout(opts.timeoutId);
+            opts.timeoutId = 0;
+        }
+        if ( opts.busy )
+            return;
+        if ( opts.timeoutId === 0 && !manual )
+            return;
+
+        curr = opts.slides[opts.currSlide];
+        next = opts.slides[opts.nextSlide];
+        slideOpts = opts.API.getSlideOpts( opts.nextSlide );
+        tx = opts.API.calcTx( slideOpts, manual );
+
+        opts._tx = tx;
+
+        if ( manual && slideOpts.manualSpeed !== undefined )
+            slideOpts.speed = slideOpts.manualSpeed;
+
+        // if ( opts.nextSlide === opts.currSlide )
+        //     opts.API.calcNextSlide();
+
+        // ensure that:
+        //      1. advancing to a different slide
+        //      2. this is either a manual event (prev/next, pager, cmd) or 
+        //              a timer event and slideshow is not paused
+        if ( opts.nextSlide != opts.currSlide && 
+            (manual || (!opts.paused && !opts.hoverPaused && opts.timeout) )) { // #62
+
+            opts.API.trigger('cycle-before', [ slideOpts, curr, next, fwd ]);
+            if ( tx.before )
+                tx.before( slideOpts, curr, next, fwd );
+
+            after = function() {
+                opts.busy = false;
+                // #76; bail if slideshow has been destroyed
+                if (! opts.container.data( 'cycle.opts' ) )
+                    return;
+
+                if (tx.after)
+                    tx.after( slideOpts, curr, next, fwd );
+                opts.API.trigger('cycle-after', [ slideOpts, curr, next, fwd ]);
+                opts.API.queueTransition( slideOpts);
+                opts.API.updateView( true );
+            };
+
+            opts.busy = true;
+            if (tx.transition)
+                tx.transition(slideOpts, curr, next, fwd, after);
+            else
+                opts.API.doTransition( slideOpts, curr, next, fwd, after);
+
+            opts.API.calcNextSlide();
+            opts.API.updateView();
+        } else {
+            opts.API.queueTransition( slideOpts );
+        }
+    },
+
+    // perform the actual animation
+    doTransition: function( slideOpts, currEl, nextEl, fwd, callback) {
+        var opts = slideOpts;
+        var curr = $(currEl), next = $(nextEl);
+        var fn = function() {
+            // make sure animIn has something so that callback doesn't trigger immediately
+            next.animate(opts.animIn || { opacity: 1}, opts.speed, opts.easeIn || opts.easing, callback);
+        };
+
+        next.css(opts.cssBefore || {});
+        curr.animate(opts.animOut || {}, opts.speed, opts.easeOut || opts.easing, function() {
+            curr.css(opts.cssAfter || {});
+            if (!opts.sync) {
+                fn();
+            }
+        });
+        if (opts.sync) {
+            fn();
+        }
+    },
+
+    queueTransition: function( slideOpts, specificTimeout ) {
+        var opts = this.opts();
+        var timeout = specificTimeout !== undefined ? specificTimeout : slideOpts.timeout;
+        if (opts.nextSlide === 0 && --opts.loop === 0) {
+            opts.API.log('terminating; loop=0');
+            opts.timeout = 0;
+            if ( timeout ) {
+                setTimeout(function() {
+                    opts.API.trigger('cycle-finished', [ opts ]);
+                }, timeout);
+            }
+            else {
+                opts.API.trigger('cycle-finished', [ opts ]);
+            }
+            // reset nextSlide
+            opts.nextSlide = opts.currSlide;
+            return;
+        }
+        if ( opts.continueAuto !== undefined ) {
+            if ( opts.continueAuto === false || 
+                ($.isFunction(opts.continueAuto) && opts.continueAuto() === false )) {
+                opts.API.log('terminating automatic transitions');
+                opts.timeout = 0;
+                if ( opts.timeoutId )
+                    clearTimeout(opts.timeoutId);
+                return;
+            }
+        }
+        if ( timeout ) {
+            opts._lastQueue = $.now();
+            if ( specificTimeout === undefined )
+                opts._remainingTimeout = slideOpts.timeout;
+
+            if ( !opts.paused && ! opts.hoverPaused ) {
+                opts.timeoutId = setTimeout(function() { 
+                    opts.API.prepareTx( false, !opts.reverse ); 
+                }, timeout );
+            }
+        }
+    },
+
+    stopTransition: function() {
+        var opts = this.opts();
+        if ( opts.slides.filter(':animated').length ) {
+            opts.slides.stop(false, true);
+            opts.API.trigger('cycle-transition-stopped', [ opts ]);
+        }
+
+        if ( opts._tx && opts._tx.stopTransition )
+            opts._tx.stopTransition( opts );
+    },
+
+    // advance slide forward or back
+    advanceSlide: function( val ) {
+        var opts = this.opts();
+        clearTimeout(opts.timeoutId);
+        opts.timeoutId = 0;
+        opts.nextSlide = opts.currSlide + val;
+        
+        if (opts.nextSlide < 0)
+            opts.nextSlide = opts.slides.length - 1;
+        else if (opts.nextSlide >= opts.slides.length)
+            opts.nextSlide = 0;
+
+        opts.API.prepareTx( true,  val >= 0 );
+        return false;
+    },
+
+    buildSlideOpts: function( slide ) {
+        var opts = this.opts();
+        var val, shortName;
+        var slideOpts = slide.data() || {};
+        for (var p in slideOpts) {
+            // allow props to be accessed sans 'cycle' prefix and log the overrides
+            if (slideOpts.hasOwnProperty(p) && /^cycle[A-Z]+/.test(p) ) {
+                val = slideOpts[p];
+                shortName = p.match(/^cycle(.*)/)[1].replace(/^[A-Z]/, lowerCase);
+                opts.API.log('['+(opts.slideCount-1)+']', shortName+':', val, '('+typeof val +')');
+                slideOpts[shortName] = val;
+            }
+        }
+
+        slideOpts = $.extend( {}, $.fn.cycle.defaults, opts, slideOpts );
+        slideOpts.slideNum = opts.slideCount;
+
+        try {
+            // these props should always be read from the master state object
+            delete slideOpts.API;
+            delete slideOpts.slideCount;
+            delete slideOpts.currSlide;
+            delete slideOpts.nextSlide;
+            delete slideOpts.slides;
+        } catch(e) {
+            // no op
+        }
+        return slideOpts;
+    },
+
+    getSlideOpts: function( index ) {
+        var opts = this.opts();
+        if ( index === undefined )
+            index = opts.currSlide;
+
+        var slide = opts.slides[index];
+        var slideOpts = $(slide).data('cycle.opts');
+        return $.extend( {}, opts, slideOpts );
+    },
+    
+    initSlide: function( slideOpts, slide, suggestedZindex ) {
+        var opts = this.opts();
+        slide.css( slideOpts.slideCss || {} );
+        if ( suggestedZindex > 0 )
+            slide.css( 'zIndex', suggestedZindex );
+
+        // ensure that speed settings are sane
+        if ( isNaN( slideOpts.speed ) )
+            slideOpts.speed = $.fx.speeds[slideOpts.speed] || $.fx.speeds._default;
+        if ( !slideOpts.sync )
+            slideOpts.speed = slideOpts.speed / 2;
+
+        slide.addClass( opts.slideClass );
+    },
+
+    updateView: function( isAfter, isDuring, forceEvent ) {
+        var opts = this.opts();
+        if ( !opts._initialized )
+            return;
+        var slideOpts = opts.API.getSlideOpts();
+        var currSlide = opts.slides[ opts.currSlide ];
+
+        if ( ! isAfter && isDuring !== true ) {
+            opts.API.trigger('cycle-update-view-before', [ opts, slideOpts, currSlide ]);
+            if ( opts.updateView < 0 )
+                return;
+        }
+
+        if ( opts.slideActiveClass ) {
+            opts.slides.removeClass( opts.slideActiveClass )
+                .eq( opts.currSlide ).addClass( opts.slideActiveClass );
+        }
+
+        if ( isAfter && opts.hideNonActive )
+            opts.slides.filter( ':not(.' + opts.slideActiveClass + ')' ).css('visibility', 'hidden');
+
+        if ( opts.updateView === 0 ) {
+            setTimeout(function() {
+                opts.API.trigger('cycle-update-view', [ opts, slideOpts, currSlide, isAfter ]);
+            }, slideOpts.speed / (opts.sync ? 2 : 1) );
+        }
+
+        if ( opts.updateView !== 0 )
+            opts.API.trigger('cycle-update-view', [ opts, slideOpts, currSlide, isAfter ]);
+        
+        if ( isAfter )
+            opts.API.trigger('cycle-update-view-after', [ opts, slideOpts, currSlide ]);
+    },
+
+    getComponent: function( name ) {
+        var opts = this.opts();
+        var selector = opts[name];
+        if (typeof selector === 'string') {
+            // if selector is a child, sibling combinator, adjancent selector then use find, otherwise query full dom
+            return (/^\s*[\>|\+|~]/).test( selector ) ? opts.container.find( selector ) : $( selector );
+        }
+        if (selector.jquery)
+            return selector;
+        
+        return $(selector);
+    },
+
+    stackSlides: function( curr, next, fwd ) {
+        var opts = this.opts();
+        if ( !curr ) {
+            curr = opts.slides[opts.currSlide];
+            next = opts.slides[opts.nextSlide];
+            fwd = !opts.reverse;
+        }
+
+        // reset the zIndex for the common case:
+        // curr slide on top,  next slide beneath, and the rest in order to be shown
+        $(curr).css('zIndex', opts.maxZ);
+
+        var i;
+        var z = opts.maxZ - 2;
+        var len = opts.slideCount;
+        if (fwd) {
+            for ( i = opts.currSlide + 1; i < len; i++ )
+                $( opts.slides[i] ).css( 'zIndex', z-- );
+            for ( i = 0; i < opts.currSlide; i++ )
+                $( opts.slides[i] ).css( 'zIndex', z-- );
+        }
+        else {
+            for ( i = opts.currSlide - 1; i >= 0; i-- )
+                $( opts.slides[i] ).css( 'zIndex', z-- );
+            for ( i = len - 1; i > opts.currSlide; i-- )
+                $( opts.slides[i] ).css( 'zIndex', z-- );
+        }
+
+        $(next).css('zIndex', opts.maxZ - 1);
+    },
+
+    getSlideIndex: function( el ) {
+        return this.opts().slides.index( el );
+    }
+
+}; // API
+
+// default logger
+$.fn.cycle.log = function log() {
+    /*global console:true */
+    if (window.console && console.log)
+        console.log('[cycle2] ' + Array.prototype.join.call(arguments, ' ') );
+};
+
+$.fn.cycle.version = function() { return 'Cycle2: ' + version; };
+
+// helper functions
+
+function lowerCase(s) {
+    return (s || '').toLowerCase();
+}
+
+// expose transition object
+$.fn.cycle.transitions = {
+    custom: {
+    },
+    none: {
+        before: function( opts, curr, next, fwd ) {
+            opts.API.stackSlides( next, curr, fwd );
+            opts.cssBefore = { opacity: 1, visibility: 'visible', display: 'block' };
+        }
+    },
+    fade: {
+        before: function( opts, curr, next, fwd ) {
+            var css = opts.API.getSlideOpts( opts.nextSlide ).slideCss || {};
+            opts.API.stackSlides( curr, next, fwd );
+            opts.cssBefore = $.extend(css, { opacity: 0, visibility: 'visible', display: 'block' });
+            opts.animIn = { opacity: 1 };
+            opts.animOut = { opacity: 0 };
+        }
+    },
+    fadeout: {
+        before: function( opts , curr, next, fwd ) {
+            var css = opts.API.getSlideOpts( opts.nextSlide ).slideCss || {};
+            opts.API.stackSlides( curr, next, fwd );
+            opts.cssBefore = $.extend(css, { opacity: 1, visibility: 'visible', display: 'block' });
+            opts.animOut = { opacity: 0 };
+        }
+    },
+    scrollHorz: {
+        before: function( opts, curr, next, fwd ) {
+            opts.API.stackSlides( curr, next, fwd );
+            var w = opts.container.css('overflow','hidden').width();
+            opts.cssBefore = { left: fwd ? w : - w, top: 0, opacity: 1, visibility: 'visible', display: 'block' };
+            opts.cssAfter = { zIndex: opts._maxZ - 2, left: 0 };
+            opts.animIn = { left: 0 };
+            opts.animOut = { left: fwd ? -w : w };
+        }
+    }
+};
+
+// @see: http://jquery.malsup.com/cycle2/api
+$.fn.cycle.defaults = {
+    allowWrap:        true,
+    autoSelector:     '.cycle-slideshow[data-cycle-auto-init!=false]',
+    delay:            0,
+    easing:           null,
+    fx:              'fade',
+    hideNonActive:    true,
+    loop:             0,
+    manualFx:         undefined,
+    manualSpeed:      undefined,
+    manualTrump:      true,
+    maxZ:             100,
+    pauseOnHover:     false,
+    reverse:          false,
+    slideActiveClass: 'cycle-slide-active',
+    slideClass:       'cycle-slide',
+    slideCss:         { position: 'absolute', top: 0, left: 0 },
+    slides:          '> img',
+    speed:            500,
+    startingSlide:    0,
+    sync:             true,
+    timeout:          4000,
+    updateView:       0
+};
+
+// automatically find and run slideshows
+$(document).ready(function() {
+    $( $.fn.cycle.defaults.autoSelector ).cycle();
+});
+
+})(jQuery);
+
+/*! Cycle2 autoheight plugin; Copyright (c) M.Alsup, 2012; version: 20130913 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    autoHeight: 0, // setting this option to false disables autoHeight logic
+    autoHeightSpeed: 250,
+    autoHeightEasing: null
+});    
+
+$(document).on( 'cycle-initialized', function( e, opts ) {
+    var autoHeight = opts.autoHeight;
+    var t = $.type( autoHeight );
+    var resizeThrottle = null;
+    var ratio;
+
+    if ( t !== 'string' && t !== 'number' )
+        return;
+
+    // bind events
+    opts.container.on( 'cycle-slide-added cycle-slide-removed', initAutoHeight );
+    opts.container.on( 'cycle-destroyed', onDestroy );
+
+    if ( autoHeight == 'container' ) {
+        opts.container.on( 'cycle-before', onBefore );
+    }
+    else if ( t === 'string' && /\d+\:\d+/.test( autoHeight ) ) { 
+        // use ratio
+        ratio = autoHeight.match(/(\d+)\:(\d+)/);
+        ratio = ratio[1] / ratio[2];
+        opts._autoHeightRatio = ratio;
+    }
+
+    // if autoHeight is a number then we don't need to recalculate the sentinel
+    // index on resize
+    if ( t !== 'number' ) {
+        // bind unique resize handler per slideshow (so it can be 'off-ed' in onDestroy)
+        opts._autoHeightOnResize = function () {
+            clearTimeout( resizeThrottle );
+            resizeThrottle = setTimeout( onResize, 50 );
+        };
+
+        $(window).on( 'resize orientationchange', opts._autoHeightOnResize );
+    }
+
+    setTimeout( onResize, 30 );
+
+    function onResize() {
+        initAutoHeight( e, opts );
+    }
+});
+
+function initAutoHeight( e, opts ) {
+    var clone, height, sentinelIndex;
+    var autoHeight = opts.autoHeight;
+
+    if ( autoHeight == 'container' ) {
+        height = $( opts.slides[ opts.currSlide ] ).outerHeight();
+        opts.container.height( height );
+    }
+    else if ( opts._autoHeightRatio ) { 
+        opts.container.height( opts.container.width() / opts._autoHeightRatio );
+    }
+    else if ( autoHeight === 'calc' || ( $.type( autoHeight ) == 'number' && autoHeight >= 0 ) ) {
+        if ( autoHeight === 'calc' )
+            sentinelIndex = calcSentinelIndex( e, opts );
+        else if ( autoHeight >= opts.slides.length )
+            sentinelIndex = 0;
+        else 
+            sentinelIndex = autoHeight;
+
+        // only recreate sentinel if index is different
+        if ( sentinelIndex == opts._sentinelIndex )
+            return;
+
+        opts._sentinelIndex = sentinelIndex;
+        if ( opts._sentinel )
+            opts._sentinel.remove();
+
+        // clone existing slide as sentinel
+        clone = $( opts.slides[ sentinelIndex ].cloneNode(true) );
+        
+        // #50; remove special attributes from cloned content
+        clone.removeAttr( 'id name rel' ).find( '[id],[name],[rel]' ).removeAttr( 'id name rel' );
+
+        clone.css({
+            position: 'static',
+            visibility: 'hidden',
+            display: 'block'
+        }).prependTo( opts.container ).addClass('cycle-sentinel cycle-slide').removeClass('cycle-slide-active');
+        clone.find( '*' ).css( 'visibility', 'hidden' );
+
+        opts._sentinel = clone;
+    }
+}    
+
+function calcSentinelIndex( e, opts ) {
+    var index = 0, max = -1;
+
+    // calculate tallest slide index
+    opts.slides.each(function(i) {
+        var h = $(this).height();
+        if ( h > max ) {
+            max = h;
+            index = i;
+        }
+    });
+    return index;
+}
+
+function onBefore( e, opts, outgoing, incoming, forward ) {
+    var h = $(incoming).outerHeight();
+    opts.container.animate( { height: h }, opts.autoHeightSpeed, opts.autoHeightEasing );
+}
+
+function onDestroy( e, opts ) {
+    if ( opts._autoHeightOnResize ) {
+        $(window).off( 'resize orientationchange', opts._autoHeightOnResize );
+        opts._autoHeightOnResize = null;
+    }
+    opts.container.off( 'cycle-slide-added cycle-slide-removed', initAutoHeight );
+    opts.container.off( 'cycle-destroyed', onDestroy );
+    opts.container.off( 'cycle-before', onBefore );
+
+    if ( opts._sentinel ) {
+        opts._sentinel.remove();
+        opts._sentinel = null;
+    }
+}
+
+})(jQuery);
+
+/*! caption plugin for Cycle2;  version: 20130306 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    caption:          '> .cycle-caption',
+    captionTemplate:  '{{slideNum}} / {{slideCount}}',
+    overlay:          '> .cycle-overlay',
+    overlayTemplate:  '<div>{{title}}</div><div>{{desc}}</div>',
+    captionModule:    'caption'
+});    
+
+$(document).on( 'cycle-update-view', function( e, opts, slideOpts, currSlide ) {
+    if ( opts.captionModule !== 'caption' )
+        return;
+    var el;
+    $.each(['caption','overlay'], function() {
+        var name = this; 
+        var template = slideOpts[name+'Template'];
+        var el = opts.API.getComponent( name );
+        if( el.length && template ) {
+            el.html( opts.API.tmpl( template, slideOpts, opts, currSlide ) );
+            el.show();
+        }
+        else {
+            el.hide();
+        }
+    });
+});
+
+$(document).on( 'cycle-destroyed', function( e, opts ) {
+    var el;
+    $.each(['caption','overlay'], function() {
+        var name = this, template = opts[name+'Template'];
+        if ( opts[name] && template ) {
+            el = opts.API.getComponent( 'caption' );
+            el.empty();
+        }
+    });
+});
+
+})(jQuery);
+
+/*! command plugin for Cycle2;  version: 20140415 */
+(function($) {
+"use strict";
+
+var c2 = $.fn.cycle;
+
+$.fn.cycle = function( options ) {
+    var cmd, cmdFn, opts;
+    var args = $.makeArray( arguments );
+
+    if ( $.type( options ) == 'number' ) {
+        return this.cycle( 'goto', options );
+    }
+
+    if ( $.type( options ) == 'string' ) {
+        return this.each(function() {
+            var cmdArgs;
+            cmd = options;
+            opts = $(this).data('cycle.opts');
+
+            if ( opts === undefined ) {
+                c2.log('slideshow must be initialized before sending commands; "' + cmd + '" ignored');
+                return;
+            }
+            else {
+                cmd = cmd == 'goto' ? 'jump' : cmd; // issue #3; change 'goto' to 'jump' internally
+                cmdFn = opts.API[ cmd ];
+                if ( $.isFunction( cmdFn )) {
+                    cmdArgs = $.makeArray( args );
+                    cmdArgs.shift();
+                    return cmdFn.apply( opts.API, cmdArgs );
+                }
+                else {
+                    c2.log( 'unknown command: ', cmd );
+                }
+            }
+        });
+    }
+    else {
+        return c2.apply( this, arguments );
+    }
+};
+
+// copy props
+$.extend( $.fn.cycle, c2 );
+
+$.extend( c2.API, {
+    next: function() {
+        var opts = this.opts();
+        if ( opts.busy && ! opts.manualTrump )
+            return;
+
+        var count = opts.reverse ? -1 : 1;
+        if ( opts.allowWrap === false && ( opts.currSlide + count ) >= opts.slideCount )
+            return;
+
+        opts.API.advanceSlide( count );
+        opts.API.trigger('cycle-next', [ opts ]).log('cycle-next');
+    },
+
+    prev: function() {
+        var opts = this.opts();
+        if ( opts.busy && ! opts.manualTrump )
+            return;
+        var count = opts.reverse ? 1 : -1;
+        if ( opts.allowWrap === false && ( opts.currSlide + count ) < 0 )
+            return;
+
+        opts.API.advanceSlide( count );
+        opts.API.trigger('cycle-prev', [ opts ]).log('cycle-prev');
+    },
+
+    destroy: function() {
+        this.stop(); //#204
+
+        var opts = this.opts();
+        var clean = $.isFunction( $._data ) ? $._data : $.noop;  // hack for #184 and #201
+        clearTimeout(opts.timeoutId);
+        opts.timeoutId = 0;
+        opts.API.stop();
+        opts.API.trigger( 'cycle-destroyed', [ opts ] ).log('cycle-destroyed');
+        opts.container.removeData();
+        clean( opts.container[0], 'parsedAttrs', false );
+
+        // #75; remove inline styles
+        if ( ! opts.retainStylesOnDestroy ) {
+            opts.container.removeAttr( 'style' );
+            opts.slides.removeAttr( 'style' );
+            opts.slides.removeClass( opts.slideActiveClass );
+        }
+        opts.slides.each(function() {
+            var slide = $(this);
+            slide.removeData();
+            slide.removeClass( opts.slideClass );
+            clean( this, 'parsedAttrs', false );
+        });
+    },
+
+    jump: function( index, fx ) {
+        // go to the requested slide
+        var fwd;
+        var opts = this.opts();
+        if ( opts.busy && ! opts.manualTrump )
+            return;
+        var num = parseInt( index, 10 );
+        if (isNaN(num) || num < 0 || num >= opts.slides.length) {
+            opts.API.log('goto: invalid slide index: ' + num);
+            return;
+        }
+        if (num == opts.currSlide) {
+            opts.API.log('goto: skipping, already on slide', num);
+            return;
+        }
+        opts.nextSlide = num;
+        clearTimeout(opts.timeoutId);
+        opts.timeoutId = 0;
+        opts.API.log('goto: ', num, ' (zero-index)');
+        fwd = opts.currSlide < opts.nextSlide;
+        opts._tempFx = fx;
+        opts.API.prepareTx( true, fwd );
+    },
+
+    stop: function() {
+        var opts = this.opts();
+        var pauseObj = opts.container;
+        clearTimeout(opts.timeoutId);
+        opts.timeoutId = 0;
+        opts.API.stopTransition();
+        if ( opts.pauseOnHover ) {
+            if ( opts.pauseOnHover !== true )
+                pauseObj = $( opts.pauseOnHover );
+            pauseObj.off('mouseenter mouseleave');
+        }
+        opts.API.trigger('cycle-stopped', [ opts ]).log('cycle-stopped');
+    },
+
+    reinit: function() {
+        var opts = this.opts();
+        opts.API.destroy();
+        opts.container.cycle();
+    },
+
+    remove: function( index ) {
+        var opts = this.opts();
+        var slide, slideToRemove, slides = [], slideNum = 1;
+        for ( var i=0; i < opts.slides.length; i++ ) {
+            slide = opts.slides[i];
+            if ( i == index ) {
+                slideToRemove = slide;
+            }
+            else {
+                slides.push( slide );
+                $( slide ).data('cycle.opts').slideNum = slideNum;
+                slideNum++;
+            }
+        }
+        if ( slideToRemove ) {
+            opts.slides = $( slides );
+            opts.slideCount--;
+            $( slideToRemove ).remove();
+            if (index == opts.currSlide)
+                opts.API.advanceSlide( 1 );
+            else if ( index < opts.currSlide )
+                opts.currSlide--;
+            else
+                opts.currSlide++;
+
+            opts.API.trigger('cycle-slide-removed', [ opts, index, slideToRemove ]).log('cycle-slide-removed');
+            opts.API.updateView();
+        }
+    }
+
+});
+
+// listen for clicks on elements with data-cycle-cmd attribute
+$(document).on('click.cycle', '[data-cycle-cmd]', function(e) {
+    // issue cycle command
+    e.preventDefault();
+    var el = $(this);
+    var command = el.data('cycle-cmd');
+    var context = el.data('cycle-context') || '.cycle-slideshow';
+    $(context).cycle(command, el.data('cycle-arg'));
+});
+
+
+})(jQuery);
+
+/*! hash plugin for Cycle2;  version: 20130905 */
+(function($) {
+"use strict";
+
+$(document).on( 'cycle-pre-initialize', function( e, opts ) {
+    onHashChange( opts, true );
+
+    opts._onHashChange = function() {
+        onHashChange( opts, false );
+    };
+
+    $( window ).on( 'hashchange', opts._onHashChange);
+});
+
+$(document).on( 'cycle-update-view', function( e, opts, slideOpts ) {
+    if ( slideOpts.hash && ( '#' + slideOpts.hash ) != window.location.hash ) {
+        opts._hashFence = true;
+        window.location.hash = slideOpts.hash;
+    }
+});
+
+$(document).on( 'cycle-destroyed', function( e, opts) {
+    if ( opts._onHashChange ) {
+        $( window ).off( 'hashchange', opts._onHashChange );
+    }
+});
+
+function onHashChange( opts, setStartingSlide ) {
+    var hash;
+    if ( opts._hashFence ) {
+        opts._hashFence = false;
+        return;
+    }
+    
+    hash = window.location.hash.substring(1);
+
+    opts.slides.each(function(i) {
+        if ( $(this).data( 'cycle-hash' ) == hash ) {
+            if ( setStartingSlide === true ) {
+                opts.startingSlide = i;
+            }
+            else {
+                var fwd = opts.currSlide < i;
+                opts.nextSlide = i;
+                opts.API.prepareTx( true, fwd );
+            }
+            return false;
+        }
+    });
+}
+
+})(jQuery);
+
+/*! loader plugin for Cycle2;  version: 20131121 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    loader: false
+});
+
+$(document).on( 'cycle-bootstrap', function( e, opts ) {
+    var addFn;
+
+    if ( !opts.loader )
+        return;
+
+    // override API.add for this slideshow
+    addFn = opts.API.add;
+    opts.API.add = add;
+
+    function add( slides, prepend ) {
+        var slideArr = [];
+        if ( $.type( slides ) == 'string' )
+            slides = $.trim( slides );
+        else if ( $.type( slides) === 'array' ) {
+            for (var i=0; i < slides.length; i++ )
+                slides[i] = $(slides[i])[0];
+        }
+
+        slides = $( slides );
+        var slideCount = slides.length;
+
+        if ( ! slideCount )
+            return;
+
+        slides.css('visibility','hidden').appendTo('body').each(function(i) { // appendTo fixes #56
+            var count = 0;
+            var slide = $(this);
+            var images = slide.is('img') ? slide : slide.find('img');
+            slide.data('index', i);
+            // allow some images to be marked as unimportant (and filter out images w/o src value)
+            images = images.filter(':not(.cycle-loader-ignore)').filter(':not([src=""])');
+            if ( ! images.length ) {
+                --slideCount;
+                slideArr.push( slide );
+                return;
+            }
+
+            count = images.length;
+            images.each(function() {
+                // add images that are already loaded
+                if ( this.complete ) {
+                    imageLoaded();
+                }
+                else {
+                    $(this).load(function() {
+                        imageLoaded();
+                    }).on("error", function() {
+                        if ( --count === 0 ) {
+                            // ignore this slide
+                            opts.API.log('slide skipped; img not loaded:', this.src);
+                            if ( --slideCount === 0 && opts.loader == 'wait') {
+                                addFn.apply( opts.API, [ slideArr, prepend ] );
+                            }
+                        }
+                    });
+                }
+            });
+
+            function imageLoaded() {
+                if ( --count === 0 ) {
+                    --slideCount;
+                    addSlide( slide );
+                }
+            }
+        });
+
+        if ( slideCount )
+            opts.container.addClass('cycle-loading');
+        
+
+        function addSlide( slide ) {
+            var curr;
+            if ( opts.loader == 'wait' ) {
+                slideArr.push( slide );
+                if ( slideCount === 0 ) {
+                    // #59; sort slides into original markup order
+                    slideArr.sort( sorter );
+                    addFn.apply( opts.API, [ slideArr, prepend ] );
+                    opts.container.removeClass('cycle-loading');
+                }
+            }
+            else {
+                curr = $(opts.slides[opts.currSlide]);
+                addFn.apply( opts.API, [ slide, prepend ] );
+                curr.show();
+                opts.container.removeClass('cycle-loading');
+            }
+        }
+
+        function sorter(a, b) {
+            return a.data('index') - b.data('index');
+        }
+    }
+});
+
+})(jQuery);
+
+/*! pager plugin for Cycle2;  version: 20140415 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    pager:            '> .cycle-pager',
+    pagerActiveClass: 'cycle-pager-active',
+    pagerEvent:       'click.cycle',
+    pagerEventBubble: undefined,
+    pagerTemplate:    '<span>&bull;</span>'
+});
+
+$(document).on( 'cycle-bootstrap', function( e, opts, API ) {
+    // add method to API
+    API.buildPagerLink = buildPagerLink;
+});
+
+$(document).on( 'cycle-slide-added', function( e, opts, slideOpts, slideAdded ) {
+    if ( opts.pager ) {
+        opts.API.buildPagerLink ( opts, slideOpts, slideAdded );
+        opts.API.page = page;
+    }
+});
+
+$(document).on( 'cycle-slide-removed', function( e, opts, index, slideRemoved ) {
+    if ( opts.pager ) {
+        var pagers = opts.API.getComponent( 'pager' );
+        pagers.each(function() {
+            var pager = $(this);
+            $( pager.children()[index] ).remove();
+        });
+    }
+});
+
+$(document).on( 'cycle-update-view', function( e, opts, slideOpts ) {
+    var pagers;
+
+    if ( opts.pager ) {
+        pagers = opts.API.getComponent( 'pager' );
+        pagers.each(function() {
+           $(this).children().removeClass( opts.pagerActiveClass )
+            .eq( opts.currSlide ).addClass( opts.pagerActiveClass );
+        });
+    }
+});
+
+$(document).on( 'cycle-destroyed', function( e, opts ) {
+    var pager = opts.API.getComponent( 'pager' );
+
+    if ( pager ) {
+        pager.children().off( opts.pagerEvent ); // #202
+        if ( opts.pagerTemplate )
+            pager.empty();
+    }
+});
+
+function buildPagerLink( opts, slideOpts, slide ) {
+    var pagerLink;
+    var pagers = opts.API.getComponent( 'pager' );
+    pagers.each(function() {
+        var pager = $(this);
+        if ( slideOpts.pagerTemplate ) {
+            var markup = opts.API.tmpl( slideOpts.pagerTemplate, slideOpts, opts, slide[0] );
+            pagerLink = $( markup ).appendTo( pager );
+        }
+        else {
+            pagerLink = pager.children().eq( opts.slideCount - 1 );
+        }
+        pagerLink.on( opts.pagerEvent, function(e) {
+            if ( ! opts.pagerEventBubble )
+                e.preventDefault();
+            opts.API.page( pager, e.currentTarget);
+        });
+    });
+}
+
+function page( pager, target ) {
+    /*jshint validthis:true */
+    var opts = this.opts();
+    if ( opts.busy && ! opts.manualTrump )
+        return;
+
+    var index = pager.children().index( target );
+    var nextSlide = index;
+    var fwd = opts.currSlide < nextSlide;
+    if (opts.currSlide == nextSlide) {
+        return; // no op, clicked pager for the currently displayed slide
+    }
+    opts.nextSlide = nextSlide;
+    opts._tempFx = opts.pagerFx;
+    opts.API.prepareTx( true, fwd );
+    opts.API.trigger('cycle-pager-activated', [opts, pager, target ]);
+}
+
+})(jQuery);
+
+/*! prevnext plugin for Cycle2;  version: 20140408 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    next:           '> .cycle-next',
+    nextEvent:      'click.cycle',
+    disabledClass:  'disabled',
+    prev:           '> .cycle-prev',
+    prevEvent:      'click.cycle',
+    swipe:          false
+});
+
+$(document).on( 'cycle-initialized', function( e, opts ) {
+    opts.API.getComponent( 'next' ).on( opts.nextEvent, function(e) {
+        e.preventDefault();
+        opts.API.next();
+    });
+
+    opts.API.getComponent( 'prev' ).on( opts.prevEvent, function(e) {
+        e.preventDefault();
+        opts.API.prev();
+    });
+
+    if ( opts.swipe ) {
+        var nextEvent = opts.swipeVert ? 'swipeUp.cycle' : 'swipeLeft.cycle swipeleft.cycle';
+        var prevEvent = opts.swipeVert ? 'swipeDown.cycle' : 'swipeRight.cycle swiperight.cycle';
+        opts.container.on( nextEvent, function(e) {
+            opts._tempFx = opts.swipeFx;
+            opts.API.next();
+        });
+        opts.container.on( prevEvent, function() {
+            opts._tempFx = opts.swipeFx;
+            opts.API.prev();
+        });
+    }
+});
+
+$(document).on( 'cycle-update-view', function( e, opts, slideOpts, currSlide ) {
+    if ( opts.allowWrap )
+        return;
+
+    var cls = opts.disabledClass;
+    var next = opts.API.getComponent( 'next' );
+    var prev = opts.API.getComponent( 'prev' );
+    var prevBoundry = opts._prevBoundry || 0;
+    var nextBoundry = (opts._nextBoundry !== undefined)?opts._nextBoundry:opts.slideCount - 1;
+
+    if ( opts.currSlide == nextBoundry )
+        next.addClass( cls ).prop( 'disabled', true );
+    else
+        next.removeClass( cls ).prop( 'disabled', false );
+
+    if ( opts.currSlide === prevBoundry )
+        prev.addClass( cls ).prop( 'disabled', true );
+    else
+        prev.removeClass( cls ).prop( 'disabled', false );
+});
+
+
+$(document).on( 'cycle-destroyed', function( e, opts ) {
+    opts.API.getComponent( 'prev' ).off( opts.nextEvent );
+    opts.API.getComponent( 'next' ).off( opts.prevEvent );
+    opts.container.off( 'swipeleft.cycle swiperight.cycle swipeLeft.cycle swipeRight.cycle swipeUp.cycle swipeDown.cycle' );
+});
+
+})(jQuery);
+
+/*! progressive loader plugin for Cycle2;  version: 20130315 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    progressive: false
+});
+
+$(document).on( 'cycle-pre-initialize', function( e, opts ) {
+    if ( !opts.progressive )
+        return;
+
+    var API = opts.API;
+    var nextFn = API.next;
+    var prevFn = API.prev;
+    var prepareTxFn = API.prepareTx;
+    var type = $.type( opts.progressive );
+    var slides, scriptEl;
+
+    if ( type == 'array' ) {
+        slides = opts.progressive;
+    }
+    else if ($.isFunction( opts.progressive ) ) {
+        slides = opts.progressive( opts );
+    }
+    else if ( type == 'string' ) {
+        scriptEl = $( opts.progressive );
+        slides = $.trim( scriptEl.html() );
+        if ( !slides )
+            return;
+        // is it json array?
+        if ( /^(\[)/.test( slides ) ) {
+            try {
+                slides = $.parseJSON( slides );
+            }
+            catch(err) {
+                API.log( 'error parsing progressive slides', err );
+                return;
+            }
+        }
+        else {
+            // plain text, split on delimeter
+            slides = slides.split( new RegExp( scriptEl.data('cycle-split') || '\n') );
+            
+            // #95; look for empty slide
+            if ( ! slides[ slides.length - 1 ] )
+                slides.pop();
+        }
+    }
+
+
+
+    if ( prepareTxFn ) {
+        API.prepareTx = function( manual, fwd ) {
+            var index, slide;
+
+            if ( manual || slides.length === 0 ) {
+                prepareTxFn.apply( opts.API, [ manual, fwd ] );
+                return;
+            }
+
+            if ( fwd && opts.currSlide == ( opts.slideCount-1) ) {
+                slide = slides[ 0 ];
+                slides = slides.slice( 1 );
+                opts.container.one('cycle-slide-added', function(e, opts ) {
+                    setTimeout(function() {
+                        opts.API.advanceSlide( 1 );
+                    },50);
+                });
+                opts.API.add( slide );
+            }
+            else if ( !fwd && opts.currSlide === 0 ) {
+                index = slides.length-1;
+                slide = slides[ index ];
+                slides = slides.slice( 0, index );
+                opts.container.one('cycle-slide-added', function(e, opts ) {
+                    setTimeout(function() {
+                        opts.currSlide = 1;
+                        opts.API.advanceSlide( -1 );
+                    },50);
+                });
+                opts.API.add( slide, true );
+            }
+            else {
+                prepareTxFn.apply( opts.API, [ manual, fwd ] );
+            }
+        };
+    }
+
+    if ( nextFn ) {
+        API.next = function() {
+            var opts = this.opts();
+            if ( slides.length && opts.currSlide == ( opts.slideCount - 1 ) ) {
+                var slide = slides[ 0 ];
+                slides = slides.slice( 1 );
+                opts.container.one('cycle-slide-added', function(e, opts ) {
+                    nextFn.apply( opts.API );
+                    opts.container.removeClass('cycle-loading');
+                });
+                opts.container.addClass('cycle-loading');
+                opts.API.add( slide );
+            }
+            else {
+                nextFn.apply( opts.API );    
+            }
+        };
+    }
+    
+    if ( prevFn ) {
+        API.prev = function() {
+            var opts = this.opts();
+            if ( slides.length && opts.currSlide === 0 ) {
+                var index = slides.length-1;
+                var slide = slides[ index ];
+                slides = slides.slice( 0, index );
+                opts.container.one('cycle-slide-added', function(e, opts ) {
+                    opts.currSlide = 1;
+                    opts.API.advanceSlide( -1 );
+                    opts.container.removeClass('cycle-loading');
+                });
+                opts.container.addClass('cycle-loading');
+                opts.API.add( slide, true );
+            }
+            else {
+                prevFn.apply( opts.API );
+            }
+        };
+    }
+});
+
+})(jQuery);
+
+/*! tmpl plugin for Cycle2;  version: 20121227 */
+(function($) {
+"use strict";
+
+$.extend($.fn.cycle.defaults, {
+    tmplRegex: '{{((.)?.*?)}}'
+});
+
+$.extend($.fn.cycle.API, {
+    tmpl: function( str, opts /*, ... */) {
+        var regex = new RegExp( opts.tmplRegex || $.fn.cycle.defaults.tmplRegex, 'g' );
+        var args = $.makeArray( arguments );
+        args.shift();
+        return str.replace(regex, function(_, str) {
+            var i, j, obj, prop, names = str.split('.');
+            for (i=0; i < args.length; i++) {
+                obj = args[i];
+                if ( ! obj )
+                    continue;
+                if (names.length > 1) {
+                    prop = obj;
+                    for (j=0; j < names.length; j++) {
+                        obj = prop;
+                        prop = prop[ names[j] ] || str;
+                    }
+                } else {
+                    prop = obj[str];
+                }
+
+                if ($.isFunction(prop))
+                    return prop.apply(obj, args);
+                if (prop !== undefined && prop !== null && prop != str)
+                    return prop;
+            }
+            return str;
+        });
+    }
+});    
+
+})(jQuery);
+
+/*! Lazy Load 1.9.4 - MIT license - Copyright 2010-2013 Mika Tuupola */
+!function(a,b,c,d){var e=a(b);a.fn.lazyload=function(f){function g(){var b=0;i.each(function(){var c=a(this);if(!j.skip_invisible||c.is(":visible"))if(a.abovethetop(this,j)||a.leftofbegin(this,j));else if(a.belowthefold(this,j)||a.rightoffold(this,j)){if(++b>j.failure_limit)return!1}else c.trigger("appear"),b=0})}var h,i=this,j={threshold:0,failure_limit:0,event:"scroll",effect:"show",container:b,data_attribute:"original",skip_invisible:!0,appear:null,load:null,placeholder:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"};return f&&(d!==f.failurelimit&&(f.failure_limit=f.failurelimit,delete f.failurelimit),d!==f.effectspeed&&(f.effect_speed=f.effectspeed,delete f.effectspeed),a.extend(j,f)),h=j.container===d||j.container===b?e:a(j.container),0===j.event.indexOf("scroll")&&h.bind(j.event,function(){return g()}),this.each(function(){var b=this,c=a(b);b.loaded=!1,(c.attr("src")===d||c.attr("src")===!1)&&c.is("img")&&c.attr("src",j.placeholder),c.one("appear",function(){if(!this.loaded){if(j.appear){var d=i.length;j.appear.call(b,d,j)}a("<img />").bind("load",function(){var d=c.attr("data-"+j.data_attribute);c.hide(),c.is("img")?c.attr("src",d):c.css("background-image","url('"+d+"')"),c[j.effect](j.effect_speed),b.loaded=!0;var e=a.grep(i,function(a){return!a.loaded});if(i=a(e),j.load){var f=i.length;j.load.call(b,f,j)}}).attr("src",c.attr("data-"+j.data_attribute))}}),0!==j.event.indexOf("scroll")&&c.bind(j.event,function(){b.loaded||c.trigger("appear")})}),e.bind("resize",function(){g()}),/(?:iphone|ipod|ipad).*os 5/gi.test(navigator.appVersion)&&e.bind("pageshow",function(b){b.originalEvent&&b.originalEvent.persisted&&i.each(function(){a(this).trigger("appear")})}),a(c).ready(function(){g()}),this},a.belowthefold=function(c,f){var g;return g=f.container===d||f.container===b?(b.innerHeight?b.innerHeight:e.height())+e.scrollTop():a(f.container).offset().top+a(f.container).height(),g<=a(c).offset().top-f.threshold},a.rightoffold=function(c,f){var g;return g=f.container===d||f.container===b?e.width()+e.scrollLeft():a(f.container).offset().left+a(f.container).width(),g<=a(c).offset().left-f.threshold},a.abovethetop=function(c,f){var g;return g=f.container===d||f.container===b?e.scrollTop():a(f.container).offset().top,g>=a(c).offset().top+f.threshold+a(c).height()},a.leftofbegin=function(c,f){var g;return g=f.container===d||f.container===b?e.scrollLeft():a(f.container).offset().left,g>=a(c).offset().left+f.threshold+a(c).width()},a.inviewport=function(b,c){return!(a.rightoffold(b,c)||a.leftofbegin(b,c)||a.belowthefold(b,c)||a.abovethetop(b,c))},a.extend(a.expr[":"],{"below-the-fold":function(b){return a.belowthefold(b,{threshold:0})},"above-the-top":function(b){return!a.belowthefold(b,{threshold:0})},"right-of-screen":function(b){return a.rightoffold(b,{threshold:0})},"left-of-screen":function(b){return!a.rightoffold(b,{threshold:0})},"in-viewport":function(b){return a.inviewport(b,{threshold:0})},"above-the-fold":function(b){return!a.belowthefold(b,{threshold:0})},"right-of-fold":function(b){return a.rightoffold(b,{threshold:0})},"left-of-fold":function(b){return!a.rightoffold(b,{threshold:0})}})}(jQuery,window,document);
+/**
+* jquery.matchHeight.js v0.5.2
+* http://brm.io/jquery-match-height/
+* License: MIT
+*/
+
+;(function($) {
+    /*
+    *  internal
+    */
+
+    var _previousResizeWidth = -1,
+        _updateTimeout = -1;
+
+    /*
+    *  _rows
+    *  utility function returns array of jQuery selections representing each row
+    *  (as displayed after float wrapping applied by browser)
+    */
+
+    var _rows = function(elements) {
+        var tolerance = 1,
+            $elements = $(elements),
+            lastTop = null,
+            rows = [];
+
+        // group elements by their top position
+        $elements.each(function(){
+            var $that = $(this),
+                top = $that.offset().top - _parse($that.css('margin-top')),
+                lastRow = rows.length > 0 ? rows[rows.length - 1] : null;
+
+            if (lastRow === null) {
+                // first item on the row, so just push it
+                rows.push($that);
+            } else {
+                // if the row top is the same, add to the row group
+                if (Math.floor(Math.abs(lastTop - top)) <= tolerance) {
+                    rows[rows.length - 1] = lastRow.add($that);
+                } else {
+                    // otherwise start a new row group
+                    rows.push($that);
+                }
+            }
+
+            // keep track of the last row top
+            lastTop = top;
+        });
+
+        return rows;
+    };
+
+    /*
+    *  _parse
+    *  value parse utility function
+    */
+
+    var _parse = function(value) {
+        // parse value and convert NaN to 0
+        return parseFloat(value) || 0;
+    };
+
+    /*
+    *  matchHeight
+    *  plugin definition
+    */
+
+    var matchHeight = $.fn.matchHeight = function(byRow) {
+
+        // handle matchHeight('remove')
+        if (byRow === 'remove') {
+            var that = this;
+
+            // remove fixed height from all selected elements
+            this.css('height', '');
+
+            // remove selected elements from all groups
+            $.each(matchHeight._groups, function(key, group) {
+                group.elements = group.elements.not(that);
+            });
+
+            // TODO: cleanup empty groups
+
+            return this;
+        }
+
+        if (this.length <= 1)
+            return this;
+
+        // byRow default to true
+        byRow = (typeof byRow !== 'undefined') ? byRow : true;
+
+        // keep track of this group so we can re-apply later on load and resize events
+        matchHeight._groups.push({
+            elements: this,
+            byRow: byRow
+        });
+
+        // match each element's height to the tallest element in the selection
+        matchHeight._apply(this, byRow);
+
+        return this;
+    };
+
+    /*
+    *  plugin global options
+    */
+
+    matchHeight._groups = [];
+    matchHeight._throttle = 80;
+    matchHeight._maintainScroll = false;
+    matchHeight._beforeUpdate = null;
+    matchHeight._afterUpdate = null;
+
+    /*
+    *  matchHeight._apply
+    *  apply matchHeight to given elements
+    */
+
+    matchHeight._apply = function(elements, byRow) {
+        var $elements = $(elements),
+            rows = [$elements];
+
+        // take note of scroll position
+        var scrollTop = $(window).scrollTop(),
+            htmlHeight = $('html').outerHeight(true);
+
+        // temporarily must force hidden parents visible
+        var $hiddenParents = $elements.parents().filter(':hidden');
+        $hiddenParents.css('display', 'block');
+
+        // get rows if using byRow, otherwise assume one row
+        if (byRow) {
+
+            // must first force an arbitrary equal height so floating elements break evenly
+            $elements.each(function() {
+                var $that = $(this),
+                    display = $that.css('display') === 'inline-block' ? 'inline-block' : 'block';
+
+                // cache the original inline style
+                $that.data('style-cache', $that.attr('style'));
+
+                $that.css({
+                    'display': display,
+                    'padding-top': '0',
+                    'padding-bottom': '0',
+                    'margin-top': '0',
+                    'margin-bottom': '0',
+                    'border-top-width': '0',
+                    'border-bottom-width': '0',
+                    'height': '100px'
+                });
+            });
+
+            // get the array of rows (based on element top position)
+            rows = _rows($elements);
+
+            // revert original inline styles
+            $elements.each(function() {
+                var $that = $(this);
+
+                $that.attr('style', $that.data('style-cache') || '')
+                     .css('height', '');
+            });
+        }
+
+        $.each(rows, function(key, row) {
+            var $row = $(row),
+                maxHeight = 0;
+
+            // skip apply to rows with only one item
+            if (byRow && $row.length <= 1)
+                return;
+
+            // iterate the row and find the max height
+            $row.each(function(){
+                var $that = $(this),
+                    display = $that.css('display') === 'inline-block' ? 'inline-block' : 'block';
+
+                // ensure we get the correct actual height (and not a previously set height value)
+                $that.css({ 'display': display, 'height': '' });
+
+                // find the max height (including padding, but not margin)
+                if ($that.outerHeight(false) > maxHeight)
+                    maxHeight = $that.outerHeight(false);
+
+                // revert display block
+                $that.css('display', '');
+            });
+
+            // iterate the row and apply the height to all elements
+            $row.each(function(){
+                var $that = $(this),
+                    verticalPadding = 0;
+
+                // handle padding and border correctly (required when not using border-box)
+                if ($that.css('box-sizing') !== 'border-box') {
+                    verticalPadding += _parse($that.css('border-top-width')) + _parse($that.css('border-bottom-width'));
+                    verticalPadding += _parse($that.css('padding-top')) + _parse($that.css('padding-bottom'));
+                }
+
+                // set the height (accounting for padding and border)
+                $that.css('height', maxHeight - verticalPadding);
+            });
+        });
+
+        // revert hidden parents
+        $hiddenParents.css('display', '');
+
+        // restore scroll position if enabled
+        if (matchHeight._maintainScroll)
+            $(window).scrollTop((scrollTop / htmlHeight) * $('html').outerHeight(true));
+
+        return this;
+    };
+
+    /*
+    *  matchHeight._applyDataApi
+    *  applies matchHeight to all elements with a data-match-height attribute
+    */
+
+    matchHeight._applyDataApi = function() {
+        var groups = {};
+
+        // generate groups by their groupId set by elements using data-match-height
+        $('[data-match-height], [data-mh]').each(function() {
+            var $this = $(this),
+                groupId = $this.attr('data-match-height') || $this.attr('data-mh');
+            if (groupId in groups) {
+                groups[groupId] = groups[groupId].add($this);
+            } else {
+                groups[groupId] = $this;
+            }
+        });
+
+        // apply matchHeight to each group
+        $.each(groups, function() {
+            this.matchHeight(true);
+        });
+    };
+
+    /*
+    *  matchHeight._update
+    *  updates matchHeight on all current groups with their correct options
+    */
+
+    var _update = function(event) {
+        if (matchHeight._beforeUpdate)
+            matchHeight._beforeUpdate(event, matchHeight._groups);
+
+        $.each(matchHeight._groups, function() {
+            matchHeight._apply(this.elements, this.byRow);
+        });
+
+        if (matchHeight._afterUpdate)
+            matchHeight._afterUpdate(event, matchHeight._groups);
+    };
+
+    matchHeight._update = function(throttle, event) {
+        // prevent update if fired from a resize event
+        // where the viewport width hasn't actually changed
+        // fixes an event looping bug in IE8
+        if (event && event.type === 'resize') {
+            var windowWidth = $(window).width();
+            if (windowWidth === _previousResizeWidth)
+                return;
+            _previousResizeWidth = windowWidth;
+        }
+
+        // throttle updates
+        if (!throttle) {
+            _update(event);
+        } else if (_updateTimeout === -1) {
+            _updateTimeout = setTimeout(function() {
+                _update(event);
+                _updateTimeout = -1;
+            }, matchHeight._throttle);
+        }
+    };
+
+    /*
+    *  bind events
+    */
+
+    // apply on DOM ready event
+    $(matchHeight._applyDataApi);
+
+    // update heights on load and resize events
+    $(window).bind('load', function(event) {
+        matchHeight._update(false, event);
+    });
+
+    // throttled update heights on resize events
+    $(window).bind('resize orientationchange', function(event) {
+        matchHeight._update(true, event);
+    });
+
+})(jQuery);
+
+/*	
+ * jQuery mmenu v4.7.5
+ * @requires jQuery 1.7.0 or later
+ *
+ * mmenu.frebsite.nl
+ *	
+ * Copyright (c) Fred Heusschen
+ * www.frebsite.nl
+ *
+ * Licensed under the MIT license:
+ * http://en.wikipedia.org/wiki/MIT_License
+ */
+!function(e){function n(){l=!0,d.$wndw=e(window),d.$html=e("html"),d.$body=e("body"),e.each([i,a,o],function(e,n){n.add=function(e){e=e.split(" ");for(var t in e)n[e[t]]=n.mm(e[t])}}),i.mm=function(e){return"mm-"+e},i.add("wrapper menu inline panel nopanel list nolist subtitle selected label spacer current highest hidden opened subopened subopen fullsubopen subclose"),i.umm=function(e){return"mm-"==e.slice(0,3)&&(e=e.slice(3)),e},a.mm=function(e){return"mm-"+e},a.add("parent"),o.mm=function(e){return e+".mm"},o.add("toggle open close setSelected transitionend webkitTransitionEnd mousedown mouseup touchstart touchmove touchend scroll resize click keydown keyup"),e[t]._c=i,e[t]._d=a,e[t]._e=o,e[t].glbl=d}var t="mmenu",s="4.7.5";if(!e[t]){var i={},a={},o={},l=!1,d={$wndw:null,$html:null,$body:null};e[t]=function(n,s,i){this.$menu=n,this.opts=s,this.conf=i,this.vars={},"function"==typeof this.___deprecated&&this.___deprecated(),this._initMenu(),this._initAnchors(),this._initEvents();var a=this.$menu.children(this.conf.panelNodetype);for(var o in e[t].addons)e[t].addons[o]._add.call(this),e[t].addons[o]._add=function(){},e[t].addons[o]._setup.call(this);return this._init(a),"function"==typeof this.___debug&&this.___debug(),this},e[t].version=s,e[t].addons={},e[t].uniqueId=0,e[t].defaults={classes:"",slidingSubmenus:!0,onClick:{setSelected:!0}},e[t].configuration={panelNodetype:"ul, ol, div",transitionDuration:400,openingInterval:25,classNames:{panel:"Panel",selected:"Selected",label:"Label",spacer:"Spacer"}},e[t].prototype={_init:function(n){n=n.not("."+i.nopanel),n=this._initPanels(n);for(var s in e[t].addons)e[t].addons[s]._init.call(this,n);this._update()},_initMenu:function(){this.opts.offCanvas&&this.conf.clone&&(this.$menu=this.$menu.clone(!0),this.$menu.add(this.$menu.find("*")).filter("[id]").each(function(){e(this).attr("id",i.mm(e(this).attr("id")))})),this.$menu.contents().each(function(){3==e(this)[0].nodeType&&e(this).remove()}),this.$menu.parent().addClass(i.wrapper);var n=[i.menu];n.push(i.mm(this.opts.slidingSubmenus?"horizontal":"vertical")),this.opts.classes&&n.push(this.opts.classes),this.$menu.addClass(n.join(" "))},_initPanels:function(n){var t=this;this.__findAddBack(n,"ul, ol").not("."+i.nolist).addClass(i.list);var s=this.__findAddBack(n,"."+i.list).find("> li");this.__refactorClass(s,this.conf.classNames.selected,"selected"),this.__refactorClass(s,this.conf.classNames.label,"label"),this.__refactorClass(s,this.conf.classNames.spacer,"spacer"),s.off(o.setSelected).on(o.setSelected,function(n,t){n.stopPropagation(),s.removeClass(i.selected),"boolean"!=typeof t&&(t=!0),t&&e(this).addClass(i.selected)}),this.__refactorClass(this.__findAddBack(n,"."+this.conf.classNames.panel),this.conf.classNames.panel,"panel"),n.add(this.__findAddBack(n,"."+i.list).children().children().filter(this.conf.panelNodetype).not("."+i.nopanel)).addClass(i.panel);var l=this.__findAddBack(n,"."+i.panel),d=e("."+i.panel,this.$menu);if(l.each(function(){var n=e(this),s=n.attr("id")||t.__getUniqueId();n.attr("id",s)}),l.each(function(){var n=e(this),s=n.is("ul, ol")?n:n.find("ul ,ol").first(),o=n.parent(),l=o.children("a, span"),d=o.closest("."+i.panel);if(o.parent().is("."+i.list)&&!n.data(a.parent)){n.data(a.parent,o);var r=e('<a class="'+i.subopen+'" href="#'+n.attr("id")+'" />').insertBefore(l);l.is("a")||r.addClass(i.fullsubopen),t.opts.slidingSubmenus&&s.prepend('<li class="'+i.subtitle+'"><a class="'+i.subclose+'" href="#'+d.attr("id")+'">'+l.text()+"</a></li>")}}),this.opts.slidingSubmenus){var r=this.__findAddBack(n,"."+i.list).find("> li."+i.selected);r.parents("li").removeClass(i.selected).end().add(r.parents("li")).each(function(){var n=e(this),t=n.find("> ."+i.panel);t.length&&(n.parents("."+i.panel).addClass(i.subopened),t.addClass(i.opened))}).closest("."+i.panel).addClass(i.opened).parents("."+i.panel).addClass(i.subopened)}else{var r=e("li."+i.selected,d);r.parents("li").removeClass(i.selected).end().add(r.parents("li")).addClass(i.opened)}var u=d.filter("."+i.opened);return u.length||(u=l.first()),u.addClass(i.opened).last().addClass(i.current),this.opts.slidingSubmenus&&l.not(u.last()).addClass(i.hidden).end().appendTo(this.$menu),l},_initAnchors:function(){var n=this;d.$body.on(o.click,"a",function(s){var a=e(this),l=!1,r=n.$menu.find(a).length;for(var u in e[t].addons)if(e[t].addons[u]._clickAnchor&&(l=e[t].addons[u]._clickAnchor.call(n,a,r)))break;if(!l&&r){var c=a.attr("href")||"";if("#"==c.slice(0,1))try{e(c,n.$menu).is("."+i.panel)&&(l=!0,e(c).trigger(n.opts.slidingSubmenus?o.open:o.toggle))}catch(p){}}if(l&&s.preventDefault(),!l&&r&&a.is("."+i.list+" > li > a")&&!a.is('[rel="external"]')&&!a.is('[target="_blank"]')){n.__valueOrFn(n.opts.onClick.setSelected,a)&&a.parent().trigger(o.setSelected);var h=n.__valueOrFn(n.opts.onClick.preventDefault,a,"#"==c.slice(0,1));h&&s.preventDefault(),n.__valueOrFn(n.opts.onClick.blockUI,a,!h)&&d.$html.addClass(i.blocking),n.__valueOrFn(n.opts.onClick.close,a,h)&&n.$menu.trigger(o.close)}})},_initEvents:function(){var n=this;this.$menu.on(o.toggle+" "+o.open+" "+o.close,"."+i.panel,function(e){e.stopPropagation()}),this.opts.slidingSubmenus?this.$menu.on(o.open,"."+i.panel,function(){return n._openSubmenuHorizontal(e(this))}):this.$menu.on(o.toggle,"."+i.panel,function(){var n=e(this);n.trigger(n.parent().hasClass(i.opened)?o.close:o.open)}).on(o.open,"."+i.panel,function(){e(this).parent().addClass(i.opened)}).on(o.close,"."+i.panel,function(){e(this).parent().removeClass(i.opened)})},_openSubmenuHorizontal:function(n){if(n.hasClass(i.current))return!1;var t=e("."+i.panel,this.$menu),s=t.filter("."+i.current);return t.removeClass(i.highest).removeClass(i.current).not(n).not(s).addClass(i.hidden),n.hasClass(i.opened)?s.addClass(i.highest).removeClass(i.opened).removeClass(i.subopened):(n.addClass(i.highest),s.addClass(i.subopened)),n.removeClass(i.hidden).addClass(i.current),setTimeout(function(){n.removeClass(i.subopened).addClass(i.opened)},this.conf.openingInterval),"open"},_update:function(e){if(this.updates||(this.updates=[]),"function"==typeof e)this.updates.push(e);else for(var n=0,t=this.updates.length;t>n;n++)this.updates[n].call(this,e)},__valueOrFn:function(e,n,t){return"function"==typeof e?e.call(n[0]):"undefined"==typeof e&&"undefined"!=typeof t?t:e},__refactorClass:function(e,n,t){return e.filter("."+n).removeClass(n).addClass(i[t])},__findAddBack:function(e,n){return e.find(n).add(e.filter(n))},__transitionend:function(e,n,t){var s=!1,i=function(){s||n.call(e[0]),s=!0};e.one(o.transitionend,i),e.one(o.webkitTransitionEnd,i),setTimeout(i,1.1*t)},__getUniqueId:function(){return i.mm(e[t].uniqueId++)}},e.fn[t]=function(s,i){return l||n(),s=e.extend(!0,{},e[t].defaults,s),i=e.extend(!0,{},e[t].configuration,i),this.each(function(){var n=e(this);n.data(t)||n.data(t,new e[t](n,s,i))})},e[t].support={touch:"ontouchstart"in window||navigator.msMaxTouchPoints}}}(jQuery);
+/*	
+ * jQuery mmenu offCanvas addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(e){var t="mmenu",o="offCanvas";e[t].addons[o]={_init:function(){},_setup:function(){if(this.opts[o]){var t=this,s=this.opts[o],p=this.conf[o];"string"!=typeof p.pageSelector&&(p.pageSelector="> "+p.pageNodetype),a.$allMenus=(a.$allMenus||e()).add(this.$menu),this.vars.opened=!1;var r=[n.offcanvas];"left"!=s.position&&r.push(n.mm(s.position)),"back"!=s.zposition&&r.push(n.mm(s.zposition)),this.$menu.addClass(r.join(" ")).parent().removeClass(n.wrapper),this.setPage(a.$page),this[o+"_initBlocker"](),this[o+"_initWindow"](),this.$menu.on(i.open+" "+i.opening+" "+i.opened+" "+i.close+" "+i.closing+" "+i.closed+" "+i.setPage,function(e){e.stopPropagation()}).on(i.open+" "+i.close+" "+i.setPage,function(e){t[e.type]()}),this.$menu[p.menuInjectMethod+"To"](p.menuWrapperSelector)}},_add:function(){n=e[t]._c,s=e[t]._d,i=e[t]._e,n.add("offcanvas slideout modal background opening blocker page"),s.add("style"),i.add("opening opened closing closed setPage"),a=e[t].glbl},_clickAnchor:function(e){if(!this.opts[o])return!1;var t=this.$menu.attr("id");if(t&&t.length&&(this.conf.clone&&(t=n.umm(t)),e.is('[href="#'+t+'"]')))return this.open(),!0;if(a.$page){var t=a.$page.attr("id");return t&&t.length&&e.is('[href="#'+t+'"]')?(this.close(),!0):!1}}},e[t].defaults[o]={position:"left",zposition:"back",modal:!1,moveBackground:!0},e[t].configuration[o]={pageNodetype:"div",pageSelector:null,menuWrapperSelector:"body",menuInjectMethod:"prepend"},e[t].prototype.open=function(){if(this.vars.opened)return!1;var e=this;return this._openSetup(),setTimeout(function(){e._openFinish()},this.conf.openingInterval),"open"},e[t].prototype._openSetup=function(){var e=this;a.$allMenus.not(this.$menu).trigger(i.close),a.$page.data(s.style,a.$page.attr("style")||""),a.$wndw.trigger(i.resize,[!0]);var t=[n.opened];this.opts[o].modal&&t.push(n.modal),this.opts[o].moveBackground&&t.push(n.background),"left"!=this.opts[o].position&&t.push(n.mm(this.opts[o].position)),"back"!=this.opts[o].zposition&&t.push(n.mm(this.opts[o].zposition)),this.opts.classes&&t.push(this.opts.classes),a.$html.addClass(t.join(" ")),setTimeout(function(){e.vars.opened=!0},this.conf.openingInterval),this.$menu.addClass(n.current+" "+n.opened)},e[t].prototype._openFinish=function(){var e=this;this.__transitionend(a.$page,function(){e.$menu.trigger(i.opened)},this.conf.transitionDuration),a.$html.addClass(n.opening),this.$menu.trigger(i.opening)},e[t].prototype.close=function(){if(!this.vars.opened)return!1;var e=this;return this.__transitionend(a.$page,function(){e.$menu.removeClass(n.current).removeClass(n.opened),a.$html.removeClass(n.opened).removeClass(n.modal).removeClass(n.background).removeClass(n.mm(e.opts[o].position)).removeClass(n.mm(e.opts[o].zposition)),e.opts.classes&&a.$html.removeClass(e.opts.classes),a.$page.attr("style",a.$page.data(s.style)),e.vars.opened=!1,e.$menu.trigger(i.closed)},this.conf.transitionDuration),a.$html.removeClass(n.opening),this.$menu.trigger(i.closing),"close"},e[t].prototype.setPage=function(t){t||(t=e(this.conf[o].pageSelector,a.$body),t.length>1&&(t=t.wrapAll("<"+this.conf[o].pageNodetype+" />").parent())),t.addClass(n.page+" "+n.slideout),a.$page=t},e[t].prototype[o+"_initWindow"]=function(){a.$wndw.on(i.keydown,function(e){return a.$html.hasClass(n.opened)&&9==e.keyCode?(e.preventDefault(),!1):void 0});var s=0;a.$wndw.on(i.resize,function(e,t){if(t||a.$html.hasClass(n.opened)){var o=a.$wndw.height();(t||o!=s)&&(s=o,a.$page.css("minHeight",o))}}),e[t].prototype[o+"_initWindow"]=function(){}},e[t].prototype[o+"_initBlocker"]=function(){var s=e('<div id="'+n.blocker+'" class="'+n.slideout+'" />').appendTo(a.$body);s.on(i.touchstart,function(e){e.preventDefault(),e.stopPropagation(),s.trigger(i.mousedown)}).on(i.mousedown,function(e){e.preventDefault(),a.$html.hasClass(n.modal)||a.$allMenus.trigger(i.close)}),e[t].prototype[o+"_initBlocker"]=function(){}};var n,s,i,a}(jQuery);
+/*	
+ * jQuery mmenu buttonbars addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(t){var n="mmenu",a="buttonbars";t[n].addons[a]={_init:function(n){this.opts[a],this.conf[a],this.__refactorClass(t("div",n),this.conf.classNames[a].buttonbar,"buttonbar"),t("."+i.buttonbar,n).each(function(){var n=t(this),a=n.children().not("input"),o=n.children().filter("input");n.addClass(i.buttonbar+"-"+a.length),o.each(function(){var n=t(this),i=a.filter('label[for="'+n.attr("id")+'"]');i.length&&n.insertBefore(i)})})},_setup:function(){},_add:function(){i=t[n]._c,o=t[n]._d,r=t[n]._e,i.add("buttonbar"),s=t[n].glbl}},t[n].defaults[a]={},t[n].configuration.classNames[a]={buttonbar:"Buttonbar"};var i,o,r,s}(jQuery);
+/*	
+ * jQuery mmenu counters addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(t){var e="mmenu",n="counters";t[e].addons[n]={_init:function(e){var s=this,d=this.opts[n];this.conf[n],this.__refactorClass(t("em",e),this.conf.classNames[n].counter,"counter"),d.add&&e.each(function(){var e=t(this).data(o.parent);e&&(e.find("> em."+a.counter).length||e.prepend(t('<em class="'+a.counter+'" />')))}),d.update&&e.each(function(){var e=t(this),n=e.data(o.parent);if(n){var d=n.find("> em."+a.counter);d.length&&(e.is("."+a.list)||(e=e.find("> ."+a.list)),e.length&&!e.data(o.updatecounter)&&(e.data(o.updatecounter,!0),s._update(function(){var t=e.children().not("."+a.label).not("."+a.subtitle).not("."+a.hidden).not("."+a.search).not("."+a.noresultsmsg);d.html(t.length)})))}})},_setup:function(){var a=this.opts[n];"boolean"==typeof a&&(a={add:a,update:a}),"object"!=typeof a&&(a={}),a=t.extend(!0,{},t[e].defaults[n],a),this.opts[n]=a},_add:function(){a=t[e]._c,o=t[e]._d,s=t[e]._e,a.add("counter search noresultsmsg"),o.add("updatecounter"),d=t[e].glbl}},t[e].defaults[n]={add:!1,update:!1},t[e].configuration.classNames[n]={counter:"Counter"};var a,o,s,d}(jQuery);
+/*	
+ * jQuery mmenu dragOpen addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(e){function t(e,t,n){return t>e&&(e=t),e>n&&(e=n),e}var n="mmenu",o="dragOpen";e[n].addons[o]={_init:function(){},_setup:function(){if(this.opts.offCanvas){var s=this,p=this.opts[o],d=this.conf[o];if("boolean"==typeof p&&(p={open:p}),"object"!=typeof p&&(p={}),p=e.extend(!0,{},e[n].defaults[o],p),p.open){if(Hammer.VERSION<2)return;var f,c,h,m,u={},g=0,l=!1,v=!1,_=0,w=0;switch(this.opts.offCanvas.position){case"left":case"right":u.events="panleft panright",u.typeLower="x",u.typeUpper="X",v="width";break;case"top":case"bottom":u.events="panup pandown",u.typeLower="y",u.typeUpper="Y",v="height"}switch(this.opts.offCanvas.position){case"left":case"top":u.negative=!1;break;case"right":case"bottom":u.negative=!0}switch(this.opts.offCanvas.position){case"left":u.open_dir="right",u.close_dir="left";break;case"right":u.open_dir="left",u.close_dir="right";break;case"top":u.open_dir="down",u.close_dir="up";break;case"bottom":u.open_dir="up",u.close_dir="down"}var b=this.__valueOrFn(p.pageNode,this.$menu,r.$page);"string"==typeof b&&(b=e(b));var y=r.$page;switch(this.opts.offCanvas.zposition){case"front":y=this.$menu;break;case"next":y=y.add(this.$menu)}var $=new Hammer(b[0],p.vendors.hammer);$.on("panstart",function(e){switch(m=e.center[u.typeLower],s.opts.offCanvas.position){case"right":case"bottom":m>=r.$wndw[v]()-p.maxStartPos&&(g=1);break;default:m<=p.maxStartPos&&(g=1)}l=u.open_dir}).on(u.events+" panend",function(e){g>0&&e.preventDefault()}).on(u.events,function(e){if(f=e["delta"+u.typeUpper],u.negative&&(f=-f),f!=_&&(l=f>=_?u.open_dir:u.close_dir),_=f,_>p.threshold&&1==g){if(r.$html.hasClass(a.opened))return;g=2,s._openSetup(),s.$menu.trigger(i.opening),r.$html.addClass(a.dragging),w=t(r.$wndw[v]()*d[v].perc,d[v].min,d[v].max)}2==g&&(c=t(_,10,w)-("front"==s.opts.offCanvas.zposition?w:0),u.negative&&(c=-c),h="translate"+u.typeUpper+"("+c+"px )",y.css({"-webkit-transform":"-webkit-"+h,transform:h}))}).on("panend",function(){2==g&&(r.$html.removeClass(a.dragging),y.css("transform",""),s[l==u.open_dir?"_openFinish":"close"]()),g=0})}}},_add:function(){return"function"!=typeof Hammer?(e[n].addons[o]._init=function(){},e[n].addons[o]._setup=function(){},void 0):(a=e[n]._c,s=e[n]._d,i=e[n]._e,a.add("dragging"),r=e[n].glbl,void 0)}},e[n].defaults[o]={open:!1,maxStartPos:100,threshold:50,vendors:{hammer:{}}},e[n].configuration[o]={width:{perc:.8,min:140,max:440},height:{perc:.8,min:140,max:880}};var a,s,i,r}(jQuery);
+/*	
+ * jQuery mmenu fixedElements addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(o){var t="mmenu",d="fixedElements";o[t].addons[d]={_init:function(){if(this.opts.offCanvas){var o=this.conf.classNames[d].fixedTop,t=this.conf.classNames[d].fixedBottom,e=this.__refactorClass(a.$page.find("."+o),o,"fixed-top"),s=this.__refactorClass(a.$page.find("."+t),t,"fixed-bottom");e.add(s).appendTo(a.$body).addClass(i.slideout)}},_setup:function(){},_add:function(){i=o[t]._c,e=o[t]._d,s=o[t]._e,i.add("fixed-top fixed-bottom"),a=o[t].glbl}},o[t].defaults[d]={},o[t].configuration.classNames[d]={fixedTop:"FixedTop",fixedBottom:"FixedBottom"};var i,e,s,a}(jQuery);
+/*	
+ * jQuery mmenu footer addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(t){var o="mmenu",e="footer";t[o].addons[e]={_init:function(a){var d=this,i=this.opts[e],r=t("div."+n.footer,this.$menu);r.length&&(i.update&&a.each(function(){var o=t(this),a=t("."+d.conf.classNames[e].panelFooter,o),u=a.html();u||(u=i.title);var l=function(){r[u?"show":"hide"](),r.html(u)};o.on(s.open,l),o.hasClass(n.current)&&l()}),t[o].addons.buttonbars&&t[o].addons.buttonbars._init.call(this,r))},_setup:function(){var a=this.opts[e];if("boolean"==typeof a&&(a={add:a,update:a}),"object"!=typeof a&&(a={}),a=t.extend(!0,{},t[o].defaults[e],a),this.opts[e]=a,a.add){var s=a.content?a.content:a.title;t('<div class="'+n.footer+'" />').appendTo(this.$menu).append(s),this.$menu.addClass(n.hasfooter)}},_add:function(){n=t[o]._c,a=t[o]._d,s=t[o]._e,n.add("footer hasfooter"),d=t[o].glbl}},t[o].defaults[e]={add:!1,content:!1,title:"",update:!1},t[o].configuration.classNames[e]={panelFooter:"Footer"};var n,a,s,d}(jQuery);
+/*	
+ * jQuery mmenu header addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(e){var t="mmenu",a="header";e[t].addons[a]={_init:function(s){var i=this,o=this.opts[a],l=(this.conf[a],e("."+n.header,this.$menu));if(l.length){if(o.update){var h=l.find("."+n.title),c=l.find("."+n.prev),f=l.find("."+n.next),p=l.find("."+n.close),u=!1;r.$page&&(u="#"+r.$page.attr("id"),p.attr("href",u)),s.each(function(){var t=e(this),s=t.find("."+i.conf.classNames[a].panelHeader),r=t.find("."+i.conf.classNames[a].panelPrev),l=t.find("."+i.conf.classNames[a].panelNext),p=s.html(),u=r.attr("href"),v=l.attr("href"),m=r.html(),b=l.html();p||(p=t.find("."+n.subclose).html()),p||(p=o.title),u||(u=t.find("."+n.subclose).attr("href"));var x=function(){h[p?"show":"hide"](),h.html(p),c[u?"attr":"removeAttr"]("href",u),c[u||m?"show":"hide"](),c.html(m),f[v?"attr":"removeAttr"]("href",v),f[v||b?"show":"hide"](),f.html(b)};t.on(d.open,x),t.hasClass(n.current)&&x()})}e[t].addons.buttonbars&&e[t].addons.buttonbars._init.call(this,l)}},_setup:function(){var s=this.opts[a];if(this.conf[a],"boolean"==typeof s&&(s={add:s,update:s}),"object"!=typeof s&&(s={}),"undefined"==typeof s.content&&(s.content=["prev","title","next"]),s=e.extend(!0,{},e[t].defaults[a],s),this.opts[a]=s,s.add){if(s.content instanceof Array){for(var d=e("<div />"),r=0,i=s.content.length;i>r;r++)switch(s.content[r]){case"prev":case"next":case"close":d.append('<a class="'+n[s.content[r]]+'" href="#"></a>');break;case"title":d.append('<span class="'+n.title+'"></span>');break;default:d.append(s.content[r])}d=d.html()}else var d=s.content;e('<div class="'+n.header+'" />').prependTo(this.$menu).append(d),this.$menu.addClass(n.hasheader)}},_add:function(){n=e[t]._c,s=e[t]._d,d=e[t]._e,n.add("header hasheader prev next close title"),r=e[t].glbl}},e[t].defaults[a]={add:!1,title:"Menu",update:!1},e[t].configuration.classNames[a]={panelHeader:"Header",panelNext:"Next",panelPrev:"Prev"};var n,s,d,r}(jQuery);
+/*	
+ * jQuery mmenu labels addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(l){var e="mmenu",s="labels";l[e].addons[s]={_init:function(e){var n=this.opts[s];this.__refactorClass(l("li",this.$menu),this.conf.classNames[s].collapsed,"collapsed"),n.collapse&&l("."+a.label,e).each(function(){var e=l(this),s=e.nextUntil("."+a.label,"."+a.collapsed);s.length&&(e.children("."+a.subopen).length||(e.wrapInner("<span />"),e.prepend('<a href="#" class="'+a.subopen+" "+a.fullsubopen+'" />')))})},_setup:function(){var a=this.opts[s];"boolean"==typeof a&&(a={collapse:a}),"object"!=typeof a&&(a={}),a=l.extend(!0,{},l[e].defaults[s],a),this.opts[s]=a},_add:function(){a=l[e]._c,n=l[e]._d,o=l[e]._e,a.add("collapsed uncollapsed"),t=l[e].glbl},_clickAnchor:function(l,e){if(e){var s=l.parent();if(s.is("."+a.label)){var n=s.nextUntil("."+a.label,"."+a.collapsed);return s.toggleClass(a.opened),n[s.hasClass(a.opened)?"addClass":"removeClass"](a.uncollapsed),!0}}return!1}},l[e].defaults[s]={collapse:!1},l[e].configuration.classNames[s]={collapsed:"Collapsed"};var a,n,o,t}(jQuery);
+/*	
+ * jQuery mmenu searchfield addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(e){function s(e){switch(e){case 9:case 16:case 17:case 18:case 37:case 38:case 39:case 40:return!0}return!1}var n="mmenu",t="searchfield";e[n].addons[t]={_init:function(n){var i=this,l=this.opts[t],d=this.conf[t];if(l.add){switch(l.addTo){case"menu":var c=this.$menu;break;case"panels":var c=n;break;default:var c=e(l.addTo,this.$menu).filter("."+a.panel)}c.length&&c.each(function(){var s=e(this),n=s.is("."+a.menu)?d.form?"form":"div":"li";if(!s.children(n+"."+a.search).length){if(s.is("."+a.menu))var t=i.$menu,r="prependTo";else var t=s.children().first(),r=t.is("."+a.subtitle)?"insertAfter":"insertBefore";var o=e("<"+n+' class="'+a.search+'" />');if("form"==n&&"object"==typeof d.form)for(var c in d.form)o.attr(c,d.form[c]);o.append('<input placeholder="'+l.placeholder+'" type="text" autocomplete="off" />'),o[r](t)}l.noResults&&(s.is("."+a.menu)&&(s=s.children("."+a.panel).first()),n=s.is("."+a.list)?"li":"div",s.children(n+"."+a.noresultsmsg).length||e("<"+n+' class="'+a.noresultsmsg+'" />').html(l.noResults).appendTo(s))})}if(this.$menu.children("."+a.search).length&&this.$menu.addClass(a.hassearch),l.search){var h=e("."+a.search,this.$menu);h.length&&h.each(function(){var n=e(this);if("menu"==l.addTo)var t=e("."+a.panel,i.$menu),d=i.$menu;else var t=n.closest("."+a.panel),d=t;var c=n.children("input"),h=i.__findAddBack(t,"."+a.list).children("li"),u=h.filter("."+a.label),f=h.not("."+a.subtitle).not("."+a.label).not("."+a.search).not("."+a.noresultsmsg),p="> a";l.showLinksOnly||(p+=", > span"),c.off(o.keyup+" "+o.change).on(o.keyup,function(e){s(e.keyCode)||n.trigger(o.search)}).on(o.change,function(){n.trigger(o.search)}),n.off(o.reset+" "+o.search).on(o.reset+" "+o.search,function(e){e.stopPropagation()}).on(o.reset,function(){n.trigger(o.search,[""])}).on(o.search,function(s,n){"string"==typeof n?c.val(n):n=c.val(),n=n.toLowerCase(),t.scrollTop(0),f.add(u).addClass(a.hidden),f.each(function(){var s=e(this);e(p,s).text().toLowerCase().indexOf(n)>-1&&s.add(s.prevAll("."+a.label).first()).removeClass(a.hidden)}),e(t.get().reverse()).each(function(s){var n=e(this),t=n.data(r.parent);if(t){var d=n.add(n.find("> ."+a.list)).find("> li").not("."+a.subtitle).not("."+a.search).not("."+a.noresultsmsg).not("."+a.label).not("."+a.hidden);d.length?t.removeClass(a.hidden).removeClass(a.nosubresults).prevAll("."+a.label).first().removeClass(a.hidden):"menu"==l.addTo&&(n.hasClass(a.opened)&&setTimeout(function(){t.trigger(o.open)},1.5*(s+1)*i.conf.openingInterval),t.addClass(a.nosubresults))}}),d[f.not("."+a.hidden).length?"removeClass":"addClass"](a.noresults),i._update()})})}},_setup:function(){var s=this.opts[t];this.conf[t],"boolean"==typeof s&&(s={add:s,search:s}),"object"!=typeof s&&(s={}),s=e.extend(!0,{},e[n].defaults[t],s),"boolean"!=typeof s.showLinksOnly&&(s.showLinksOnly="menu"==s.addTo),this.opts[t]=s},_add:function(){a=e[n]._c,r=e[n]._d,o=e[n]._e,a.add("search hassearch noresultsmsg noresults nosubresults"),o.add("search reset change"),i=e[n].glbl}},e[n].defaults[t]={add:!1,addTo:"menu",search:!1,placeholder:"Search",noResults:"No results found."},e[n].configuration[t]={form:!1};var a,r,o,i}(jQuery);
+/*	
+ * jQuery mmenu toggles addon
+ * mmenu.frebsite.nl
+ *
+ * Copyright (c) Fred Heusschen
+ */
+!function(e){var t="mmenu",s="toggles";e[t].addons[s]={_init:function(t){var a=this;this.opts[s],this.conf[s],this.__refactorClass(e("input",t),this.conf.classNames[s].toggle,"toggle"),this.__refactorClass(e("input",t),this.conf.classNames[s].check,"check"),e("input."+c.toggle+", input."+c.check,t).each(function(){var t=e(this),s=t.closest("li"),l=t.hasClass(c.toggle)?"toggle":"check",n=t.attr("id")||a.__getUniqueId();s.children('label[for="'+n+'"]').length||(t.attr("id",n),s.prepend(t),e('<label for="'+n+'" class="'+c[l]+'"></label>').insertBefore(s.children("a, span").last()))})},_setup:function(){},_add:function(){c=e[t]._c,a=e[t]._d,l=e[t]._e,c.add("toggle check"),n=e[t].glbl}},e[t].defaults[s]={},e[t].configuration.classNames[s]={toggle:"Toggle",check:"Check"};var c,a,l,n}(jQuery);
+/*!
+ * parallax.js v1.4.2 (http://pixelcog.github.io/parallax.js/)
+ * @copyright 2016 PixelCog, Inc.
+ * @license MIT (https://github.com/pixelcog/parallax.js/blob/master/LICENSE)
+ */
+!function(t,i,e,s){function o(i,e){var h=this;"object"==typeof e&&(delete e.refresh,delete e.render,t.extend(this,e)),this.$element=t(i),!this.imageSrc&&this.$element.is("img")&&(this.imageSrc=this.$element.attr("src"));var r=(this.position+"").toLowerCase().match(/\S+/g)||[];if(r.length<1&&r.push("center"),1==r.length&&r.push(r[0]),("top"==r[0]||"bottom"==r[0]||"left"==r[1]||"right"==r[1])&&(r=[r[1],r[0]]),this.positionX!=s&&(r[0]=this.positionX.toLowerCase()),this.positionY!=s&&(r[1]=this.positionY.toLowerCase()),h.positionX=r[0],h.positionY=r[1],"left"!=this.positionX&&"right"!=this.positionX&&(this.positionX=isNaN(parseInt(this.positionX))?"center":parseInt(this.positionX)),"top"!=this.positionY&&"bottom"!=this.positionY&&(this.positionY=isNaN(parseInt(this.positionY))?"center":parseInt(this.positionY)),this.position=this.positionX+(isNaN(this.positionX)?"":"px")+" "+this.positionY+(isNaN(this.positionY)?"":"px"),navigator.userAgent.match(/(iPod|iPhone|iPad)/))return this.imageSrc&&this.iosFix&&!this.$element.is("img")&&this.$element.css({backgroundImage:"url("+this.imageSrc+")",backgroundSize:"cover",backgroundPosition:this.position}),this;if(navigator.userAgent.match(/(Android)/))return this.imageSrc&&this.androidFix&&!this.$element.is("img")&&this.$element.css({backgroundImage:"url("+this.imageSrc+")",backgroundSize:"cover",backgroundPosition:this.position}),this;this.$mirror=t("<div />").prependTo("body");var a=this.$element.find(">.parallax-slider"),n=!1;0==a.length?this.$slider=t("<img />").prependTo(this.$mirror):(this.$slider=a.prependTo(this.$mirror),n=!0),this.$mirror.addClass("parallax-mirror").css({visibility:"hidden",zIndex:this.zIndex,position:"fixed",top:0,left:0,overflow:"hidden"}),this.$slider.addClass("parallax-slider").one("load",function(){h.naturalHeight&&h.naturalWidth||(h.naturalHeight=this.naturalHeight||this.height||1,h.naturalWidth=this.naturalWidth||this.width||1),h.aspectRatio=h.naturalWidth/h.naturalHeight,o.isSetup||o.setup(),o.sliders.push(h),o.isFresh=!1,o.requestRender()}),n||(this.$slider[0].src=this.imageSrc),(this.naturalHeight&&this.naturalWidth||this.$slider[0].complete||a.length>0)&&this.$slider.trigger("load")}function h(s){return this.each(function(){var h=t(this),r="object"==typeof s&&s;this==i||this==e||h.is("body")?o.configure(r):h.data("px.parallax")?"object"==typeof s&&t.extend(h.data("px.parallax"),r):(r=t.extend({},h.data(),r),h.data("px.parallax",new o(this,r))),"string"==typeof s&&("destroy"==s?o.destroy(this):o[s]())})}!function(){for(var t=0,e=["ms","moz","webkit","o"],s=0;s<e.length&&!i.requestAnimationFrame;++s)i.requestAnimationFrame=i[e[s]+"RequestAnimationFrame"],i.cancelAnimationFrame=i[e[s]+"CancelAnimationFrame"]||i[e[s]+"CancelRequestAnimationFrame"];i.requestAnimationFrame||(i.requestAnimationFrame=function(e){var s=(new Date).getTime(),o=Math.max(0,16-(s-t)),h=i.setTimeout(function(){e(s+o)},o);return t=s+o,h}),i.cancelAnimationFrame||(i.cancelAnimationFrame=function(t){clearTimeout(t)})}(),t.extend(o.prototype,{speed:.2,bleed:0,zIndex:-100,iosFix:!0,androidFix:!0,position:"center",overScrollFix:!1,refresh:function(){this.boxWidth=this.$element.outerWidth(),this.boxHeight=this.$element.outerHeight()+2*this.bleed,this.boxOffsetTop=this.$element.offset().top-this.bleed,this.boxOffsetLeft=this.$element.offset().left,this.boxOffsetBottom=this.boxOffsetTop+this.boxHeight;var t=o.winHeight,i=o.docHeight,e=Math.min(this.boxOffsetTop,i-t),s=Math.max(this.boxOffsetTop+this.boxHeight-t,0),h=this.boxHeight+(e-s)*(1-this.speed)|0,r=(this.boxOffsetTop-e)*(1-this.speed)|0;if(h*this.aspectRatio>=this.boxWidth){this.imageWidth=h*this.aspectRatio|0,this.imageHeight=h,this.offsetBaseTop=r;var a=this.imageWidth-this.boxWidth;this.offsetLeft="left"==this.positionX?0:"right"==this.positionX?-a:isNaN(this.positionX)?-a/2|0:Math.max(this.positionX,-a)}else{this.imageWidth=this.boxWidth,this.imageHeight=this.boxWidth/this.aspectRatio|0,this.offsetLeft=0;var a=this.imageHeight-h;this.offsetBaseTop="top"==this.positionY?r:"bottom"==this.positionY?r-a:isNaN(this.positionY)?r-a/2|0:r+Math.max(this.positionY,-a)}},render:function(){var t=o.scrollTop,i=o.scrollLeft,e=this.overScrollFix?o.overScroll:0,s=t+o.winHeight;this.boxOffsetBottom>t&&this.boxOffsetTop<=s?(this.visibility="visible",this.mirrorTop=this.boxOffsetTop-t,this.mirrorLeft=this.boxOffsetLeft-i,this.offsetTop=this.offsetBaseTop-this.mirrorTop*(1-this.speed)):this.visibility="hidden",this.$mirror.css({transform:"translate3d(0px, 0px, 0px)",visibility:this.visibility,top:this.mirrorTop-e,left:this.mirrorLeft,height:this.boxHeight,width:this.boxWidth}),this.$slider.css({transform:"translate3d(0px, 0px, 0px)",position:"absolute",top:this.offsetTop,left:this.offsetLeft,height:this.imageHeight,width:this.imageWidth,maxWidth:"none"})}}),t.extend(o,{scrollTop:0,scrollLeft:0,winHeight:0,winWidth:0,docHeight:1<<30,docWidth:1<<30,sliders:[],isReady:!1,isFresh:!1,isBusy:!1,setup:function(){if(!this.isReady){var s=t(e),h=t(i),r=function(){o.winHeight=h.height(),o.winWidth=h.width(),o.docHeight=s.height(),o.docWidth=s.width()},a=function(){var t=h.scrollTop(),i=o.docHeight-o.winHeight,e=o.docWidth-o.winWidth;o.scrollTop=Math.max(0,Math.min(i,t)),o.scrollLeft=Math.max(0,Math.min(e,h.scrollLeft())),o.overScroll=Math.max(t-i,Math.min(t,0))};h.on("resize.px.parallax load.px.parallax",function(){r(),o.isFresh=!1,o.requestRender()}).on("scroll.px.parallax load.px.parallax",function(){a(),o.requestRender()}),r(),a(),this.isReady=!0}},configure:function(i){"object"==typeof i&&(delete i.refresh,delete i.render,t.extend(this.prototype,i))},refresh:function(){t.each(this.sliders,function(){this.refresh()}),this.isFresh=!0},render:function(){this.isFresh||this.refresh(),t.each(this.sliders,function(){this.render()})},requestRender:function(){var t=this;this.isBusy||(this.isBusy=!0,i.requestAnimationFrame(function(){t.render(),t.isBusy=!1}))},destroy:function(e){var s,h=t(e).data("px.parallax");for(h.$mirror.remove(),s=0;s<this.sliders.length;s+=1)this.sliders[s]==h&&this.sliders.splice(s,1);t(e).data("px.parallax",!1),0===this.sliders.length&&(t(i).off("scroll.px.parallax resize.px.parallax load.px.parallax"),this.isReady=!1,o.isSetup=!1)}});var r=t.fn.parallax;t.fn.parallax=h,t.fn.parallax.Constructor=o,t.fn.parallax.noConflict=function(){return t.fn.parallax=r,this},t(e).on("ready.px.parallax.data-api",function(){t('[data-parallax="scroll"]').parallax()})}(jQuery,window,document);
+!(function($) {
+  'use strict';
+
+  /**
+   * Name of the plugin
+   * @private
+   * @type {String}
+   */
+  var pluginName = 'remodal';
+
+  /**
+   * Namespace for CSS and events
+   * @private
+   * @type {String}
+   */
+  var namespace = window.remodalGlobals && window.remodalGlobals.namespace || pluginName;
+
+  /**
+   * Default settings
+   * @private
+   * @type {Object}
+   */
+  var defaults = $.extend({
+    hashTracking: true,
+    closeOnConfirm: true,
+    closeOnCancel: true,
+    closeOnEscape: true,
+    closeOnAnyClick: true
+  }, window.remodalGlobals && window.remodalGlobals.defaults);
+
+  /**
+   * Current modal
+   * @private
+   * @type {Remodal}
+   */
+  var current;
+
+  /**
+   * Scrollbar position
+   * @private
+   * @type {Number}
+   */
+  var scrollTop;
+
+  /**
+   * Get a transition duration in ms
+   * @private
+   * @param {jQuery} $elem
+   * @return {Number}
+   */
+  function getTransitionDuration($elem) {
+    var duration = $elem.css('transition-duration') ||
+        $elem.css('-webkit-transition-duration') ||
+        $elem.css('-moz-transition-duration') ||
+        $elem.css('-o-transition-duration') ||
+        $elem.css('-ms-transition-duration') ||
+        '0s';
+
+    var delay = $elem.css('transition-delay') ||
+        $elem.css('-webkit-transition-delay') ||
+        $elem.css('-moz-transition-delay') ||
+        $elem.css('-o-transition-delay') ||
+        $elem.css('-ms-transition-delay') ||
+        '0s';
+
+    var max;
+    var len;
+    var num;
+    var i;
+
+    duration = duration.split(', ');
+    delay = delay.split(', ');
+
+    // The duration length is the same as the delay length
+    for (i = 0, len = duration.length, max = Number.NEGATIVE_INFINITY; i < len; i++) {
+      num = parseFloat(duration[i]) + parseFloat(delay[i]);
+
+      if (num > max) {
+        max = num;
+      }
+    }
+
+    return num * 1000;
+  }
+
+  /**
+   * Get a scrollbar width
+   * @private
+   * @return {Number}
+   */
+  function getScrollbarWidth() {
+    if ($(document.body).height() <= $(window).height()) {
+      return 0;
+    }
+
+    var outer = document.createElement('div');
+    var inner = document.createElement('div');
+    var widthNoScroll;
+    var widthWithScroll;
+
+    outer.style.visibility = 'hidden';
+    outer.style.width = '100px';
+    document.body.appendChild(outer);
+
+    widthNoScroll = outer.offsetWidth;
+
+    // Force scrollbars
+    outer.style.overflow = 'scroll';
+
+    // Add inner div
+    inner.style.width = '100%';
+    outer.appendChild(inner);
+
+    widthWithScroll = inner.offsetWidth;
+
+    // Remove divs
+    outer.parentNode.removeChild(outer);
+
+    return widthNoScroll - widthWithScroll;
+  }
+
+  /**
+   * Lock the screen
+   * @private
+   */
+  function lockScreen() {
+    var $html = $('html');
+    var lockedClass = namespace + '-is-locked';
+    var paddingRight;
+    var $body;
+
+    if (!$html.hasClass(lockedClass)) {
+      $body = $(document.body);
+
+      // Zepto does not support '-=', '+=' in the `css` method
+      paddingRight = parseInt($body.css('padding-right'), 10) + getScrollbarWidth();
+
+      $body.css('padding-right', paddingRight + 'px');
+      $html.addClass(lockedClass);
+    }
+  }
+
+  /**
+   * Unlock the screen
+   * @private
+   */
+  function unlockScreen() {
+    var $html = $('html');
+    var lockedClass = namespace + '-is-locked';
+    var paddingRight;
+    var $body;
+
+    if ($html.hasClass(lockedClass)) {
+      $body = $(document.body);
+
+      // Zepto does not support '-=', '+=' in the `css` method
+      paddingRight = parseInt($body.css('padding-right'), 10) - getScrollbarWidth();
+
+      $body.css('padding-right', paddingRight + 'px');
+      $html.removeClass(lockedClass);
+    }
+  }
+
+  /**
+   * Parse a string with options
+   * @private
+   * @param str
+   * @returns {Object}
+   */
+  function parseOptions(str) {
+    var obj = {};
+    var arr;
+    var len;
+    var val;
+    var i;
+
+    // Remove spaces before and after delimiters
+    str = str.replace(/\s*:\s*/g, ':').replace(/\s*,\s*/g, ',');
+
+    // Parse a string
+    arr = str.split(',');
+    for (i = 0, len = arr.length; i < len; i++) {
+      arr[i] = arr[i].split(':');
+      val = arr[i][1];
+
+      // Convert a string value if it is like a boolean
+      if (typeof val === 'string' || val instanceof String) {
+        val = val === 'true' || (val === 'false' ? false : val);
+      }
+
+      // Convert a string value if it is like a number
+      if (typeof val === 'string' || val instanceof String) {
+        val = !isNaN(val) ? +val : val;
+      }
+
+      obj[arr[i][0]] = val;
+    }
+
+    return obj;
+  }
+
+  /**
+   * Remodal constructor
+   * @param {jQuery} $modal
+   * @param {Object} options
+   * @constructor
+   */
+  function Remodal($modal, options) {
+    var remodal = this;
+    var tdOverlay;
+    var tdModal;
+    var tdBg;
+
+    remodal.settings = $.extend({}, defaults, options);
+
+    // Build DOM
+    remodal.$body = $(document.body);
+    remodal.$overlay = $('.' + namespace + '-overlay');
+
+    if (!remodal.$overlay.length) {
+      remodal.$overlay = $('<div>').addClass(namespace + '-overlay');
+      remodal.$body.append(remodal.$overlay);
+    }
+
+    remodal.$bg = $('.' + namespace + '-bg');
+    remodal.$closeButton = $('<a href="#"></a>').addClass(namespace + '-close');
+    remodal.$wrapper = $('<div>').addClass(namespace + '-wrapper');
+    remodal.$modal = $modal;
+    remodal.$modal.addClass(namespace);
+    remodal.$modal.css('visibility', 'visible');
+
+    remodal.$modal.append(remodal.$closeButton);
+    remodal.$wrapper.append(remodal.$modal);
+    remodal.$body.append(remodal.$wrapper);
+    remodal.$confirmButton = remodal.$modal.find('.' + namespace + '-confirm');
+    remodal.$cancelButton = remodal.$modal.find('.' + namespace + '-cancel');
+
+    // Calculate timeouts
+    tdOverlay = getTransitionDuration(remodal.$overlay);
+    tdModal = getTransitionDuration(remodal.$modal);
+    tdBg = getTransitionDuration(remodal.$bg);
+    remodal.td = tdModal > tdOverlay ? tdModal : tdOverlay;
+    remodal.td = tdBg > remodal.td ? tdBg : remodal.td;
+
+    // Add the close button event listener
+    remodal.$wrapper.on('click.' + namespace, '.' + namespace + '-close', function(e) {
+      e.preventDefault();
+
+      remodal.close();
+    });
+
+    // Add the cancel button event listener
+    remodal.$wrapper.on('click.' + namespace, '.' + namespace + '-cancel', function(e) {
+      e.preventDefault();
+
+      remodal.$modal.trigger('cancel');
+
+      if (remodal.settings.closeOnCancel) {
+        remodal.close('cancellation');
+      }
+    });
+
+    // Add the confirm button event listener
+    remodal.$wrapper.on('click.' + namespace, '.' + namespace + '-confirm', function(e) {
+      e.preventDefault();
+
+      remodal.$modal.trigger('confirm');
+
+      if (remodal.settings.closeOnConfirm) {
+        remodal.close('confirmation');
+      }
+    });
+
+    // Add the keyboard event listener
+    $(document).on('keyup.' + namespace, function(e) {
+      if (e.keyCode === 27 && remodal.settings.closeOnEscape) {
+        remodal.close();
+      }
+    });
+
+    // Add the overlay event listener
+    remodal.$wrapper.on('click.' + namespace, function(e) {
+      var $target = $(e.target);
+
+      if (!$target.hasClass(namespace + '-wrapper')) {
+        return;
+      }
+
+      if (remodal.settings.closeOnAnyClick) {
+        remodal.close();
+      }
+    });
+
+    remodal.index = $[pluginName].lookup.push(remodal) - 1;
+    remodal.busy = false;
+  }
+
+  /**
+   * Open a modal window
+   * @public
+   */
+  Remodal.prototype.open = function() {
+
+    // Check if the animation was completed
+    if (this.busy) {
+      return;
+    }
+
+    var remodal = this;
+    var id;
+
+    remodal.busy = true;
+    remodal.$modal.trigger('open');
+
+    id = remodal.$modal.attr('data-' + pluginName + '-id');
+
+    if (id && remodal.settings.hashTracking) {
+      scrollTop = $(window).scrollTop();
+      location.hash = id;
+    }
+
+    if (current && current !== remodal) {
+      current.$overlay.hide();
+      current.$wrapper.hide();
+      current.$body.removeClass(namespace + '-is-active');
+    }
+
+    current = remodal;
+
+    lockScreen();
+    remodal.$overlay.show();
+    remodal.$wrapper.show();
+
+    setTimeout(function() {
+      remodal.$body.addClass(namespace + '-is-active');
+
+      setTimeout(function() {
+        remodal.busy = false;
+        remodal.$modal.trigger('opened');
+      }, remodal.td + 50);
+    }, 25);
+  };
+
+  /**
+   * Close a modal window
+   * @public
+   * @param {String|undefined} reason A reason to close
+   */
+  Remodal.prototype.close = function(reason) {
+
+    // Check if the animation was completed
+    if (this.busy) {
+      return;
+    }
+
+    var remodal = this;
+
+    remodal.busy = true;
+    remodal.$modal.trigger({
+      type: 'close',
+      reason: reason
+    });
+
+    if (remodal.settings.hashTracking &&
+      remodal.$modal.attr('data-' + pluginName + '-id') === location.hash.substr(1)) {
+
+      location.hash = '';
+      $(window).scrollTop(scrollTop);
+    }
+
+    remodal.$body.removeClass(namespace + '-is-active');
+
+    setTimeout(function() {
+      remodal.$overlay.hide();
+      remodal.$wrapper.hide();
+      unlockScreen();
+
+      remodal.busy = false;
+      remodal.$modal.trigger({
+        type: 'closed',
+        reason: reason
+      });
+    }, remodal.td + 50);
+  };
+
+  /**
+   * Special plugin object for instances.
+   * @public
+   * @type {Object}
+   */
+  $[pluginName] = {
+    lookup: []
+  };
+
+  /**
+   * Plugin constructor
+   * @param {Object} options
+   * @returns {JQuery}
+   * @constructor
+   */
+  $.fn[pluginName] = function(opts) {
+    var instance;
+    var $elem;
+
+    this.each(function(index, elem) {
+      $elem = $(elem);
+
+      if ($elem.data(pluginName) == null) {
+        instance = new Remodal($elem, opts);
+        $elem.data(pluginName, instance.index);
+
+        if (instance.settings.hashTracking &&
+          $elem.attr('data-' + pluginName + '-id') === location.hash.substr(1)) {
+
+          instance.open();
+        }
+      } else {
+        instance = $[pluginName].lookup[$elem.data(pluginName)];
+      }
+    });
+
+    return instance;
+  };
+
+  $(document).ready(function() {
+
+    // data-remodal-target opens a modal window with the special Id.
+    $(document).on('click', '[data-' + pluginName + '-target]', function(e) {
+      e.preventDefault();
+
+      var elem = e.currentTarget;
+      var id = elem.getAttribute('data-' + pluginName + '-target');
+      var $target = $('[data-' + pluginName + '-id=' + id + ']');
+
+      $[pluginName].lookup[$target.data(pluginName)].open();
+    });
+
+    // Auto initialization of modal windows.
+    // They should have the 'remodal' class attribute.
+    // Also you can write `data-remodal-options` attribute to pass params into the modal.
+    $(document).find('.' + namespace).each(function(i, container) {
+      var $container = $(container);
+      var options = $container.data(pluginName + '-options');
+
+      if (!options) {
+        options = {};
+      } else if (typeof options === 'string' || options instanceof String) {
+        options = parseOptions(options);
+      }
+
+      $container[pluginName](options);
+    });
+  });
+
+  /**
+   * Hashchange handler
+   * @private
+   * @param {Event} e
+   * @param {Boolean} [closeOnEmptyHash=true]
+   */
+  function hashHandler(e, closeOnEmptyHash) {
+    var id = location.hash.replace('#', '');
+    var instance;
+    var $elem;
+
+    if (typeof closeOnEmptyHash === 'undefined') {
+      closeOnEmptyHash = true;
+    }
+
+    if (!id) {
+      if (closeOnEmptyHash) {
+
+        // Check if we have currently opened modal and animation was completed
+        if (current && !current.busy && current.settings.hashTracking) {
+          current.close();
+        }
+      }
+    } else {
+
+      // Catch syntax error if your hash is bad
+      try {
+        $elem = $(
+          '[data-' + pluginName + '-id=' +
+          id.replace(new RegExp('/', 'g'), '\\/') + ']'
+        );
+      } catch (err) {}
+
+      if ($elem && $elem.length) {
+        instance = $[pluginName].lookup[$elem.data(pluginName)];
+
+        if (instance && instance.settings.hashTracking) {
+          instance.open();
+        }
+      }
+
+    }
+  }
+
+  $(window).bind('hashchange.' + namespace, hashHandler);
+
+})(window.jQuery || window.Zepto);
+
+!(function($) {
+  'use strict';
+
+  /**
+   * Name of the plugin
+   * @private
+   * @type {String}
+   */
+  var pluginName = 'remodal';
+
+  /**
+   * Namespace for CSS and events
+   * @private
+   * @type {String}
+   */
+  var namespace = window.remodalGlobals && window.remodalGlobals.namespace || pluginName;
+
+  /**
+   * Default settings
+   * @private
+   * @type {Object}
+   */
+  var defaults = $.extend({
+    hashTracking: true,
+    closeOnConfirm: true,
+    closeOnCancel: true,
+    closeOnEscape: true,
+    closeOnAnyClick: true
+  }, window.remodalGlobals && window.remodalGlobals.defaults);
+
+  /**
+   * Current modal
+   * @private
+   * @type {Remodal}
+   */
+  var current;
+
+  /**
+   * Scrollbar position
+   * @private
+   * @type {Number}
+   */
+  var scrollTop;
+
+  /**
+   * Get a transition duration in ms
+   * @private
+   * @param {jQuery} $elem
+   * @return {Number}
+   */
+  function getTransitionDuration($elem) {
+    var duration = $elem.css('transition-duration') ||
+        $elem.css('-webkit-transition-duration') ||
+        $elem.css('-moz-transition-duration') ||
+        $elem.css('-o-transition-duration') ||
+        $elem.css('-ms-transition-duration') ||
+        '0s';
+
+    var delay = $elem.css('transition-delay') ||
+        $elem.css('-webkit-transition-delay') ||
+        $elem.css('-moz-transition-delay') ||
+        $elem.css('-o-transition-delay') ||
+        $elem.css('-ms-transition-delay') ||
+        '0s';
+
+    var max;
+    var len;
+    var num;
+    var i;
+
+    duration = duration.split(', ');
+    delay = delay.split(', ');
+
+    // The duration length is the same as the delay length
+    for (i = 0, len = duration.length, max = Number.NEGATIVE_INFINITY; i < len; i++) {
+      num = parseFloat(duration[i]) + parseFloat(delay[i]);
+
+      if (num > max) {
+        max = num;
+      }
+    }
+
+    return num * 1000;
+  }
+
+  /**
+   * Get a scrollbar width
+   * @private
+   * @return {Number}
+   */
+  function getScrollbarWidth() {
+    if ($(document.body).height() <= $(window).height()) {
+      return 0;
+    }
+
+    var outer = document.createElement('div');
+    var inner = document.createElement('div');
+    var widthNoScroll;
+    var widthWithScroll;
+
+    outer.style.visibility = 'hidden';
+    outer.style.width = '100px';
+    document.body.appendChild(outer);
+
+    widthNoScroll = outer.offsetWidth;
+
+    // Force scrollbars
+    outer.style.overflow = 'scroll';
+
+    // Add inner div
+    inner.style.width = '100%';
+    outer.appendChild(inner);
+
+    widthWithScroll = inner.offsetWidth;
+
+    // Remove divs
+    outer.parentNode.removeChild(outer);
+
+    return widthNoScroll - widthWithScroll;
+  }
+
+  /**
+   * Lock the screen
+   * @private
+   */
+  function lockScreen() {
+    var $html = $('html');
+    var lockedClass = namespace + '-is-locked';
+    var paddingRight;
+    var $body;
+
+    if (!$html.hasClass(lockedClass)) {
+      $body = $(document.body);
+
+      // Zepto does not support '-=', '+=' in the `css` method
+      paddingRight = parseInt($body.css('padding-right'), 10) + getScrollbarWidth();
+
+      $body.css('padding-right', paddingRight + 'px');
+      $html.addClass(lockedClass);
+    }
+  }
+
+  /**
+   * Unlock the screen
+   * @private
+   */
+  function unlockScreen() {
+    var $html = $('html');
+    var lockedClass = namespace + '-is-locked';
+    var paddingRight;
+    var $body;
+
+    if ($html.hasClass(lockedClass)) {
+      $body = $(document.body);
+
+      // Zepto does not support '-=', '+=' in the `css` method
+      paddingRight = parseInt($body.css('padding-right'), 10) - getScrollbarWidth();
+
+      $body.css('padding-right', paddingRight + 'px');
+      $html.removeClass(lockedClass);
+    }
+  }
+
+  /**
+   * Parse a string with options
+   * @private
+   * @param str
+   * @returns {Object}
+   */
+  function parseOptions(str) {
+    var obj = {};
+    var arr;
+    var len;
+    var val;
+    var i;
+
+    // Remove spaces before and after delimiters
+    str = str.replace(/\s*:\s*/g, ':').replace(/\s*,\s*/g, ',');
+
+    // Parse a string
+    arr = str.split(',');
+    for (i = 0, len = arr.length; i < len; i++) {
+      arr[i] = arr[i].split(':');
+      val = arr[i][1];
+
+      // Convert a string value if it is like a boolean
+      if (typeof val === 'string' || val instanceof String) {
+        val = val === 'true' || (val === 'false' ? false : val);
+      }
+
+      // Convert a string value if it is like a number
+      if (typeof val === 'string' || val instanceof String) {
+        val = !isNaN(val) ? +val : val;
+      }
+
+      obj[arr[i][0]] = val;
+    }
+
+    return obj;
+  }
+
+  /**
+   * Remodal constructor
+   * @param {jQuery} $modal
+   * @param {Object} options
+   * @constructor
+   */
+  function Remodal($modal, options) {
+    var remodal = this;
+    var tdOverlay;
+    var tdModal;
+    var tdBg;
+
+    remodal.settings = $.extend({}, defaults, options);
+
+    // Build DOM
+    remodal.$body = $(document.body);
+    remodal.$overlay = $('.' + namespace + '-overlay');
+
+    if (!remodal.$overlay.length) {
+      remodal.$overlay = $('<div>').addClass(namespace + '-overlay');
+      remodal.$body.append(remodal.$overlay);
+    }
+
+    remodal.$bg = $('.' + namespace + '-bg');
+    remodal.$closeButton = $('<a href="#"></a>').addClass(namespace + '-close');
+    remodal.$wrapper = $('<div>').addClass(namespace + '-wrapper');
+    remodal.$modal = $modal;
+    remodal.$modal.addClass(namespace);
+    remodal.$modal.css('visibility', 'visible');
+
+    remodal.$modal.append(remodal.$closeButton);
+    remodal.$wrapper.append(remodal.$modal);
+    remodal.$body.append(remodal.$wrapper);
+    remodal.$confirmButton = remodal.$modal.find('.' + namespace + '-confirm');
+    remodal.$cancelButton = remodal.$modal.find('.' + namespace + '-cancel');
+
+    // Calculate timeouts
+    tdOverlay = getTransitionDuration(remodal.$overlay);
+    tdModal = getTransitionDuration(remodal.$modal);
+    tdBg = getTransitionDuration(remodal.$bg);
+    remodal.td = tdModal > tdOverlay ? tdModal : tdOverlay;
+    remodal.td = tdBg > remodal.td ? tdBg : remodal.td;
+
+    // Add the close button event listener
+    remodal.$wrapper.on('click.' + namespace, '.' + namespace + '-close', function(e) {
+      e.preventDefault();
+
+      remodal.close();
+    });
+
+    // Add the cancel button event listener
+    remodal.$wrapper.on('click.' + namespace, '.' + namespace + '-cancel', function(e) {
+      e.preventDefault();
+
+      remodal.$modal.trigger('cancel');
+
+      if (remodal.settings.closeOnCancel) {
+        remodal.close('cancellation');
+      }
+    });
+
+    // Add the confirm button event listener
+    remodal.$wrapper.on('click.' + namespace, '.' + namespace + '-confirm', function(e) {
+      e.preventDefault();
+
+      remodal.$modal.trigger('confirm');
+
+      if (remodal.settings.closeOnConfirm) {
+        remodal.close('confirmation');
+      }
+    });
+
+    // Add the keyboard event listener
+    $(document).on('keyup.' + namespace, function(e) {
+      if (e.keyCode === 27 && remodal.settings.closeOnEscape) {
+        remodal.close();
+      }
+    });
+
+    // Add the overlay event listener
+    remodal.$wrapper.on('click.' + namespace, function(e) {
+      var $target = $(e.target);
+
+      if (!$target.hasClass(namespace + '-wrapper')) {
+        return;
+      }
+
+      if (remodal.settings.closeOnAnyClick) {
+        remodal.close();
+      }
+    });
+
+    remodal.index = $[pluginName].lookup.push(remodal) - 1;
+    remodal.busy = false;
+  }
+
+  /**
+   * Open a modal window
+   * @public
+   */
+  Remodal.prototype.open = function() {
+
+    // Check if the animation was completed
+    if (this.busy) {
+      return;
+    }
+
+    var remodal = this;
+    var id;
+
+    remodal.busy = true;
+    remodal.$modal.trigger('open');
+
+    id = remodal.$modal.attr('data-' + pluginName + '-id');
+
+    if (id && remodal.settings.hashTracking) {
+      scrollTop = $(window).scrollTop();
+      location.hash = id;
+    }
+
+    if (current && current !== remodal) {
+      current.$overlay.hide();
+      current.$wrapper.hide();
+      current.$body.removeClass(namespace + '-is-active');
+    }
+
+    current = remodal;
+
+    lockScreen();
+    remodal.$overlay.show();
+    remodal.$wrapper.show();
+
+    setTimeout(function() {
+      remodal.$body.addClass(namespace + '-is-active');
+
+      setTimeout(function() {
+        remodal.busy = false;
+        remodal.$modal.trigger('opened');
+      }, remodal.td + 50);
+    }, 25);
+  };
+
+  /**
+   * Close a modal window
+   * @public
+   * @param {String|undefined} reason A reason to close
+   */
+  Remodal.prototype.close = function(reason) {
+
+    // Check if the animation was completed
+    if (this.busy) {
+      return;
+    }
+
+    var remodal = this;
+
+    remodal.busy = true;
+    remodal.$modal.trigger({
+      type: 'close',
+      reason: reason
+    });
+
+    if (remodal.settings.hashTracking &&
+      remodal.$modal.attr('data-' + pluginName + '-id') === location.hash.substr(1)) {
+
+      location.hash = '';
+      $(window).scrollTop(scrollTop);
+    }
+
+    remodal.$body.removeClass(namespace + '-is-active');
+
+    setTimeout(function() {
+      remodal.$overlay.hide();
+      remodal.$wrapper.hide();
+      unlockScreen();
+
+      remodal.busy = false;
+      remodal.$modal.trigger({
+        type: 'closed',
+        reason: reason
+      });
+    }, remodal.td + 50);
+  };
+
+  /**
+   * Special plugin object for instances.
+   * @public
+   * @type {Object}
+   */
+  $[pluginName] = {
+    lookup: []
+  };
+
+  /**
+   * Plugin constructor
+   * @param {Object} options
+   * @returns {JQuery}
+   * @constructor
+   */
+  $.fn[pluginName] = function(opts) {
+    var instance;
+    var $elem;
+
+    this.each(function(index, elem) {
+      $elem = $(elem);
+
+      if ($elem.data(pluginName) == null) {
+        instance = new Remodal($elem, opts);
+        $elem.data(pluginName, instance.index);
+
+        if (instance.settings.hashTracking &&
+          $elem.attr('data-' + pluginName + '-id') === location.hash.substr(1)) {
+
+          instance.open();
+        }
+      } else {
+        instance = $[pluginName].lookup[$elem.data(pluginName)];
+      }
+    });
+
+    return instance;
+  };
+
+  $(document).ready(function() {
+
+    // data-remodal-target opens a modal window with the special Id.
+    $(document).on('click', '[data-' + pluginName + '-target]', function(e) {
+      e.preventDefault();
+
+      var elem = e.currentTarget;
+      var id = elem.getAttribute('data-' + pluginName + '-target');
+      var $target = $('[data-' + pluginName + '-id=' + id + ']');
+
+      $[pluginName].lookup[$target.data(pluginName)].open();
+    });
+
+    // Auto initialization of modal windows.
+    // They should have the 'remodal' class attribute.
+    // Also you can write `data-remodal-options` attribute to pass params into the modal.
+    $(document).find('.' + namespace).each(function(i, container) {
+      var $container = $(container);
+      var options = $container.data(pluginName + '-options');
+
+      if (!options) {
+        options = {};
+      } else if (typeof options === 'string' || options instanceof String) {
+        options = parseOptions(options);
+      }
+
+      $container[pluginName](options);
+    });
+  });
+
+  /**
+   * Hashchange handler
+   * @private
+   * @param {Event} e
+   * @param {Boolean} [closeOnEmptyHash=true]
+   */
+  function hashHandler(e, closeOnEmptyHash) {
+    var id = location.hash.replace('#', '');
+    var instance;
+    var $elem;
+
+    if (typeof closeOnEmptyHash === 'undefined') {
+      closeOnEmptyHash = true;
+    }
+
+    if (!id) {
+      if (closeOnEmptyHash) {
+
+        // Check if we have currently opened modal and animation was completed
+        if (current && !current.busy && current.settings.hashTracking) {
+          current.close();
+        }
+      }
+    } else {
+
+      // Catch syntax error if your hash is bad
+      try {
+        $elem = $(
+          '[data-' + pluginName + '-id=' +
+          id.replace(new RegExp('/', 'g'), '\\/') + ']'
+        );
+      } catch (err) {}
+
+      if ($elem && $elem.length) {
+        instance = $[pluginName].lookup[$elem.data(pluginName)];
+
+        if (instance && instance.settings.hashTracking) {
+          instance.open();
+        }
+      }
+
+    }
+  }
+
+  $(window).bind('hashchange.' + namespace, hashHandler);
+
+})(window.jQuery || window.Zepto);
+
+/***
+ *
+ *  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+ *	MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+ *	MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+ *	MMMMMMN```````````````````````````````````````````````````````````.MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN    .//                                                    `MMMMMMM
+ *	MMMMMMN     .o                                                    `MMMMMMM
+ *	MMMMMMN     .o                                                    `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN                        `mM`     sM+                       `MMMMMMM
+ *	MMMMMMN                        `mM`     sM+                       `MMMMMMM
+ *	MMMMMMN                        `mM`     sM+                       `MMMMMMM
+ *	MMMMMMN                        `mMmmmmmmNM+                       `MMMMMMM
+ *	MMMMMMN                        `mM`     sM+                       `MMMMMMM
+ *	MMMMMMN                        `mM`     sM+                       `MMMMMMM
+ *	MMMMMMN                         yh`     +h:                       `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN          o- `s`s`-o y:/o`h:/o.o:/s s//- y:: ys` s         `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN               |_|     _| ._ _   _   _  ._                 `MMMMMMM
+ *	MMMMMMN               | | \/ (_| | (_) (_| (/_ | |                `MMMMMMM
+ *	MMMMMMN                   /             _|                        `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMN                                                           `MMMMMMM
+ *	MMMMMMMNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNMMMMMMM
+ *	MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+ *	MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+ *    
+ * @version Hydrogen v1.0
+ * 
+ * @author 
+ *      Cameron Van Orman
+ *      <cameron@efelle.com>
+ * 		Slack @cameronv
+ *
+ * @reference
+ *		app.js serves as a utlity for all Hydrogen based sites
+ *		HYDROGEN.UTIL methods are functions that provide use to every site (default)
+ *		HYDROGEN.MENU methods are functions that provide mmenu functions that need to be called on each site (if you're using mmenu) 
+ *		Functions in here are globally accessible (Just type HYDROGEN in the console on any HYDROGEN site to see what's available)
+ *                                                                                                    
+ */
+
+
+/**
+ * Global HYDROGEN variable namespace
+ */
+var HYDROGEN = {
+
+	/**
+	 * Utility object for commonly used functions
+	 */
+	UTIL:  {
+		/**
+		 * @namespace HYDROGEN
+	 	 * @param target {string} - pass in a string or html class to match height on.
+		 * @usage HYDROGEN.UTIL.matchHeight('.match');
+		 *
+		 * Dependency:
+		 * - jQuery.matchHeight.js (js/plugins/jquery.matchHeight.js)
+		 */
+		matchHeight: function(target) {
+			// Cache target selector as variable (reduce jQuery lookups)
+			var $target = $(target);
+			$target.matchHeight();
+		},
+
+		/**
+		 * @namespace HYDROGEN
+	 	 * @param target {string} - pass in a string or html class to remove html class if it exists.
+		 * @usage HYDROGEN.UTIL.noFouc();
+		 *
+		 * This function is intended to reduce a 'flash of unstyled content' at the time of DOMContentLoaded event being triggered.
+		 *
+		 */
+		noFouc: function() {
+			// Caching document object as variable (reduce jQuery lookups)
+			var $doc = $(document);
+			$('.no-js').removeClass('no-js');
+			$doc.ready(function() {
+				$('.no-fouc').removeClass('no-fouc');
+			});
+		},
+
+		/**
+		 * Defer Images - Setup
+		 *
+		 * Add class 'lazy' to image or div with a background image or src attribute.
+		 * 
+		 * @namespace HYDROGEN.UTIL
+		 * @param $imgs {string} - pass in a string or html class.
+		 * @usage HYDROGEN.UTIL.deferImages('.lazy');
+		 *
+		 * Dependencies
+		 * - jQuery
+		 * - jQuery.lazyload
+		 */
+		deferImages: function(imgs) {
+			// Image array
+			var $imgs = $(imgs);
+			// Cache the window object - console.log(window);
+			var $win = $(window);
+
+			/**
+			* Load Visible Images
+			* Load images if they're visible
+			* @namespace HYDROGEN.MENU.deferImages
+			*/
+			function loadVisible($els, trigger) {
+				$els.filter(function() {
+					var rect = this.getBoundingClientRect();
+
+					return rect.top >= 0 && rect.top <= window.innerHeight;
+				}).trigger(trigger);
+			}
+
+			/**
+			 * jQuery.lazyload
+			 * Initialize lazyload with fadeIn effect and failure_limit.
+			 * Listening on event 'lazylazy'
+			 */
+			$imgs.lazyload({
+				effect: "fadeIn",
+				failure_limit: Math.max($imgs.length - 1, 0),
+				event: 'lazylazy'
+			});
+
+			/**
+			 * Load images on scroll with event lazylazy.
+			 */
+			$win.on('scroll', function() {
+				loadVisible($imgs, 'lazylazy');
+			});
+		},
+
+		/**
+		 * Test for Inline SVG support
+		 */
+		supportsSvg: function() {
+			var div = document.createElement('div');
+			div.innerHTML = '<svg/>';
+			return (div.firstChild && div.firstChild.namespaceURI) == 'http://www.w3.org/2000/svg';
+		},
+
+		/**
+		 * iconsFallback - Transform SVGs to PNGs when not supported
+		 */
+		iconsFallback: function() {
+
+			// If browser doesn't support Inline SVG
+			if (!HYDROGEN.UTIL.supportsSvg()) {
+				// Get all SVGs on the page and how many there are
+				var svgs = document.getElementsByTagName("svg");
+				var svgL = svgs.length;
+
+				// Loop through all SVGs on the page
+				while( svgL-- ) {
+					// If SVG isn't the first one, continue ...
+					if(svgL > 0) {
+						// Get title attribute of SVG
+						var svgTitle = svgs[svgL].getAttribute("title");
+						
+						// Get all  elements from each SVG
+						var uses = svgs[svgL].getElementsByTagName("use");
+						var usesL = uses.length;
+
+						// Loop through all elements within an SVG
+						while( usesL-- ) {
+							// Get the 'xlink:href' attributes
+							var svgId = uses[usesL].getAttribute("xlink:href");
+							// Remove first character from variable (This removes the #)
+							svgId = svgId.substring(1, svgId.length);
+							
+							// Create New Image
+							var newImg = document.createElement("img");
+							// Assign src attribute
+							newImg.src = "graphics/dist/icons/png/" + svgId + ".png";
+							// Assign alt attribute
+							newImg.alt = svgTitle ? svgTitle : '';
+
+							// Insert new element straight after the SVG in question
+							svgs[svgL].parentNode.insertBefore(newImg, svgs[svgL].nextSibling);
+						}
+
+						// Remove all SVG nodes
+						svgs[svgL].parentNode.removeChild(svgs[svgL]);
+					}
+				}
+			}
+		}
+	},
+
+	/**
+	 * Menu object for mmenu configuration options
+	 */
+	MENU: {
+
+		/**
+		 * Mmenu offcanvas default
+		 *
+ 		 * @namespace HYDROGEN.MENU
+		 * @usage HYDROGEN.MENU.mmenu();
+		 */
+		mmenu: function(menu) {
+			var $menu = $(menu);
+			$menu.mmenu({
+				classes: "efelle-offcanvas"
+			});
+		},
+
+		/**
+		 * Mmenu default w/ no sliding submenus
+		 *
+ 		 * @namespace HYDROGEN.MENU
+		 * @usage HYDROGEN.MENU.mmenuNoSlide();
+		 */
+		mmenuNoSlide: function(menu) {
+			var $menu = $(menu);
+			$menu.mmenu({
+				slidingSubmenus: false,
+				classes: "efelle-offcanvas"
+			});
+		},
+
+		/**
+		 * Mmenu positioned right
+		 *
+ 		 * @namespace HYDROGEN.MENU
+		 * @usage HYDROGEN.MENU.mmenuRight();
+		 */
+		mmenuRight: function(menu) {
+			var $menu = $(menu);
+			$menu.mmenu({
+				offCanvas: {
+					position: "right"
+				},
+				classes: "efelle-offcanvas"
+			});
+		},
+
+		/**
+		 * navToggle for triggering mmenu open/close on click
+		 * @namespace HYDROGEN.MENU
+		 * @usage HYDROGEN.MENU.navToggle();
+		 */
+		navToggle: function(navToggle, menu) {
+			var $navToggle = $(navToggle); // anchor to toggle navigation menu.
+			var $menu = $(menu); // Match with menu class you use in mmenu functions.
+			$navToggle.click(function() {
+				$menu.trigger("close.mm");
+			});
+		},
+	},
+
+	/**
+	 * Animation object for animating HYDROGEN projects
+	 */
+	ANIMATION: {
+		/**
+		 * Parallax function for animating backgrounds.
+		 *
+		 * @namespace HYDROGEN.ANIMATION
+		 *
+		 * @param pWindow {string} - jQuery selector
+		 * @param background {string} - jQuery selector
+		 *
+		 * @usage HYDROGEN.ANIMATION.parallax('.parallax-window', '.parallax-window > [data-bg]');
+		 */
+		parallax: function(pWindow, background) {
+			var $pWindow = $(pWindow);
+			var $background = $(background);
+			var bgPath = $background.data('bg');
+
+			$pWindow.parallax({imageSrc: bgPath});
+
+		}
+	},
+
+	/**
+	 * Google Maps
+	 *
+	 * @namespace HYDROGEN.gMaps
+	 */
+	gMaps: {
+		/**
+		 * Init Function for Google Maps with pin
+		 *
+		 * @namespace HYDROGEN.gMaps.initialize('#map', '.coords');
+		 * @param mapTarget - id of map
+		 * @param coords    - class of element with latitude/longitude coordinates.
+		 * 					  Add data-lat and data-lng attributes to an element
+		 *					  with the value being the module tag.
+		 */
+		initialize: function(mapTarget, coords) {
+			var $coords = $(coords);
+			var lat = parseFloat($coords.data('lat'));
+			var lng = parseFloat($coords.data('lng')); 
+			var mapTarget = mapTarget;
+			var map = new google.maps.Map(
+				document.getElementById(mapTarget),
+				{
+					center: new google.maps.LatLng(lat, lng),
+					zoom: 17,
+					scrollwheel: false,
+					mapTypeId: google.maps.MapTypeId.ROADMAP,
+				}
+			);
+			
+			var marker = new google.maps.Marker({
+				map: map,
+				icon: '/graphics/markers/number_1.png',
+				position: map.getCenter(),
+				animation: google.maps.Animation.DROP,
+			});
+			marker.addListener('click', toggleBounce);
+
+			map.addListener('click', map.setCenter(marker.getPosition()));
+
+			google.maps.event.trigger(map, 'resize');
+
+			function toggleBounce() {
+
+				if (marker.getAnimation() !== null) {
+					marker.setAnimation(null);
+				} else {
+					marker.setAnimation(google.maps.Animation.BOUNCE);
+				}
+			}
+		}
+	},
+
+	/**
+	 * @namespace HYDROGEN.Cookie
+	 * HYDROGEN.Cookie.getCookie(cname);
+	 * HYDROGEN.Cookie.setCookie(cname, cvalue, exdays);
+	 * HYDROGEN.Cookie.checkCookie(cname, cvalue, exdays, alert);
+	 */
+	Cookie: {
+		getCookie: function(cname) {
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			
+			for (var i=0; i < ca.length; i++) {
+				var c = ca[i].trim();
+				if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
+			}
+			return "";
+		},
+
+		setCookie: function(cname, cvalue, exdays) {
+			var d = new Date();
+			d.setTime(d.getTime() + (exdays*24*60*60*1000));
+			var expires = "expires="+d.toUTCString();
+			document.cookie = cname + "=" + cvalue + "; " + expires;
+		},
+
+		checkCookie: function(cname, cvalue, exdays, alert) {
+			var cname = cname,
+				cvalue = cvalue,
+				exdays = exdays,
+				$alert = $(alert);
+
+			var displayAlert = HYDROGEN.Cookie.getCookie(cname);
+
+			// Closes alert and sets cookie
+			$('.close-button').on('click', function() {            
+				displayAlert = cvalue;
+				HYDROGEN.Cookie.setCookie(cname, cvalue, alert);    
+
+				$alert.hide();
+			});
+			
+			// Checks for cookie. If cookie is true, keep alert hidden
+			if (displayAlert === cvalue) {
+				$alert.hide();                
+			} else {
+				// No cookie found, show alert message
+				$alert.show();        
+			}
+		}
+	},
+
+	/**
+	 * @namespace HYDROGEN
+	 * @param cname - (e.g 'alertMessage') name of alert cookie stored in browser session
+	 * @param cvalue - (e.g 'userClosed') value that's stored when user closes alert.
+	 *		If value is present, user has already closed the message.
+	 * @param exdays - (e.g 1) How many days until cookie expires
+	 * @param alert - (e.g '.efelle-alert') Alert message Class
+	 */
+	alertMessage: function(cname, cvalue, exdays, alert) {
+		var cname = cname,
+			cvalue = cvalue,
+			exdays = exdays,
+			alert = alert;
+
+		$(function() {
+			HYDROGEN.Cookie.checkCookie(cname, cvalue, exdays, alert);
+		});
+	},
+};
+/* InstantClick 3.1.0 | (C) 2014 Alexandre Dieulot | http://instantclick.io/license */
+
+var InstantClick = function(document, location) {
+  // Internal variables
+  var $ua = navigator.userAgent,
+      $isChromeForIOS = $ua.indexOf(' CriOS/') > -1,
+      $hasTouch = 'createTouch' in document,
+      $currentLocationWithoutHash,
+      $urlToPreload,
+      $preloadTimer,
+      $lastTouchTimestamp,
+
+  // Preloading-related variables
+      $history = {},
+      $xhr,
+      $url = false,
+      $title = false,
+      $mustRedirect = false,
+      $body = false,
+      $timing = {},
+      $isPreloading = false,
+      $isWaitingForCompletion = false,
+      $trackedAssets = [],
+
+  // Variables defined by public functions
+      $useWhitelist,
+      $preloadOnMousedown,
+      $delayBeforePreload,
+      $eventsCallbacks = {
+        fetch: [],
+        receive: [],
+        wait: [],
+        change: []
+      }
+
+
+  ////////// HELPERS //////////
+
+
+  function removeHash(url) {
+    var index = url.indexOf('#')
+    if (index < 0) {
+      return url
+    }
+    return url.substr(0, index)
+  }
+
+  function getLinkTarget(target) {
+    while (target && target.nodeName != 'A') {
+      target = target.parentNode
+    }
+    return target
+  }
+
+  function isBlacklisted(elem) {
+    do {
+      if (!elem.hasAttribute) { // Parent of <html>
+        break
+      }
+      if (elem.hasAttribute('data-instant')) {
+        return false
+      }
+      if (elem.hasAttribute('data-no-instant')) {
+        return true
+      }
+    }
+    while (elem = elem.parentNode);
+    return false
+  }
+
+  function isWhitelisted(elem) {
+    do {
+      if (!elem.hasAttribute) { // Parent of <html>
+        break
+      }
+      if (elem.hasAttribute('data-no-instant')) {
+        return false
+      }
+      if (elem.hasAttribute('data-instant')) {
+        return true
+      }
+    }
+    while (elem = elem.parentNode);
+    return false
+  }
+
+  function isPreloadable(a) {
+    var domain = location.protocol + '//' + location.host
+
+    if (a.target // target="_blank" etc.
+        || a.hasAttribute('download')
+        || a.href.indexOf(domain + '/') != 0 // Another domain, or no href attribute
+        || (a.href.indexOf('#') > -1
+            && removeHash(a.href) == $currentLocationWithoutHash) // Anchor
+        || ($useWhitelist
+            ? !isWhitelisted(a)
+            : isBlacklisted(a))
+       ) {
+      return false
+    }
+    return true
+  }
+
+  function triggerPageEvent(eventType, arg1, arg2, arg3) {
+    var returnValue = false
+    for (var i = 0; i < $eventsCallbacks[eventType].length; i++) {
+      if (eventType == 'receive') {
+        var altered = $eventsCallbacks[eventType][i](arg1, arg2, arg3)
+        if (altered) {
+          /* Update args for the next iteration of the loop. */
+          if ('body' in altered) {
+            arg2 = altered.body
+          }
+          if ('title' in altered) {
+            arg3 = altered.title
+          }
+
+          returnValue = altered
+        }
+      }
+      else {
+        $eventsCallbacks[eventType][i](arg1, arg2, arg3)
+      }
+    }
+    return returnValue
+  }
+
+  function changePage(title, body, newUrl, scrollY) {
+    document.documentElement.replaceChild(body, document.body)
+    /* We cannot just use `document.body = doc.body`, it causes Safari (tested
+       5.1, 6.0 and Mobile 7.0) to execute script tags directly.
+    */
+
+    if (newUrl) {
+      history.pushState(null, null, newUrl)
+
+      var hashIndex = newUrl.indexOf('#'),
+          hashElem = hashIndex > -1
+                     && document.getElementById(newUrl.substr(hashIndex + 1)),
+          offset = 0
+
+      if (hashElem) {
+        while (hashElem.offsetParent) {
+          offset += hashElem.offsetTop
+
+          hashElem = hashElem.offsetParent
+        }
+      }
+      scrollTo(0, offset)
+
+      $currentLocationWithoutHash = removeHash(newUrl)
+    }
+    else {
+      scrollTo(0, scrollY)
+    }
+
+    if ($isChromeForIOS && document.title == title) {
+      /* Chrome for iOS:
+       *
+       * 1. Removes title on pushState, so the title needs to be set after.
+       *
+       * 2. Will not set the title if it’s identical when trimmed, so
+       *    appending a space won't do, but a non-breaking space works.
+       */
+      document.title = title + String.fromCharCode(160)
+    }
+    else {
+      document.title = title
+    }
+
+    instantanize()
+    bar.done()
+    triggerPageEvent('change', false)
+
+    // Real event, useful for combining userscripts, but only for that so it’s undocumented.
+    var userscriptEvent = document.createEvent('HTMLEvents')
+    userscriptEvent.initEvent('instantclick:newpage', true, true)
+    dispatchEvent(userscriptEvent)
+  }
+
+  function setPreloadingAsHalted() {
+    $isPreloading = false
+    $isWaitingForCompletion = false
+  }
+
+  function removeNoscriptTags(html) {
+    /* Must be done on text, not on a node's innerHTML, otherwise strange
+     * things happen with implicitly closed elements (see the Noscript test).
+     */
+    return html.replace(/<noscript[\s\S]+<\/noscript>/gi, '')
+  }
+
+
+  ////////// EVENT HANDLERS //////////
+
+
+  function mousedown(e) {
+    if ($lastTouchTimestamp > (+new Date - 500)) {
+      return // Otherwise, click doesn’t fire
+    }
+
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    preload(a.href)
+  }
+
+  function mouseover(e) {
+    if ($lastTouchTimestamp > (+new Date - 500)) {
+      return // Otherwise, click doesn’t fire
+    }
+
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    a.addEventListener('mouseout', mouseout)
+
+    if (!$delayBeforePreload) {
+      preload(a.href)
+    }
+    else {
+      $urlToPreload = a.href
+      $preloadTimer = setTimeout(preload, $delayBeforePreload)
+    }
+  }
+
+  function touchstart(e) {
+    $lastTouchTimestamp = +new Date
+
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    if ($preloadOnMousedown) {
+      a.removeEventListener('mousedown', mousedown)
+    }
+    else {
+      a.removeEventListener('mouseover', mouseover)
+    }
+    preload(a.href)
+  }
+
+  function click(e) {
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    if (e.which > 1 || e.metaKey || e.ctrlKey) { // Opening in new tab
+      return
+    }
+    e.preventDefault()
+    display(a.href)
+  }
+
+  function mouseout() {
+    if ($preloadTimer) {
+      clearTimeout($preloadTimer)
+      $preloadTimer = false
+      return
+    }
+
+    if (!$isPreloading || $isWaitingForCompletion) {
+      return
+    }
+    $xhr.abort()
+    setPreloadingAsHalted()
+  }
+
+  function readystatechange() {
+    if ($xhr.readyState < 4) {
+      return
+    }
+    if ($xhr.status == 0) {
+      /* Request aborted */
+      return
+    }
+
+    $timing.ready = +new Date - $timing.start
+
+    if ($xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
+      var doc = document.implementation.createHTMLDocument('')
+      doc.documentElement.innerHTML = removeNoscriptTags($xhr.responseText)
+      $title = doc.title
+      $body = doc.body
+
+      var alteredOnReceive = triggerPageEvent('receive', $url, $body, $title)
+      if (alteredOnReceive) {
+        if ('body' in alteredOnReceive) {
+          $body = alteredOnReceive.body
+        }
+        if ('title' in alteredOnReceive) {
+          $title = alteredOnReceive.title
+        }
+      }
+
+      var urlWithoutHash = removeHash($url)
+      $history[urlWithoutHash] = {
+        body: $body,
+        title: $title,
+        scrollY: urlWithoutHash in $history ? $history[urlWithoutHash].scrollY : 0
+      }
+
+      var elems = doc.head.children,
+          found = 0,
+          elem,
+          data
+
+      for (var i = elems.length - 1; i >= 0; i--) {
+        elem = elems[i]
+        if (elem.hasAttribute('data-instant-track')) {
+          data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML
+          for (var j = $trackedAssets.length - 1; j >= 0; j--) {
+            if ($trackedAssets[j] == data) {
+              found++
+            }
+          }
+        }
+      }
+      if (found != $trackedAssets.length) {
+        $mustRedirect = true // Assets have changed
+      }
+    }
+    else {
+      $mustRedirect = true // Not an HTML document
+    }
+
+    if ($isWaitingForCompletion) {
+      $isWaitingForCompletion = false
+      display($url)
+    }
+  }
+
+
+  ////////// MAIN FUNCTIONS //////////
+
+
+  function instantanize(isInitializing) {
+    document.body.addEventListener('touchstart', touchstart, true)
+    if ($preloadOnMousedown) {
+      document.body.addEventListener('mousedown', mousedown, true)
+    }
+    else {
+      document.body.addEventListener('mouseover', mouseover, true)
+    }
+    document.body.addEventListener('click', click, true)
+
+    if (!isInitializing) {
+      var scripts = document.body.getElementsByTagName('script'),
+          script,
+          copy,
+          parentNode,
+          nextSibling
+
+      for (i = 0, j = scripts.length; i < j; i++) {
+        script = scripts[i]
+        if (script.hasAttribute('data-no-instant')) {
+          continue
+        }
+        copy = document.createElement('script')
+        if (script.src) {
+          copy.src = script.src
+        }
+        if (script.innerHTML) {
+          copy.innerHTML = script.innerHTML
+        }
+        parentNode = script.parentNode
+        nextSibling = script.nextSibling
+        parentNode.removeChild(script)
+        parentNode.insertBefore(copy, nextSibling)
+      }
+    }
+  }
+
+  function preload(url) {
+    if (!$preloadOnMousedown
+        && 'display' in $timing
+        && +new Date - ($timing.start + $timing.display) < 100) {
+      /* After a page is displayed, if the user's cursor happens to be above
+         a link a mouseover event will be in most browsers triggered
+         automatically, and in other browsers it will be triggered when the
+         user moves his mouse by 1px.
+
+         Here are the behavior I noticed, all on Windows:
+         - Safari 5.1: auto-triggers after 0 ms
+         - IE 11: auto-triggers after 30-80 ms (depends on page's size?)
+         - Firefox: auto-triggers after 10 ms
+         - Opera 18: auto-triggers after 10 ms
+
+         - Chrome: triggers when cursor moved
+         - Opera 12.16: triggers when cursor moved
+
+         To remedy to this, we do not start preloading if last display
+         occurred less than 100 ms ago. If they happen to click on the link,
+         they will be redirected.
+      */
+
+      return
+    }
+    if ($preloadTimer) {
+      clearTimeout($preloadTimer)
+      $preloadTimer = false
+    }
+
+    if (!url) {
+      url = $urlToPreload
+    }
+
+    if ($isPreloading && (url == $url || $isWaitingForCompletion)) {
+      return
+    }
+    $isPreloading = true
+    $isWaitingForCompletion = false
+
+    $url = url
+    $body = false
+    $mustRedirect = false
+    $timing = {
+      start: +new Date
+    }
+    triggerPageEvent('fetch')
+    $xhr.open('GET', url)
+    $xhr.send()
+  }
+
+  function display(url) {
+    if (!('display' in $timing)) {
+      $timing.display = +new Date - $timing.start
+    }
+    if ($preloadTimer || !$isPreloading) {
+      /* $preloadTimer:
+         Happens when there’s a delay before preloading and that delay
+         hasn't expired (preloading didn't kick in).
+
+         !$isPreloading:
+         A link has been clicked, and preloading hasn’t been initiated.
+         It happens with touch devices when a user taps *near* the link,
+         Safari/Chrome will trigger mousedown, mouseover, click (and others),
+         but when that happens we ignore mousedown/mouseover (otherwise click
+         doesn’t fire). Maybe there’s a way to make the click event fire, but
+         that’s not worth it as mousedown/over happen just 1ms before click
+         in this situation.
+
+         It also happens when a user uses his keyboard to navigate (with Tab
+         and Return), and possibly in other non-mainstream ways to navigate
+         a website.
+      */
+
+      if ($preloadTimer && $url && $url != url) {
+        /* Happens when the user clicks on a link before preloading
+           kicks in while another link is already preloading.
+        */
+
+        location.href = url
+        return
+      }
+
+      preload(url)
+      bar.start(0, true)
+      triggerPageEvent('wait')
+      $isWaitingForCompletion = true // Must be set *after* calling `preload`
+      return
+    }
+    if ($isWaitingForCompletion) {
+      /* The user clicked on a link while a page was preloading. Either on
+         the same link or on another link. If it's the same link something
+         might have gone wrong (or he could have double clicked, we don’t
+         handle that case), so we send him to the page without pjax.
+         If it's another link, it hasn't been preloaded, so we redirect the
+         user to it.
+      */
+      location.href = url
+      return
+    }
+    if ($mustRedirect) {
+      location.href = $url
+      return
+    }
+    if (!$body) {
+      bar.start(0, true)
+      triggerPageEvent('wait')
+      $isWaitingForCompletion = true
+      return
+    }
+    $history[$currentLocationWithoutHash].scrollY = pageYOffset
+    setPreloadingAsHalted()
+    changePage($title, $body, $url)
+  }
+
+
+  ////////// PROGRESS BAR FUNCTIONS //////////
+
+
+  var bar = function() {
+    var $barContainer,
+        $barElement,
+        $barTransformProperty,
+        $barProgress,
+        $barTimer
+
+    function init() {
+      $barContainer = document.createElement('div')
+      $barContainer.id = 'instantclick'
+      $barElement = document.createElement('div')
+      $barElement.id = 'instantclick-bar'
+      $barElement.className = 'instantclick-bar'
+      $barContainer.appendChild($barElement)
+
+      var vendors = ['Webkit', 'Moz', 'O']
+
+      $barTransformProperty = 'transform'
+      if (!($barTransformProperty in $barElement.style)) {
+        for (var i = 0; i < 3; i++) {
+          if (vendors[i] + 'Transform' in $barElement.style) {
+            $barTransformProperty = vendors[i] + 'Transform'
+          }
+        }
+      }
+
+      var transitionProperty = 'transition'
+      if (!(transitionProperty in $barElement.style)) {
+        for (var i = 0; i < 3; i++) {
+          if (vendors[i] + 'Transition' in $barElement.style) {
+            transitionProperty = '-' + vendors[i].toLowerCase() + '-' + transitionProperty
+          }
+        }
+      }
+
+      var style = document.createElement('style')
+      style.innerHTML = '#instantclick{position:' + ($hasTouch ? 'absolute' : 'fixed') + ';top:0;left:0;width:100%;pointer-events:none;z-index:2147483647;' + transitionProperty + ':opacity .25s .1s}'
+        + '.instantclick-bar{background:#29d;width:100%;margin-left:-100%;height:2px;' + transitionProperty + ':all .25s}'
+      /* We set the bar's background in `.instantclick-bar` so that it can be
+         overriden in CSS with `#instantclick-bar`, as IDs have higher priority.
+      */
+      document.head.appendChild(style)
+
+      if ($hasTouch) {
+        updatePositionAndScale()
+        addEventListener('resize', updatePositionAndScale)
+        addEventListener('scroll', updatePositionAndScale)
+      }
+
+    }
+
+    function start(at, jump) {
+      $barProgress = at
+      if (document.getElementById($barContainer.id)) {
+        document.body.removeChild($barContainer)
+      }
+      $barContainer.style.opacity = '1'
+      if (document.getElementById($barContainer.id)) {
+        document.body.removeChild($barContainer)
+        /* So there's no CSS animation if already done once and it goes from 1 to 0 */
+      }
+      update()
+      if (jump) {
+        setTimeout(jumpStart, 0)
+        /* Must be done in a timer, otherwise the CSS animation doesn't happen. */
+      }
+      clearTimeout($barTimer)
+      $barTimer = setTimeout(inc, 500)
+    }
+
+    function jumpStart() {
+      $barProgress = 10
+      update()
+    }
+
+    function inc() {
+      $barProgress += 1 + (Math.random() * 2)
+      if ($barProgress >= 98) {
+        $barProgress = 98
+      }
+      else {
+        $barTimer = setTimeout(inc, 500)
+      }
+      update()
+    }
+
+    function update() {
+      $barElement.style[$barTransformProperty] = 'translate(' + $barProgress + '%)'
+      if (!document.getElementById($barContainer.id)) {
+        document.body.appendChild($barContainer)
+      }
+    }
+
+    function done() {
+      if (document.getElementById($barContainer.id)) {
+        clearTimeout($barTimer)
+        $barProgress = 100
+        update()
+        $barContainer.style.opacity = '0'
+        /* If you're debugging, setting this to 0.5 is handy. */
+        return
+      }
+
+      /* The bar container hasn't been appended: It's a new page. */
+      start($barProgress == 100 ? 0 : $barProgress)
+      /* $barProgress is 100 on popstate, usually. */
+      setTimeout(done, 0)
+      /* Must be done in a timer, otherwise the CSS animation doesn't happen. */
+    }
+
+    function updatePositionAndScale() {
+      /* Adapted from code by Sam Stephenson and Mislav Marohnić
+         http://signalvnoise.com/posts/2407
+      */
+
+      $barContainer.style.left = pageXOffset + 'px'
+      $barContainer.style.width = innerWidth + 'px'
+      $barContainer.style.top = pageYOffset + 'px'
+
+      var landscape = 'orientation' in window && Math.abs(orientation) == 90,
+          scaleY = innerWidth / screen[landscape ? 'height' : 'width'] * 2
+      /* We multiply the size by 2 because the progress bar is harder
+         to notice on a mobile device.
+      */
+      $barContainer.style[$barTransformProperty] = 'scaleY(' + scaleY  + ')'
+    }
+
+    return {
+      init: init,
+      start: start,
+      done: done
+    }
+  }()
+
+
+  ////////// PUBLIC VARIABLE AND FUNCTIONS //////////
+
+  var supported = 'pushState' in history
+                  && (!$ua.match('Android') || $ua.match('Chrome/'))
+                  && location.protocol != "file:"
+
+  /* The state of Android's AOSP browsers:
+
+     2.3.7: pushState appears to work correctly, but
+            `doc.documentElement.innerHTML = body` is buggy.
+            See details here: http://stackoverflow.com/q/21918564
+            Not an issue anymore, but it may fail where 3.0 do, this needs
+            testing again.
+
+     3.0:   pushState appears to work correctly (though the URL bar is only
+            updated on focus), but
+            `document.documentElement.replaceChild(doc.body, document.body)`
+        throws DOMException: WRONG_DOCUMENT_ERR.
+
+     4.0.2: Doesn't support pushState.
+
+     4.0.4,
+     4.1.1,
+     4.2,
+     4.3:   pushState is here, but it doesn't update the URL bar.
+            (Great logic there.)
+
+     4.4:   Works correctly. Claims to be 'Chrome/30.0.0.0'.
+
+     All androids tested with Android SDK's Emulator.
+     Version numbers are from the browser's user agent.
+
+     Because of this mess, the only whitelisted browser on Android is Chrome.
+  */
+
+  function init() {
+    if ($currentLocationWithoutHash) {
+      /* Already initialized */
+      return
+    }
+    if (!supported) {
+      triggerPageEvent('change', true)
+      return
+    }
+    for (var i = arguments.length - 1; i >= 0; i--) {
+      var arg = arguments[i]
+      if (arg === true) {
+        $useWhitelist = true
+      }
+      else if (arg == 'mousedown') {
+        $preloadOnMousedown = true
+      }
+      else if (typeof arg == 'number') {
+        $delayBeforePreload = arg
+      }
+    }
+    $currentLocationWithoutHash = removeHash(location.href)
+    $history[$currentLocationWithoutHash] = {
+      body: document.body,
+      title: document.title,
+      scrollY: pageYOffset
+    }
+
+    var elems = document.head.children,
+        elem,
+        data
+    for (var i = elems.length - 1; i >= 0; i--) {
+      elem = elems[i]
+      if (elem.hasAttribute('data-instant-track')) {
+        data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML
+        /* We can't use just `elem.href` and `elem.src` because we can't
+           retrieve `href`s and `src`s from the Ajax response.
+        */
+        $trackedAssets.push(data)
+      }
+    }
+
+    $xhr = new XMLHttpRequest()
+    $xhr.addEventListener('readystatechange', readystatechange)
+
+    instantanize(true)
+
+    bar.init()
+
+    triggerPageEvent('change', true)
+
+    addEventListener('popstate', function() {
+      var loc = removeHash(location.href)
+      if (loc == $currentLocationWithoutHash) {
+        return
+      }
+
+      if (!(loc in $history)) {
+        location.href = location.href
+        /* Reloads the page while using cache for scripts, styles and images,
+           unlike `location.reload()` */
+        return
+      }
+
+      $history[$currentLocationWithoutHash].scrollY = pageYOffset
+      $currentLocationWithoutHash = loc
+      changePage($history[loc].title, $history[loc].body, false, $history[loc].scrollY)
+    })
+  }
+
+  function on(eventType, callback) {
+    $eventsCallbacks[eventType].push(callback)
+  }
+
+
+  ////////////////////
+
+
+  return {
+    supported: supported,
+    init: init,
+    on: on
+  }
+
+}(document, location);
+
+/*! simpleWeather v3.1.0 - http://simpleweatherjs.com */
+(function($) {
+  'use strict';
+
+  function getAltTemp(unit, temp) {
+    if(unit === 'f') {
+      return Math.round((5.0/9.0)*(temp-32.0));
+    } else {
+      return Math.round((9.0/5.0)*temp+32.0);
+    }
+  }
+
+  $.extend({
+    simpleWeather: function(options){
+      options = $.extend({
+        location: '',
+        woeid: '',
+        unit: 'f',
+        success: function(weather){},
+        error: function(message){}
+      }, options);
+
+      var now = new Date();
+      var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?format=json&rnd=' + now.getFullYear() + now.getMonth() + now.getDay() + now.getHours() + '&diagnostics=true&callback=?&q=';
+
+      if(options.location !== '') {
+        /* If latitude/longitude coordinates, need to format a little different. */
+        var location = '';
+        if(/^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/.test(options.location)) {
+          location = '(' + options.location + ')';
+        } else {
+          location = options.location;
+        }
+
+        weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + location + '") and u="' + options.unit + '"';
+      } else if(options.woeid !== '') {
+        weatherUrl += 'select * from weather.forecast where woeid=' + options.woeid + ' and u="' + options.unit + '"';
+      } else {
+        options.error('Could not retrieve weather due to an invalid location.');
+        return false;
+      }
+
+      $.getJSON(
+        encodeURI(weatherUrl),
+        function(data) {
+          if(data !== null && data.query !== null && data.query.results !== null && data.query.results.channel.description !== 'Yahoo! Weather Error') {
+            var result = data.query.results.channel,
+                weather = {},
+                forecast,
+                compass = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'],
+                image404 = 'https://s.yimg.com/os/mit/media/m/weather/images/icons/l/44d-100567.png';
+
+            weather.title = result.item.title;
+            weather.temp = result.item.condition.temp;
+            weather.code = result.item.condition.code;
+            weather.todayCode = result.item.forecast[0].code;
+            weather.currently = result.item.condition.text;
+            weather.high = result.item.forecast[0].high;
+            weather.low = result.item.forecast[0].low;
+            weather.text = result.item.forecast[0].text;
+            weather.humidity = result.atmosphere.humidity;
+            weather.pressure = result.atmosphere.pressure;
+            weather.rising = result.atmosphere.rising;
+            weather.visibility = result.atmosphere.visibility;
+            weather.sunrise = result.astronomy.sunrise;
+            weather.sunset = result.astronomy.sunset;
+            weather.description = result.item.description;
+            weather.city = result.location.city;
+            weather.country = result.location.country;
+            weather.region = result.location.region;
+            weather.updated = result.item.pubDate;
+            weather.link = result.item.link;
+            weather.units = {temp: result.units.temperature, distance: result.units.distance, pressure: result.units.pressure, speed: result.units.speed};
+            weather.wind = {chill: result.wind.chill, direction: compass[Math.round(result.wind.direction / 22.5)], speed: result.wind.speed};
+
+            if(result.item.condition.temp < 80 && result.atmosphere.humidity < 40) {
+              weather.heatindex = -42.379+2.04901523*result.item.condition.temp+10.14333127*result.atmosphere.humidity-0.22475541*result.item.condition.temp*result.atmosphere.humidity-6.83783*(Math.pow(10, -3))*(Math.pow(result.item.condition.temp, 2))-5.481717*(Math.pow(10, -2))*(Math.pow(result.atmosphere.humidity, 2))+1.22874*(Math.pow(10, -3))*(Math.pow(result.item.condition.temp, 2))*result.atmosphere.humidity+8.5282*(Math.pow(10, -4))*result.item.condition.temp*(Math.pow(result.atmosphere.humidity, 2))-1.99*(Math.pow(10, -6))*(Math.pow(result.item.condition.temp, 2))*(Math.pow(result.atmosphere.humidity,2));
+            } else {
+              weather.heatindex = result.item.condition.temp;
+            }
+
+            if(result.item.condition.code == '3200') {
+              weather.thumbnail = image404;
+              weather.image = image404;
+            } else {
+              weather.thumbnail = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.condition.code + 'ds.png';
+              weather.image = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.condition.code + 'd.png';
+            }
+
+            weather.alt = {temp: getAltTemp(options.unit, result.item.condition.temp), high: getAltTemp(options.unit, result.item.forecast[0].high), low: getAltTemp(options.unit, result.item.forecast[0].low)};
+            if(options.unit === 'f') {
+              weather.alt.unit = 'c';
+            } else {
+              weather.alt.unit = 'f';
+            }
+
+            weather.forecast = [];
+            for(var i=0;i<result.item.forecast.length;i++) {
+              forecast = result.item.forecast[i];
+              forecast.alt = {high: getAltTemp(options.unit, result.item.forecast[i].high), low: getAltTemp(options.unit, result.item.forecast[i].low)};
+
+              if(result.item.forecast[i].code == "3200") {
+                forecast.thumbnail = image404;
+                forecast.image = image404;
+              } else {
+                forecast.thumbnail = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.forecast[i].code + 'ds.png';
+                forecast.image = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.forecast[i].code + 'd.png';
+              }
+
+              weather.forecast.push(forecast);
+            }
+
+            options.success(weather);
+          } else {
+            options.error('There was a problem retrieving the latest weather information.');
+          }
+        }
+      );
+      return this;
+    }
+  });
+})(jQuery);
+
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
@@ -34898,12 +39128,32 @@ var FUSION = {
 
 		$(document).keyup(function(e) {
 			if (e.keyCode === 27 && $navToggle.hasClass('on')) {
+				$body.toggleClass('no-scroll');
 				$navToggle.toggleClass('on');
 				$menuOverlay.toggleClass('on');
 				event.preventDefault();
 			}
 		});
 	
+	},
+
+	weather: function() {
+		$.simpleWeather({
+			location: 'Seattle, WA',
+			woeid: '',
+			unit: 'f',
+			success: function(weather) {
+				html = '<h2><i class="icon-'+weather.code+'"></i> '+weather.temp+'&deg;'+weather.units.temp+'</h2>';
+				html += '<ul><li>'+weather.city+', '+weather.region+'</li>';
+				html += '<li class="currently">'+weather.currently+'</li>';
+				html += '<li>'+weather.wind.direction+' '+weather.wind.speed+' '+weather.units.speed+'</li></ul>';
+
+				$("#weather").html(html);
+			},
+			error: function(error) {
+				$("#weather").html('<p>'+error+'</p>');
+			}
+		});
 	}
 
 };
@@ -34998,6 +39248,8 @@ var FUSION = {
 			init: function() {
 				// JavaScript to be fired on all pages
 				FUSION.navToggle('.js-nav-toggle');
+				HYDROGEN.UTIL.deferImages('.lazy');
+				FUSION.weather();
 				// FEATURES.navToggle('header', '.js-nav-toggle', '.menu-overlay', '.menu-overlay > ul');
 			}
 		}

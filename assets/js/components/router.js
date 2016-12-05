@@ -89,6 +89,8 @@
 			init: function() {
 				// JavaScript to be fired on all pages
 				FUSION.navToggle('.js-nav-toggle');
+				HYDROGEN.UTIL.deferImages('.lazy');
+				FUSION.weather();
 				// FEATURES.navToggle('header', '.js-nav-toggle', '.menu-overlay', '.menu-overlay > ul');
 			}
 		}
