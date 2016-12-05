@@ -71,10 +71,19 @@
  */
 
 // 'vm' needs to be global.
-Vue.config.devtools = true;
+// Vue.config.devtools = true;
 
-var vm = new Vue({
-	el: 'body'
+// var vm = new Vue({
+// 	el: 'body'
+// });
+
+$.fn.extend({
+    animateCss: function (animationName) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        this.addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+        });
+    }
 });
 
 var FUSION = {
@@ -115,9 +124,9 @@ var FUSION = {
 			woeid: '',
 			unit: 'f',
 			success: function(weather) {
-				html = '<h2><i class="icon-'+weather.code+'"></i> '+weather.temp+'&deg;'+weather.units.temp+'</h2>';
-				html += '<ul><li>'+weather.city+', '+weather.region+'</li>';
-				html += '<li class="currently">'+weather.currently+'</li>';
+				html = '<h2><i class="icon-weather icon-'+weather.code+'"></i> '+weather.temp+'&deg;'+weather.units.temp+'</h2>';
+				html += '<h3><i class="btl bt-map-arrow"></i> '+weather.city+', '+weather.region+'</h3>';
+				html += '<ul><li>'+weather.currently+'</li>';
 				html += '<li>'+weather.wind.direction+' '+weather.wind.speed+' '+weather.units.speed+'</li></ul>';
 
 				$("#weather").html(html);
@@ -125,6 +134,22 @@ var FUSION = {
 			error: function(error) {
 				$("#weather").html('<p>'+error+'</p>');
 			}
+		});
+	},
+
+	waypoints: function(section) {
+		var $section = $(section);
+
+		// $section.css('opacity', 0);
+		var waypoint = new Waypoint({
+			element: $section,
+			handler: function(direction) {
+				if(direction == "down") {
+					$section.animateCss('fadeInLeft');
+					console.log('fired');
+				}
+			},
+			offset: '50%'
 		});
 	}
 

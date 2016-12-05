@@ -91,6 +91,8 @@
 				FUSION.navToggle('.js-nav-toggle');
 				HYDROGEN.UTIL.deferImages('.lazy');
 				FUSION.weather();
+				setInterval(FUSION.weather, 60000);
+				FUSION.waypoints('.animated');
 				// FEATURES.navToggle('header', '.js-nav-toggle', '.menu-overlay', '.menu-overlay > ul');
 			}
 		}

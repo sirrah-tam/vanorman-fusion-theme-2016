@@ -420,19 +420,25 @@ hr.small {
 	@include position-column(md,offset,1);
 }
 
-%gradient-section { // 8
+%gradient-section,
+.gradient-section { // 8
 	@include linear-gradient(120deg, $gray-dark 0%, $gray-dark 20%, $gray-darker 80%, $gray-darker 100%);
 	@extend %dark-bg-text;
+	.caption { color: $gray; }
 }
 
-%gradient-section-green { // 8
+%gradient-section-green,
+.gradient-section-green { // 8
 	@include linear-gradient(150deg, $brand-secondary 0%, $brand-secondary 20%, $brand-tertiary 80%, $brand-tertiary 100%);
 	@extend %dark-bg-text;
+	.caption { color: $gray; }
 }
 
-%gradient-section-blue { // 8
+%gradient-section-blue,
+.gradient-section-blue { // 8
 	@include linear-gradient(150deg, $blue 0%, $blue 20%, $blue-dark 80%, $blue-dark 100%);
 	@extend %dark-bg-text;
+	.caption { color: $gray; }
 }
 
 %gradient-section-pink { // 8
@@ -701,11 +707,11 @@ hr.small {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100vh;
+	height: 50vh;
 	&:before {
 		content: "";
 		position: absolute;
-		background-color: rgba(0,0,0,.2);
+		background-color: rgba(0,0,0,.5);
 		top: 0;
 		left: 0;
 		width: 100%;
@@ -1898,7 +1904,8 @@ hr.small {
 // Weather
 .weather {
 	min-height: 50vh;
-	i {
+	background-color: $brand-primary;
+	i.icon-weather {
 		color: #fff;
 		font-family: weather;
 		font-size: rem(150px);
@@ -1967,19 +1974,23 @@ hr.small {
 	}
 
 	ul {
-		margin: 0;
+		margin: 0 auto;
 		padding: 0;
+		max-width: 50%;
+		background-color: rgba(0,0,0, .7); 
+		border-bottom: 2px solid $gray-lightest;
 	}
 
 	li {
-		@extend .btn;
-		@extend .btn-default;
 		display: inline-block;
-		border-radius: 3px;
+		list-style: none;
+		text-align: center;
+		padding: 15px 25px;
+		color: $gray-lightest;
 	}
 
 	.currently {
-		margin: 0 20px;
+			
 	}
 }
 
@@ -2003,16 +2014,12 @@ $shadows-big:    multiple-box-shadow(100);
 	// background: radial-gradient(ellipse at bottom, #222 0%, #111 60%, #000 100%);
 	background-color: #000;
 	overflow: hidden;
-	min-height: 100vh;
-	// .calvin {
-	// 	background-image: url('/asset/5844f458ee61f?w=1680');
-	// 	height: 100%;
-	// 	width: 100%;
-	// 	background-size: cover;
-	// 	background-repeat: no-repeat;
-	// 	background-position: 0;
-	// }
-	#stars {
+	min-height: 50vh;
+	@extend %contrast-light-text;
+	.caption {
+		background-color: rgba(0,0,0,.5);
+	}
+	.stars {
 		width: 1px;
 		height: 1px;
 		background: transparent;
@@ -2029,7 +2036,7 @@ $shadows-big:    multiple-box-shadow(100);
 		}
 	}
 
-	#stars2 {
+	.stars2 {
 		width: 2px;
 		height: 2px;
 		background: transparent;
@@ -2046,7 +2053,7 @@ $shadows-big:    multiple-box-shadow(100);
 		}
 	}
 
-	#stars3 {
+	.stars3 {
 		width: 3px;
 		height: 3px;
 		background: transparent;
