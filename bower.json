@@ -8,10 +8,12 @@
     "font-awesome": "fontawesome#~4.5.0",
     "simpleWeather": "^3.1.0",
     "instantclick": "^3.1.0",
-    "vue": "^1.0.24"
+    "vue": "^1.0.24",
+    "animate.css": "^3.5.2"
   },
   "devDependencies": {
-    "vue-resource": "^1.0.3"
+    "vue-resource": "^1.0.3",
+    "waypoints": "^4.0.1"
   },
   "authors": [
     "Cameron Van Orman <cameron.vanorman@gmail.com>"
