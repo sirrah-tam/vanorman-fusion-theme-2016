@@ -3,15 +3,9 @@
 @php($posts = (matrix_exists('blog') ? matrix_entries('blog')->findAll()->reverse()->slice(0, 3) : null))
 
 @section('content')
-    <div class="space-scroll">
-        <div id='stars'></div>
-        <div id='stars2'></div>
-        <div id='stars3'></div>
-        <!-- <div class="calvin"></div> -->
-    </div>
-    <div class="info-masthead">
+     <div class="info-masthead">
         <div class="wrapper">
-            <div class="img-col">
+            <div class="img-col animated">
                 <img class="img-responsive img-circle img-circle-primary" src="{{ variable('mugshot') }}" alt="Cameron Van Orman - Mugshot">
                 <hr class="small">
                 <ul class="social list-inline">
@@ -21,7 +15,7 @@
                     <li><a href="{{ variable('social-spotify') }}" class="btn-social btn-outline" target="_blank"><i class="fab fab-spotify bt-fw"></i></a></li>
                 </ul> 
             </div>
-            <div class="info-col">
+            <div class="info-col animated">
                 <div class="intro-text">
                     <h1 class="page-header">Cameron <br> Van Orman</h1>
                     <h2>Web Developer</h2>
@@ -40,27 +34,51 @@
             </div>
         </div>
     </div>
-    <div class="spotlight-list weather bg-custom bg-city">
-        <div class="wrapper">
-            <div id="weather"></div>
+
+    <!-- Stars -->
+    <div class="spotlight-list space-scroll">
+        <div class='stars'></div>
+        <div class='stars2'></div>
+        <div class='stars3'></div>
+         <div class="wrapper">
+        <div class="caption animated">
+                <i class="center-block btl bt-quote-left bt-2x"></i>
+                <blockquote>
+                    “The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the carbon in our apple pies were made in the interiors of collapsing stars. We are made of starstuff.”
+                </blockquote>
+                <h4>— Carl Sagan, Cosmos</h4>
+            </div>
         </div>
+        <!-- <div class="calvin"></div> -->
     </div>
+
+    <!-- About -->
     <div class="cta about-section">
-        <div class="wrapper">
-            <div class="row">
-                <div class="col-centered text-center">
-                    <h3>About</h3>
-                    <hr class="small">
-                    <p class="lead">{{ variable('about-blurb') }}</p>
-                    <a class="btn btn-secondary" href="/about">
-                        Read More <i class="btl bt-caret-right bt-fw"></i>
-                    </a>
-                </div>
+        <div class="wrapper animated">
+            <div class="col-centered text-center">
+                <h3>About</h3>
+                <hr class="small">
+                <p class="lead">{{ variable('about-blurb') }}</p>
+                <a class="btn btn-secondary" href="/about">
+                    Read More <i class="btl bt-caret-right bt-fw"></i>
+                </a>
             </div>
         </div>
     </div>
+
+    <!-- Spotlight - Weather -->
+    <div class="spotlight-list weather bg-custom space-scroll">
+        <div class='stars'></div>
+        <div class='stars2'></div>
+        <div class='stars3'></div>
+        <div class="wrapper animated">
+            <div id="weather"></div>
+        </div>
+    </div>
+    
+    <!-- Blog -->
     <div class="cta blog-section">
-        <div class="wrapper">
+        <div class="wrapper animated">
             <div class="col-centered">    
                 <h3 class="page-title"><i class="btl bt-notebook bt-fw"></i> Latest Ramblings</h3>
                 <hr class="small">
@@ -91,9 +109,9 @@
             </div>
         </div>
     </div>
-    <div class="spotlight-list">
+    <div class="spotlight-list gradient-section">
         <div class="wrapper">
-            <div class="caption">
+            <div class="caption animated">
                 <i class="center-block btl bt-quote-left bt-2x"></i>
                 <blockquote>
                     "I am not a genius. I am just a tremendous bundle of experience."
