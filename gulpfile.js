@@ -1,5 +1,5 @@
 var elixir = require('laravel-elixir');
-
+// var BrowserSync = require('laravel-elixir-browsersync');
 /*
  |--------------------------------------------------------------------------
  | Elixir Configuration
@@ -7,7 +7,7 @@ var elixir = require('laravel-elixir');
  |
  */
 
-elixir.config.bowerDir         = '/bower_components';
+elixir.config.bowerDir         = './bower_components';
 elixir.config.publicPath       = '';
 elixir.config.assetsPath       = './assets';
 elixir.config.css.outputFolder = './assets/css';
@@ -29,42 +29,55 @@ var config = {
 };
 
 var paths = {
-    'hydrogen': config.bowerPath + '/hydrogen/',
-    'jquery': config.bowerPath + '/jquery/',
-    'vue': config.bowerPath + '/vue/dist/',
+    'hydrogen': elixir.config.bowerDir + '/hydrogen/',
+    'jquery': elixir.config.bowerDir + '/jquery/',
+    'vue': elixir.config.bowerDir + '/vue/dist/',
     'vueresource': config.bowerPath + '/vue-resource/dist/',
     'blacktie': elixir.config.assetsPath + '/sass/vendor/black-tie/',
-    'instantclick': config.bowerPath + '/instantclick/',
-    'simpleWeather': config.bowerPath + '/simpleWeather/'
+    'instantclick': elixir.config.bowerDir + '/instantclick/',
+    'simpleWeather': elixir.config.bowerDir + '/simpleWeather/',
+    'waypoints': elixir.config.bowerDir + '/waypoints/lib/',
+    'animate': elixir.config.bowerDir + '/animate.css/',
 };
 
+// elixir(function(mix) {
+//     BrowserSync.init();
+//     mix.BrowserSync();
+// });
 elixir(function(mix) {
-    mix.sass('./assets/sass/app.scss', 'assets/css', {
+
+    // Sass
+    mix.sass('./assets/sass/app.scss', './assets/css', {
         includePaths: [
             paths.blacktie,
             paths.hydrogen + 'scss/'
         ]
     });
 
-    mix.styles(
-        [   
-            './assets/css/bootstrap.css',
-            './assets/css/fx-kit.css',
-            './assets/css/cosmo.css',
-        ], './assets/css/app.css', './'
-    );
+    // Styles
+    mix.styles([   
+        paths.animate + 'animate.css',
+        './assets/css/bootstrap.css',
+        // './assets/css/fx-kit.css',
+        // './assets/css/cosmo.css',
+    ], 'assets/css/app.css', './assets/css/app.css');
 
+    // mix.version('public/css/app.css');
+
+    // Scripts
     mix.scripts([
         paths.jquery + 'dist/jquery.js',
-        paths.vue + 'vue.js',
+        // paths.vue + 'vue.js',
         paths.vueresource + 'vue-resource.js',
-        paths.hydrogen + 'js/plugins/',
+        paths.hydrogen + 'js/plugins',
         paths.hydrogen + 'js/app.js',
         paths.instantclick + 'instantclick.js',
         paths.simpleWeather + 'jquery.simpleWeather.js',
+        paths.waypoints + 'jquery.waypoints.js',
         './assets/js/fx-kit.js',
         './assets/js/components/*.js'
     ]);
 
+    // Fonts
     mix.copy(paths.blacktie + 'fonts', './assets/fonts');
 });
