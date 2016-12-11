@@ -1,6 +1,10 @@
 @extends(Theme::getLayout())
 
 @php($posts = (matrix_exists('blog') ? matrix_entries('blog')->findAll()->reverse()->slice(0, 3) : null))
+@php($pagecontent = (matrix_exists('pages') ? matrix_entries('pages')->where('slug', 'index')->first() : null))
+@php($spotlights = (matrix_exists('spotlights') ? matrix_entries('spotlights')->findAll() : null))
+
+{{ dump($spotlights) }}
 
 @section('content')
      <div class="info-masthead">
@@ -17,8 +21,8 @@
             </div>
             <div class="info-col animated">
                 <div class="intro-text">
-                    <h1 class="page-header">Cameron <br> Van Orman</h1>
-                    <h2>Web Developer</h2>
+                    <h1 class="page-header">{{ $pagecontent->title }}</h1>
+                    <h2>{{ $pagecontent->subtitle }}</h2>
                     <ul class="contact-menu">
                         <li>
                             <i class="btl bt-globe bt-fw"></i> {{ variable('location') }}
@@ -67,10 +71,7 @@
     </div>
 
     <!-- Spotlight - Weather -->
-    <div class="spotlight-list weather bg-custom space-scroll">
-        <div class='stars'></div>
-        <div class='stars2'></div>
-        <div class='stars3'></div>
+    <div class="spotlight-list weather bg-custom">
         <div class="wrapper animated">
             <div id="weather"></div>
         </div>
@@ -109,7 +110,7 @@
             </div>
         </div>
     </div>
-    <div class="spotlight-list gradient-section">
+    <div class="spotlight-list">
         <div class="wrapper">
             <div class="caption animated">
                 <i class="center-block btl bt-quote-left bt-2x"></i>

@@ -21,7 +21,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/themes/vanorman/assets/css/app.css" media="screen">
 </head>
-<body>
+<body class="{{ Request::route()->getName() }}">
     @include('vanorman::partials.header')
 
     @include('vanorman::partials.alert')
