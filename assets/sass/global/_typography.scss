@@ -69,6 +69,11 @@ a {
 	transition: all .3s ease;
 }
 
+blockquote {
+	text-transform: uppercase;
+	font-size: rem(20px);
+}
+
 ul.no-list-style {
 	li {
 		list-style: none;

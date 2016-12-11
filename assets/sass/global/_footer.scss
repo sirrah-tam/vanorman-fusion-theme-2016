@@ -1,16 +1,18 @@
-$footer-background: $gray-lighter !default;
-$footer-home-color: $gray-light !default;
-$footer-color: $gray-light !default;
-$footer-contact-color: $gray-light !default;
+$footer-background: $gray-dark !default;
+$footer-home-color: $gray-lighter !default;
+$footer-color: $gray-lighter !default;
+$footer-contact-color: $gray-lighter !default;
 $footer-font: $headings-font-family;
 .footer {
+	font-size: rem(16px);
 	font-family: $footer-font;
 	color: $footer-home-color;
-	@extend %gradient-section-green;
+	background-color: $footer-background;
 	@include clearfix();
 	position: relative;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	text-transform: uppercase;
 	@media (max-width: $screen-sm-max) {
 		text-align: center;
 		img { margin: 0 auto; }
@@ -76,7 +78,7 @@ $footer-font: $headings-font-family;
 .footer-top {
 	position: relative;
 	padding: rem(25px) 0;
-	@extend %gradient-section;
+	background-color: $gray-darker;
 	color: $gray-lighter;
 }
 .footer-content {

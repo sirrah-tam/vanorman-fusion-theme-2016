@@ -13,9 +13,9 @@
 }
 
 .blog-section {
-	@extend %gradient-section-green;
-	@extend %base-pad;
-	@extend %contrast-light-text;
+	// @extend %gradient-section-green;
+	// @extend %base-pad;
+	// @extend %contrast-light-text;
 	h3 a {
 		@extend %contrast-dark-text;
 	}
@@ -24,7 +24,11 @@
 	}
 }
 
-.about-section {
-	@extend %gradient-section-blue;
+.about-section,
+.blog-section {
+	// @extend %gradient-section-blue;
+	@extend %gradient-section;
 	@extend %base-pad;
+	@extend %stripe;
+	@extend %green;
 }

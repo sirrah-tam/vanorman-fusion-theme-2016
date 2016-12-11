@@ -146,7 +146,6 @@ var FUSION = {
 			handler: function(direction) {
 				if(direction == "down") {
 					$section.animateCss('fadeInLeft');
-					console.log('fired');
 				}
 			},
 			offset: '50%'
