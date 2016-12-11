@@ -51,13 +51,14 @@ elixir(function(mix) {
         includePaths: [
             paths.blacktie,
             paths.hydrogen + 'scss/'
+            // paths.animate + 'source/'
         ]
     });
 
     // Styles
     mix.styles([   
         paths.animate + 'animate.css',
-        './assets/css/bootstrap.css',
+        // './assets/css/bootstrap.css',
         // './assets/css/fx-kit.css',
         // './assets/css/cosmo.css',
     ], 'assets/css/app.css', './assets/css/app.css');
