@@ -72,6 +72,12 @@ a {
 blockquote {
 	text-transform: uppercase;
 	font-size: rem(20px);
+	border-color: $brand-secondary;
+}
+
+pre {
+	font-size: rem(14px);
+	padding: rem(25px) rem(15px);
 }
 
 ul.no-list-style {

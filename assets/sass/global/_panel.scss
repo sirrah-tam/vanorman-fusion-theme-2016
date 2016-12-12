@@ -251,6 +251,14 @@
 
 
 // Contextual variations
+.panel-transparent {
+  background-color: rgba($gray-darker, .8);
+  border-radius: 3px;
+  color: $gray;
+  padding: rem(35px);
+  border: transparent;
+  @include panel-variant($gray, $gray-lightest, $gray, $gray);
+}
 .panel-default {
   @include panel-variant($panel-default-border, $panel-default-text, $panel-default-heading-bg, $panel-default-border);
 }

@@ -2,17 +2,17 @@ $footer-background: $gray-dark !default;
 $footer-home-color: $gray-lighter !default;
 $footer-color: $gray-lighter !default;
 $footer-contact-color: $gray-lighter !default;
-$footer-font: $headings-font-family;
+$footer-font: $navbar-font-family;
 .footer {
 	font-size: rem(16px);
 	font-family: $footer-font;
-	color: $footer-home-color;
-	background-color: $footer-background;
 	@include clearfix();
 	position: relative;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-transform: uppercase;
+	@extend %stripe;
+	@extend %green;
 	@media (max-width: $screen-sm-max) {
 		text-align: center;
 		img { margin: 0 auto; }
@@ -39,51 +39,56 @@ $footer-font: $headings-font-family;
 		}
 	}
 	.links {
-		font-family: $navbar-font-family;
-		padding: 55px 0;
+		font-family: $headings-font-family;
+		padding: rem(5px) 0;
 		margin: 0;
 		text-align: center;
-		border-top: 1px solid #cccccc;
-		border-bottom: 1px solid #cccccc; 
 		li {
 			display: inline-block;
 			text-align: center;
-			padding: 0 30px;
+			padding: 0 rem(5px);
 			margin: 0;
 			line-height: 1;
 			@media (max-width: $screen-sm-max) {
-				padding: 5px 10px;
+				padding: rem(5px) rem(10px);
 			}
 			&:first-child {
 				padding-left: 0;
 				@media (max-width: $screen-sm-max) {
-					padding: 5px 10px;
+					padding: rem(5px) rem(10px);
 				}
 			}
 			&:last-child {
 				padding-right: 0;
 				@media (max-width: $screen-sm-max) {
-					padding: 5px 10px;
+					padding: rem(5px) rem(10px);
 				}
 			}
 			a {
-				color: $footer-home-color;
-				&:hover {
-					color: $brand-primary;
-				}
+				@extend %btn;
+				@extend %btn-default;
 			}
 		}
 	}
 }
 .footer-top {
 	position: relative;
+	width: 100%;
 	padding: rem(25px) 0;
-	background-color: $gray-darker;
+	background-color: $gray-dark;
 	color: $gray-lighter;
+}
+.footer-bottom {
+	position: relative;
+	width: 100%;
+	padding: rem(25px) 0;
+	text-align: center;
+	color: $gray;
+	font-weight: 600;
+	background-color: $gray-lighter;
 }
 .footer-content {
 	position: relative;
-	padding: rem(50px) 0;
-	@extend %col-md-8;
-	@include position-column(md,offset,2);
+	@extend %gradient-section-green;
+	@extend %base-pad;
 }

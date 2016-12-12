@@ -447,6 +447,7 @@ hr.small {
 
 %stripe { 
 	position: relative;
+	width: auto;
 	&:before {
 		position: absolute;
 		top: 0;
@@ -529,7 +530,7 @@ hr.small {
 .bg-custom {
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position: bottom;
+	background-position: 0 0;
 	background-attachment: fixed;
 }
 .bg-space {
@@ -537,8 +538,8 @@ hr.small {
 	@include breakpoint-up(sm) { background-image: url('/asset/5844eb05c53de?w=1920'); }
 }
 .bg-city { 
-	background-image: url('/asset/5844f03a8832c?w=900');
-	@include breakpoint-up(sm) { background-image: url('/asset/5844f03a8832c?w=1920'); }
+	background-image: url('/asset/584dc4e605867?w=900');
+	@include breakpoint-up(sm) { background-image: url('/asset/584dc4e605867?w=1920'); }
 }
 
 // Filter dropdown - Profiles/Portfolio filters
@@ -677,7 +678,7 @@ hr.small {
 		font-size: 13px;
 		font-weight: 600;
 		font-family: $font-family-spec;
-		color: $gray-lightest;
+		color: $gray;
 		content: 'vanorman.design';
 		text-transform: uppercase;
 		text-align: center;
@@ -691,8 +692,9 @@ hr.small {
 // Breadcrumbs
 .bct-wrapper {
 	@include clearfix();
-	background-color: $gray-lightest;
-	// margin-bottom: 25px;
+	background-color: $gray;
+	color: $gray-lightest;
+	min-height: 5vh;
 	.bct {
 		@include multi-column(12,12,12,12);
 		padding: 0;
@@ -701,18 +703,30 @@ hr.small {
 			margin: 0;
 			li {
 				display: inline-block;
-				padding: 15px 0 15px 3px;
 				margin: 0;
+				padding: 15px 0 15px 3px;
+				font-size: rem(15px);
+				text-transform: uppercase;
 				&:before {
 					content: $bct-divider;
 				}
 				&:first-child:before {
 					content: none;
 				}
+				
+				a,
+				span {
+					padding: rem(5px) rem(15px);
+					margin: 0;
+					background-color: $gray-lightest;
+					color: $gray;
+				}
 
+				a { font-weight: 600; }
+				
 				a,
 				i {
-					color: $brand-primary;
+					color: $brand-secondary;
 				}
 			}
 		}
@@ -753,7 +767,7 @@ hr.small {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100vh;
+	height: 95vh;
 	&:before {
 		content: "";
 		position: absolute;
@@ -1433,7 +1447,7 @@ hr.small {
 // Structure and style used on Hompage, Service Overview, Service Detail pages
 .spotlight-list,
 %spotlight-list {
-	background-image: $gray-lighter;
+	background-color: $gray-dark;
 	padding: rem(90px) 0 rem(80px);
 	text-align: center;
 	.section-header {
@@ -1953,12 +1967,11 @@ hr.small {
 // Weather
 .weather {
 	min-height: 50vh;
-	background-color: $brand-primary;
 	i.icon-weather {
-		color: #fff;
+		color: $gray-lightest;
 		font-family: weather;
 		font-size: rem(150px);
-		font-weight: normal;
+		font-weight: 600;
 		font-style: normal;
 		line-height: 1.0;
 		text-transform: none;
@@ -2017,7 +2030,7 @@ hr.small {
 		margin: 0 0 8px;
 		color: $gray-lightest;
 		font-size: rem(100px);
-		font-weight: 300;
+		font-weight: 400;
 		text-align: center;
 		text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
 	}
@@ -2032,7 +2045,7 @@ hr.small {
 		max-width: 50%;
 		text-transform: uppercase;
 		// background-color: rgba(0,0,0, .7); 
-		border-bottom: 2px solid $gray-lightest;
+		// border-bottom: 2px solid $gray-lightest;
 	}
 
 	li {
@@ -2040,6 +2053,7 @@ hr.small {
 		list-style: none;
 		text-align: center;
 		padding: 15px 25px;
+		font-weight: 600;
 		color: $gray-lightest;
 	}
 
@@ -2128,7 +2142,7 @@ $shadows-big:    multiple-box-shadow(100);
 
 /*** For Salvattore Masonry layout - JS controlled, no touchy (Similar to Pinterest panels) ***/
 .masonry {
-	.item { @include make-col(12); padding: 0;}
+	.item { @include multi-column(12,4,4,4);}
 }
 @media screen and (min-width: 1px) and (max-width: 767px){
 	.masonry[data-columns]::before {
@@ -2142,6 +2156,12 @@ $shadows-big:    multiple-box-shadow(100);
 }
 @media screen and (min-width:992px) and (max-width: 9999px){
 	.masonry[data-columns]::before {
-		content: '4 .col-md-4';
+		.home & {
+			content: '4 .col-md-4';
+		}
+		.blog-overview & {
+			content: '2 .col-md-6';
+		}
+
 	}
 }

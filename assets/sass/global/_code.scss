@@ -1,95 +1,146 @@
-@import url(http://fonts.googleapis.com/css?family=Anonymous+Pro);
+/*
 
-// Code & Code Blocks
+Atom One Light by Daniel Gamage
+Original One Light Syntax theme from https://github.com/atom/one-light-syntax
 
-$base-font-color: #2b2b2b;
-$code-font-color: #e0f9f8;
-$base-border-radius: 2px;
+base:    #fafafa
+mono-1:  #383a42
+mono-2:  #686b77
+mono-3:  #a0a1a7
+hue-1:   #0184bb
+hue-2:   #4078f2
+hue-3:   #a626a4
+hue-4:   #50a14f
+hue-5:   #e45649
+hue-5-2: #c91243
+hue-6:   #986801
+hue-6-2: #c18401
 
-// Code
-$code-block-background-color: mix($base-font-color, black);
-$code-block-background-gradient:
-  rgba(white, 0) 0,
-  rgba(white, 0) 15px, rgba(white, 0.1) 15px, rgba(white, 0) 16px,
-  rgba(white, 0) 32px, rgba(white, 0.1) 32px, rgba(white, 0) 33px,
-  rgba(white, 0) 50px, rgba(white, 0.075) 50px, rgba(white, 0) 51px,
-  rgba(white, 0) 67px, rgba(white, 0.05) 67px, rgba(white, 0) 68px;
-$code-block-padding: 0.875rem;
-$code-block-top-bar-height: 1.4rem;
-$code-border-radius: 5px;
+*/
 
-code, kbd, samp {  
-  font-family: "Anonymous Pro", monospace, serif;
-  font-size: 1em;
+.codex-content img {
+    max-width: 100%;
+    height: auto;
 }
 
-code {  
-  background-color: rgba($base-font-color, 0.07);
-  border-radius: $base-border-radius;
-  margin-right: 2px;
-  padding: 0.2em 0.3em;
+.code-window {
+    border: 1px solid #eceeef;
+    border-radius: 3px;
+    margin: 30px 0;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+    background: #fafafa;
+
+    .window-bar {
+        height: 38px;
+        border-top: 1px solid #eaeae9;
+        border-bottom: 1px solid #dfdfde;
+        background: #ebebeb;
+
+        .circles {
+            margin: 10px 12px 0;
+            float: left;
+
+            .circle {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background-color: #fff;
+                border: 1px solid #fff;
+            }
+
+            .circle-red {
+                background-color: #fc615c;
+                border-color: #fd504a;
+            }
+
+            .circle-yellow {
+                background-color: #fec041;
+                border-color: #f0b542;
+            }
+
+            .circle-green {
+                background-color: #33c849;
+                border-color: #1bc634;
+            }
+        }
+    }
 }
 
-pre {  
-  border-radius:
-    ($base-border-radius * 3)
-    ($base-border-radius * 3)
-    $base-border-radius
-    $base-border-radius;
-  box-shadow:
-    0 1.25rem 1rem -1.5rem rgba($base-font-color, 1),
-    0 0.75rem 1.75rem -0.25rem rgba($base-font-color, 0.6),
-    0 1.25rem 2.5rem rgba($base-font-color, 0.3);
-  margin-bottom: 1.5em;
-  overflow: hidden;
-  padding-top: 1.25rem;
-  position: relative;
-  white-space: pre;
-
-  &::before {
-    @include position(absolute, 0 0 null 0);
-    background-color: rgba($base-font-color, 0.4);
-    content: "";
-    height: 1.25rem;
-  }
-
-  &::after {
-    @include position(absolute, (1.25rem * (1.5 /5)) null null 0.5rem);
-    @include size(1.25rem * (2 / 5));
-    background-color: rgba($base-font-color, 0.35);
-    border-radius: 0.5rem;
-    box-shadow:
-      0.875rem 0 0 rgba($base-font-color, 0.35),
-      1.75rem 0 0 rgba($base-font-color, 0.35);
-    content: "";
-  }
-}
-
-pre > code {  
-  background-attachment: local;
-  background-color: $code-block-background-color;
-  background-image: linear-gradient( to right, $code-block-background-gradient);
-  background-position: 0 ($code-block-top-bar-height * 2);
-  border-radius: 0 0 $base-border-radius $base-border-radius;
-  box-shadow: 0 0 3rem $base-font-color inset;
-  color: $code-font-color;
+.hljs {
   display: block;
-  margin-right: 0;
-  overflow-y: scroll;
-  padding: 1rem $code-block-padding;
-  white-space: pre;
+  overflow-x: auto;
+  padding: 12px;
+  color: #383a42;
+  background: #fafafa;
+}
 
-  &::after {
-    @include position(absolute, $code-block-top-bar-height 0 0 null);
-    background-image:
-      linear-gradient(
-        to right,
-        rgba($code-block-background-color, 0),
-        rgba($code-block-background-color, 1)
-    );
-    content: "";
-    pointer-events: none;
-    width: 3rem;
-    z-index: 10;
-  }
+.hljs-comment,
+.hljs-quote {
+  color: #a0a1a7;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+  color: #a626a4;
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+  color: #e45649;
+}
+
+.hljs-literal {
+  color: #0184bb;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string {
+  color: #50a14f;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: #c18401;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #986801;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #4078f2;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-link {
+  text-decoration: underline;
 }

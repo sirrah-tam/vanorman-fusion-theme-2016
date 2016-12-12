@@ -39952,9 +39952,15 @@ var FUSION = {
 				setInterval(FUSION.weather, 60000);
 				// FUSION.waypoints('.animated');
 				FUSION.weather();
-				FUSION.append('.masonry');
+				
 				FUSION.highlightJs();
 				// FEATURES.navToggle('header', '.js-nav-toggle', '.menu-overlay', '.menu-overlay > ul');
+			}
+		},
+
+		home: {
+			init: function() {
+				FUSION.append('.masonry');
 			}
 		},
 
@@ -39966,13 +39972,13 @@ var FUSION = {
 
 		blog_overview: {
 			init: function() {
-
+				FUSION.append('.masonry');
 			}
 		},
 
 		blog_post: {
 			init: function() {
-				
+
 			}
 		}
 	};
