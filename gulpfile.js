@@ -58,7 +58,7 @@ elixir(function(mix) {
     // Styles
     mix.styles([   
         paths.animate + 'animate.css',
-        // './assets/css/bootstrap.css',
+        './assets/css/hybrid.css',
         // './assets/css/fx-kit.css',
         // './assets/css/cosmo.css',
     ], 'assets/css/app.css', './assets/css/app.css');
@@ -68,13 +68,15 @@ elixir(function(mix) {
     // Scripts
     mix.scripts([
         paths.jquery + 'dist/jquery.js',
-        // paths.vue + 'vue.js',
+        paths.vue + 'vue.js',
         paths.vueresource + 'vue-resource.js',
         paths.hydrogen + 'js/plugins',
         paths.hydrogen + 'js/app.js',
+        './assets/js/salvattore.min.js',
         paths.instantclick + 'instantclick.js',
         paths.simpleWeather + 'jquery.simpleWeather.js',
         paths.waypoints + 'jquery.waypoints.js',
+        './assets/js/highlight.pack.js',
         './assets/js/fx-kit.js',
         './assets/js/components/*.js'
     ]);
