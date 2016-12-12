@@ -54,7 +54,7 @@
                             @foreach ($posts as $post)
                                 <div class="blog-post">
                                     <div class="blog-post-inner">
-                                        <h3 class="post-title">
+                                        <h3 class="js-heading post-title">
                                             <a href="{{ url($post->uri) }}">{{ $post->title }}</a>
                                         </h3>
                                         <p>
