@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="blog-section content">
-    <div class="wrapper">
+    <div class="wrapper-fluid">
         <div class="row">
             <div class="sidebar-cont">
                 <div class="blog-list">

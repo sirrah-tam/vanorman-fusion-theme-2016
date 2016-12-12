@@ -692,7 +692,7 @@ hr.small {
 // Breadcrumbs
 .bct-wrapper {
 	@include clearfix();
-	background-color: $gray;
+	background-color: $gray-darker;
 	color: $gray-lightest;
 	min-height: 5vh;
 	.bct {
@@ -718,8 +718,8 @@ hr.small {
 				span {
 					padding: rem(5px) rem(15px);
 					margin: 0;
-					background-color: $gray-lightest;
-					color: $gray;
+					background-color: $gray-dark;
+					color: $gray-lightest;
 				}
 
 				a { font-weight: 600; }
