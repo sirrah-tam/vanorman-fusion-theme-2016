@@ -150,6 +150,24 @@ var FUSION = {
 			},
 			offset: '50%'
 		});
+	},
+
+	highlightJs: function() {
+		hljs.initHighlighting();
+	},
+
+	/**
+	 * Salvattore grid init
+	 *
+	 * @param {string} grid
+	 */
+	append: function(grid) {
+
+		var salvGrid = document.querySelector(grid);
+		var item = document.createElement('div');
+		if (salvGrid) {
+			salvattore.appendElements(salvGrid, [item]);
+		}
 	}
 
 };

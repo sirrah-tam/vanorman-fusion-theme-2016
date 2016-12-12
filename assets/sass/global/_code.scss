@@ -1,0 +1,95 @@
+@import url(http://fonts.googleapis.com/css?family=Anonymous+Pro);
+
+// Code & Code Blocks
+
+$base-font-color: #2b2b2b;
+$code-font-color: #e0f9f8;
+$base-border-radius: 2px;
+
+// Code
+$code-block-background-color: mix($base-font-color, black);
+$code-block-background-gradient:
+  rgba(white, 0) 0,
+  rgba(white, 0) 15px, rgba(white, 0.1) 15px, rgba(white, 0) 16px,
+  rgba(white, 0) 32px, rgba(white, 0.1) 32px, rgba(white, 0) 33px,
+  rgba(white, 0) 50px, rgba(white, 0.075) 50px, rgba(white, 0) 51px,
+  rgba(white, 0) 67px, rgba(white, 0.05) 67px, rgba(white, 0) 68px;
+$code-block-padding: 0.875rem;
+$code-block-top-bar-height: 1.4rem;
+$code-border-radius: 5px;
+
+code, kbd, samp {  
+  font-family: "Anonymous Pro", monospace, serif;
+  font-size: 1em;
+}
+
+code {  
+  background-color: rgba($base-font-color, 0.07);
+  border-radius: $base-border-radius;
+  margin-right: 2px;
+  padding: 0.2em 0.3em;
+}
+
+pre {  
+  border-radius:
+    ($base-border-radius * 3)
+    ($base-border-radius * 3)
+    $base-border-radius
+    $base-border-radius;
+  box-shadow:
+    0 1.25rem 1rem -1.5rem rgba($base-font-color, 1),
+    0 0.75rem 1.75rem -0.25rem rgba($base-font-color, 0.6),
+    0 1.25rem 2.5rem rgba($base-font-color, 0.3);
+  margin-bottom: 1.5em;
+  overflow: hidden;
+  padding-top: 1.25rem;
+  position: relative;
+  white-space: pre;
+
+  &::before {
+    @include position(absolute, 0 0 null 0);
+    background-color: rgba($base-font-color, 0.4);
+    content: "";
+    height: 1.25rem;
+  }
+
+  &::after {
+    @include position(absolute, (1.25rem * (1.5 /5)) null null 0.5rem);
+    @include size(1.25rem * (2 / 5));
+    background-color: rgba($base-font-color, 0.35);
+    border-radius: 0.5rem;
+    box-shadow:
+      0.875rem 0 0 rgba($base-font-color, 0.35),
+      1.75rem 0 0 rgba($base-font-color, 0.35);
+    content: "";
+  }
+}
+
+pre > code {  
+  background-attachment: local;
+  background-color: $code-block-background-color;
+  background-image: linear-gradient( to right, $code-block-background-gradient);
+  background-position: 0 ($code-block-top-bar-height * 2);
+  border-radius: 0 0 $base-border-radius $base-border-radius;
+  box-shadow: 0 0 3rem $base-font-color inset;
+  color: $code-font-color;
+  display: block;
+  margin-right: 0;
+  overflow-y: scroll;
+  padding: 1rem $code-block-padding;
+  white-space: pre;
+
+  &::after {
+    @include position(absolute, $code-block-top-bar-height 0 0 null);
+    background-image:
+      linear-gradient(
+        to right,
+        rgba($code-block-background-color, 0),
+        rgba($code-block-background-color, 1)
+    );
+    content: "";
+    pointer-events: none;
+    width: 3rem;
+    z-index: 10;
+  }
+}

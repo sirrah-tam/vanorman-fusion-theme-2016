@@ -83,22 +83,16 @@ ul.no-list-style {
 	}
 }
 
-.content ul {
-	padding: 0;
-	margin-left: 15px;
-	li {
-		padding: 0;
-		padding-left: 1em;
-		text-indent: -1.7em;
-		list-style: none;
-		&:before {
-			content: "\25A0";
-			color: #dddddd;
-			padding-right: 15px;
-			font-size: 17px;
-		}
+.content {
+	h2 {
+		padding: 10px 0;
+		border-bottom: 2px solid $brand-secondary;
+	}
+	ul {
+		margin-left: 15px;
 	}
 }
+
 
 .brand-primary {
 	color: $brand-primary;
@@ -121,12 +115,8 @@ ul.no-list-style {
 	letter-spacing: 0.060em;
 	text-transform: uppercase;
 	transition: all .3s linear;
-	i { transition: all .3s linear; }
 	&:hover {
 		padding: rem(15px) rem(35px);
-		i {
-			padding-left: rem(15px);
-		}
 	}
 }
 

@@ -129,7 +129,7 @@ $brand-inverse:             $gray-dark !default;
 $legend-color:              $brand-secondary !default;
 $legend-border-color:       $legend-color !default;
 $input-color:               $gray-dark !default;
-$input-height-base: 40px !default;
+$input-height-base: 30px !default;
 
 $border-color: $gray-lightest;
 
@@ -243,9 +243,9 @@ $letter-spacing-base:    normal !default;
 // Headers
 $font-size-h1:           rem(40px) !default;
 $font-size-h2:           rem(32px) !default;
-$font-size-h3:           rem(28px) !default;
-$font-size-h4:           rem(24px) !default;
-$font-size-h5:           rem(18px) !default;
+$font-size-h3:           rem(24px) !default;
+$font-size-h4:           rem(18px) !default;
+$font-size-h5:           rem(16px) !default;
 $font-size-h6:           rem(16px) !default;
 
 $navbar-font-family:     $font-family-base !default;
@@ -259,7 +259,7 @@ $headings-line-height:   1.1 !default;
 $headings-color:         inherit !default;
 
 // Leads/Mastheads
-$lead-font-size:          1.5rem !default;
+$lead-font-size:          rem(24px) !default;
 $lead-font-weight:        300 !default;
 
 // Block Quotes

@@ -310,17 +310,6 @@ header {
 	padding: rem(60px) rem(30px);
 	font-family: $navbar-font-family;
 	text-align: center;
-	button[type="submit"] { 
-		width: auto; 
-		vertical-align: middle;
-	}
-	.nav-search-input {
-		display: inline-block;
-		width: 336px;
-		margin: 0 5px;
-		max-width: 100%;
-		vertical-align: middle;
-	}
 	.close-btn {
 		cursor: pointer;
 		display: inline-block;
@@ -347,6 +336,17 @@ header {
 			transform: rotate(-45deg);
 		}
 	}
+}
+button[type="submit"] { 
+	width: auto; 
+	vertical-align: middle;
+}
+.nav-search-input {
+	display: inline-block;
+	width: 336px;
+	margin: 0 5px;
+	max-width: 100%;
+	vertical-align: middle;
 }
 // Header newsletter form styles
 .newsletter-header {

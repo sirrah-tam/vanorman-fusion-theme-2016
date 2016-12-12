@@ -90,10 +90,30 @@
 				// JavaScript to be fired on all pages
 				FUSION.navToggle('.js-nav-toggle');
 				HYDROGEN.UTIL.deferImages('.lazy');
-				FUSION.weather();
 				setInterval(FUSION.weather, 60000);
-				FUSION.waypoints('.animated');
+				// FUSION.waypoints('.animated');
+				FUSION.weather();
+				FUSION.append('.masonry');
+				FUSION.highlightJs();
 				// FEATURES.navToggle('header', '.js-nav-toggle', '.menu-overlay', '.menu-overlay > ul');
+			}
+		},
+
+		about: {
+			init: function() {
+
+			}
+		},
+
+		blog_overview: {
+			init: function() {
+
+			}
+		},
+
+		blog_post: {
+			init: function() {
+				
 			}
 		}
 	};

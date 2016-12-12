@@ -16,6 +16,34 @@
 	// @extend %gradient-section-green;
 	// @extend %base-pad;
 	// @extend %contrast-light-text;
+	margin: 0;
+	.blog-list {
+		@include clearfix();
+	}
+	.blog-post {
+		margin-bottom: rem(25px);
+		.home & {
+			// @include multi-column(12,4,4,4);
+		}
+		.home & {
+			// @include multi-column(12,6,6,6);
+		}
+	}
+	.blog-post-inner {
+		text-align: left;
+		padding: rem(35px);
+		background-color: $gray-lightest;
+		color: $gray;
+		border-bottom: 4px solid $brand-secondary;
+		border-radius: 3px;
+		.post-title {
+			border-bottom: 2px solid $brand-secondary;
+			padding: 0 0 5px 0;
+		}
+		P {
+			font-size: rem(16px);
+		}
+	}
 	h3 a {
 		@extend %contrast-dark-text;
 	}

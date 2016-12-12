@@ -347,7 +347,7 @@ hr.small {
 
 %page-title-lg { // 7
 	color: #fff;
-	font-size: rem(86px);
+	font-size: rem(60px);
 	line-height: 1em;
 	letter-spacing: 0;
 }
@@ -669,13 +669,14 @@ hr.small {
 .logo {
 	position: relative;
 	display: block;
-	width: 140px;
+	width: 115px;
 	height: 85px;
 	margin: 0 auto;
 	&:before {
 		pointer-events: none;
-		font-size: 11px;
-		font-family: 'Lato';
+		font-size: 13px;
+		font-weight: 600;
+		font-family: $font-family-spec;
 		color: $gray-lightest;
 		content: 'vanorman.design';
 		text-transform: uppercase;
@@ -691,7 +692,7 @@ hr.small {
 .bct-wrapper {
 	@include clearfix();
 	background-color: $gray-lightest;
-	margin-bottom: 25px;
+	// margin-bottom: 25px;
 	.bct {
 		@include multi-column(12,12,12,12);
 		padding: 0;
@@ -747,12 +748,12 @@ hr.small {
 	position: relative;
 	text-align: center;
 	padding: 50px 0;
-	@extend %gradient-section-green;
+	@extend %gradient-section;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 50vh;
+	height: 100vh;
 	&:before {
 		content: "";
 		position: absolute;
@@ -783,6 +784,10 @@ hr.small {
 	@extend %page-title-lg;
 	z-index: 1;
 	position: relative;
+	@include breakpoint-up(md) {
+		max-width: 740px;
+		margin: 0 auto;
+	}
 	.home & {
 		color: #fff;
 		font-family: $headings-font-family;
@@ -941,7 +946,6 @@ hr.small {
 		padding-top: rem(93px);
 		padding-bottom: rem(70px);
 	}
-	h2 { font-size: $font-size-h3; }
 }
 
 // General CTA
@@ -1647,7 +1651,7 @@ hr.small {
 // Loading Bar
 //
 #instantclick-bar {
-	background: $brand-primary;
+	background: $brand-secondary;
 	width: 100%;
 	position: relative;
 }
@@ -2018,11 +2022,16 @@ hr.small {
 		text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
 	}
 
+	h3 {
+		color: $gray-lightest;
+	}
+
 	ul {
 		margin: 0 auto;
 		padding: 0;
 		max-width: 50%;
-		background-color: rgba(0,0,0, .7); 
+		text-transform: uppercase;
+		// background-color: rgba(0,0,0, .7); 
 		border-bottom: 2px solid $gray-lightest;
 	}
 
@@ -2115,4 +2124,24 @@ $shadows-big:    multiple-box-shadow(100);
 		}
 	}
 
+}
+
+/*** For Salvattore Masonry layout - JS controlled, no touchy (Similar to Pinterest panels) ***/
+.masonry {
+	.item { @include make-col(12); padding: 0;}
+}
+@media screen and (min-width: 1px) and (max-width: 767px){
+	.masonry[data-columns]::before {
+		content: '1 .col-xs-12';
+	}
+}
+@media screen and (min-width:768px) and (max-width: 991px){
+	.masonry[data-columns]::before {
+		content: '2 .col-sm-6';
+	}
+}
+@media screen and (min-width:992px) and (max-width: 9999px){
+	.masonry[data-columns]::before {
+		content: '4 .col-md-4';
+	}
 }
