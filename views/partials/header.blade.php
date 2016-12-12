@@ -72,24 +72,26 @@
 
 <header class="main-header nav navbar-nav navbar-default" role="navigation">
 	<div class="wrapper">
-		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-8">
+		
+		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+			<div class="logo">
 				<a class="nav-logo-link" href="/">
 					<img src="{{ variable('logo') }}" alt="{{ setting('website_title') }}">
 				</a>
 			</div>
-			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-4">
-				<div class="nav navbar-nav navbar-right">
-					<a class="js-nav-toggle nav-toggle" href="#" title="Mobile Menu">
-						<div class="icon">
-							<div class="one"></div>
-							<div class="two"></div>
-							<div class="three"></div>
-						</div>
-					</a>
-				</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+			<div class="nav navbar-nav navbar-right">
+				<a class="js-nav-toggle nav-toggle" href="#" title="Mobile Menu">
+					<div class="icon">
+						<div class="one"></div>
+						<div class="two"></div>
+						<div class="three"></div>
+					</div>
+				</a>
 			</div>
 		</div>
+		
 	</div>
 </header>
  -->

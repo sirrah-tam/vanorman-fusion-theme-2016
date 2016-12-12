@@ -1,5 +1,5 @@
 <div class="bct-wrapper">
-    <div class="container">
+    <div class="wrapper">
         <div class="bct">
             <ul class="breadcrumb list-inline">
                 <li>

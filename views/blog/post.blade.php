@@ -5,44 +5,46 @@
 @section('header')
     {{ $entry->title }}
 @stop
+
+@section('class', 'blog-post')
+
 @section('subheader')
     <hr class="small">
-    <i class="btl bt-user bt-fw"></i> {{ $entry->creator->full_name }}
+    <p>
+        <small>Posted by {{ $entry->creator->full_name }}</small><br>
+        <small><i class="btl bt-clock"></i> Posted on {{ $entry->created_at->format('F d, Y') }} at {{ $entry->created_at->format('h:i A') }}</small>
+    </p>
 @stop
     
 @section('content')
     <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-
-                    <p><i class="btl bt-clock"></i> Posted on {{ $entry->created_at->format('F d, Y') }} at {{ $entry->created_at->format('h:i A') }}</p>
+        <div class="wrapper">
+            <div class="blog-list">
+                <div class="blog-post">
 
                     <div class="post-content">
                         {!! $entry->content !!}
                     </div>
-
                 </div>
-
-                <div class="col-md-4">
-                    @if ($categories)
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Categories</h3>
-                            </div>
-
-                            <div class="list-group">
-                                @foreach($categories as $category)
-                                    <a href="{{ url($category->uri) }}" class="list-group-item">
-                                        <span class="badge">{{ $category->entries->count() }}</span>
-                                        {{ $category->title }}
-                                    </a>
-                                @endforeach
-                            </div>
-
+            </div>
+            <div class="wrapper">
+                @if ($categories)
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Categories</h3>
                         </div>
-                    @endif
-                </div>
+
+                        <div class="list-group">
+                            @foreach($categories as $category)
+                                <a href="{{ url($category->uri) }}" class="list-group-item">
+                                    <span class="badge">{{ $category->entries->count() }}</span>
+                                    {{ $category->title }}
+                                </a>
+                            @endforeach
+                        </div>
+
+                    </div>
+                @endif
             </div>
         </div>
     </div>
