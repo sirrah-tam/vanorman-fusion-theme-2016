@@ -3,14 +3,13 @@
         <div class="bct">
             <ul class="breadcrumb list-inline">
                 <li>
-                    <i class="btl bt-home bt-fw"></i>
-                    <a href="/">Home</a>
+                    <a class="btn btn-default" href="/"><i class="btl bt-home bt-fw"></i> Home</a>
                 </li>
 
                 @for($i = 1; $i <= count(Request::segments()); $i++)
                     <li>
                         @if ($i < count(Request::segments()) & $i > 0)
-                            <a href="/{{ str_slug(Request::segment($i)) }}">{{ title_case(Request::segment($i)) }}</a>
+                            <a class="btn btn-default" href="/{{ str_slug(Request::segment($i)) }}">{{ title_case(Request::segment($i)) }}</a>
                         @else
                             {{ title_case(Request::segment($i)) }}
                         @endif

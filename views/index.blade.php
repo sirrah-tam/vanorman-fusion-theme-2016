@@ -1,6 +1,6 @@
 @extends(Theme::getLayout())
 
-@php($posts = (matrix_exists('blog') ? matrix_entries('blog')->findAll()->reverse()->slice(0, 3) : null))
+@php($posts = (matrix_exists('blog') ? matrix_entries('blog')->findAll()->reverse()->slice(0, 6) : null))
 @php($pagecontent = (matrix_exists('pages') ? matrix_entries('pages')->where('slug', 'index')->first() : null))
 @php($about = (matrix_exists('pages') ? matrix_entries('pages')->where('slug', 'about')->first() : null))
 @php($spotlights = (matrix_exists('spotlights') ? matrix_entries('spotlights')->findAll() : null))
@@ -39,12 +39,42 @@
             </div>
         </div>
     </div>
+    
+    <!-- Blog -->
+    @if (! is_null($posts))
+        <div class="spotlight-list blog-section">
+            <div class="wrapper">
+                <div class="text-center section-header">    
+                    <h3 class="page-title"><i class="btl bt-notebook bt-fw"></i> Latest Ramblings</h3>
+                    <hr class="small">
+                </div>
+                <div class="row">
+                    <div class="blog-list">
+                        <div class="masonry" data-columns>
+                            @foreach ($posts as $post)
+                                <div class="blog-post">
+                                    <div class="blog-post-inner">
+                                        <h3 class="post-title">
+                                            <a href="{{ url($post->uri) }}">{{ $post->title }}</a>
+                                        </h3>
+                                        <p>
+                                            <small><i class="btl bt-calendar bt-fw"></i> {{ $post->created_at->format(setting('date_format')) }}</small>
+                                            <small><i class="btl bt-user bt-fw"></i> {{ $post->creator->full_name }}</small>
+                                        </p>
+                                    
+                                        <a href="{{ url($post->uri) }}" class="btn btn-default center-block">Read More <i class="btl bt-caret-right bt-fw"></i></a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Stars -->
-    <div class="spotlight-list space-scroll">
-        <div class='stars'></div>
-        <div class='stars2'></div>
-        <div class='stars3'></div>
+    <div class="spotlight-list">
         <div class="wrapper">
             <div class="caption">
                 <i class="center-block btl bt-quote-left bt-2x"></i>
@@ -57,40 +87,15 @@
     </div>
 
     <!-- Spotlight - Weather -->
-    <div class="spotlight-list weather bg-custom">
+    <div class="spotlight-list weather bg-custom bg-city">
         <div class="wrapper">
-            <div id="weather"></div>
-        </div>
-    </div>
-    
-    <!-- Blog -->
-    @if (! is_null($posts))
-        <div class="spotlight-list blog-section">
-            <div class="wrapper">
-                <div class="text-center section-header">    
-                    <h3 class="page-title"><i class="btl bt-notebook bt-fw"></i> Latest Ramblings</h3>
-                    <hr class="small">
-                </div>
-                <div class="blog-list masonry" data-columns="4">
-                    @foreach ($posts as $post)
-                        <div class="blog-post">
-                            <div class="blog-post-inner">
-                                <h3 class="post-title"><a href="{{ url($post->uri) }}">{{ $post->title }}</a></h3>
-                                <p class="post-subtitle">
-                                    <small><i class="btl bt-calendar bt-fw"></i> {{ $post->created_at->format(setting('date_format')) }}</small>
-                                    <small><i class="btl bt-user bt-fw"></i> {{ $post->creator->full_name }}</small>
-                                </p>
-                           
-                                {!! $post->excerpt !!}
-                            
-                                <a href="{{ url($post->uri) }}" class="btn btn-secondary center-block">Read More <i class="btl bt-caret-right bt-fw"></i></a>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+            <div class="panel panel-transparent">
+                
+                <div id="weather"></div>
             </div>
         </div>
-    @endif
+    </div>
+
     <div class="spotlight-list">
         <div class="wrapper">
             <div class="caption">
@@ -102,4 +107,5 @@
             </div>
         </div>
     </div>
+    
 @endsection

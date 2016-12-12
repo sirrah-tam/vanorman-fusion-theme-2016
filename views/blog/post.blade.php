@@ -11,18 +11,18 @@
 @section('subheader')
     <hr class="small">
     <p>
-        <small>Posted by {{ $entry->creator->full_name }}</small><br>
-        <small><i class="btl bt-clock"></i> Posted on {{ $entry->created_at->format('F d, Y') }} at {{ $entry->created_at->format('h:i A') }}</small>
+        <small><i class="btl bt-user bt-fw"></i> Posted by {{ $entry->creator->full_name }}</small><br>
+        <small><i class="btl bt-calendar bt-fw"></i> Posted on {{ $entry->created_at->format('F d, Y') }}</small>
     </p>
 @stop
     
 @section('content')
-    <div class="content">
+    <div class="blog-section content">
         <div class="wrapper">
             <div class="blog-list">
                 <div class="blog-post">
 
-                    <div class="post-content">
+                    <div class="blog-post-inner">
                         {!! $entry->content !!}
                     </div>
                 </div>
