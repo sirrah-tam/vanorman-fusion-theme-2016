@@ -483,15 +483,17 @@ hr.small {
 	margin: 0 auto;
 	text-align: center;
 	font-weight: bold;
-	width: 81px;
+	height: 50px;
+	width: 50px;
 	position: relative;
 	float: left;
 	z-index: 3;
 }
 
 %custom-month {
-	color: $gray-dark;
-	font-size: rem(23px);
+	font-family: $font-family-spec;
+	color: $gray-lightest;
+	font-size: rem(20px);
 	font-weight: 600;
 	background-color: transparent;
 	text-transform: uppercase;
@@ -499,16 +501,56 @@ hr.small {
 }
 
 %custom-day {
-	color: $gray-dark;
-	font-size: rem(23px);
-	line-height: rem(24px);
+	color: $gray-lightest;
+	font-size: rem(24px);
+	line-height: rem(10px);
 	font-weight: 600;
-	padding: rem(20px) rem(13px);
-	height: 81px;
-	width: 81px;
-	border: 0;
-	background-color: $brand-tertiary;
-	border-radius: 100%;
+}
+
+.date {
+	@extend %custom-date;
+	// background: $gray-dark;
+	text-transform: uppercase;
+	.blog-post .masthead & {
+		width: 85px;
+		height: 85px;
+		margin: 0 auto;
+		text-align: center;
+		padding: rem(15px) 0;
+		color: $gray;
+		background-color: #fff;
+		border-radius: 50%;
+		float: none;
+	}
+	.blog-post .blog-post-content & {
+		margin-bottom: rem(25px);
+	}
+	.blog-overview &,
+	.home & {
+		width: 25%;
+		height: 100%;
+		text-align: center;
+		color: $gray;
+		padding: 0 rem(10px) rem(10px) rem(10px);
+		border-right: 2px solid $gray-lighter;
+	} 
+}
+
+.year {
+	font-size: rem(35px); 
+	color: $gray;
+	border-top: 1px solid $gray;
+	margin-top: 15px;
+}
+
+.month {
+	color: $gray;
+	@extend %custom-month;
+}
+
+.day {
+	color: $gray;
+	@extend %custom-day;
 }
 
 %accent-title,
@@ -1158,7 +1200,7 @@ hr.small {
 //
 // Used on Profiles overview, Services, Chamber Fusion overview, About page template
 .sidebar {
-	@include multi-column(12,12,3,3);
+	@include multi-column(12,3,3,3);
 	padding: 0;
 	@include breakpoint-up(md) {
 		padding: rem(95px) rem(15px) rem(80px);
@@ -1251,7 +1293,7 @@ hr.small {
 	}
 }
 .sidebar-cont {
-	@include multi-column(12,12,9,9);
+	@include multi-column(12,9,9,9);
 	&.sidebar-right {
 		@include position-column(md,push,3);
 	}
@@ -1476,6 +1518,7 @@ hr.small {
 		height: 100%;
 	}
 	.caption {
+		text-align: center;
 		background: $gray-lightest;
 		padding: rem(53px) rem(30px) rem(34px);
 		position: relative;
@@ -1512,15 +1555,14 @@ hr.small {
 	.event-month {
 		@extend %custom-month;
 	}
-	.author-image {
-		@extend %custom-date;
-		margin-top: rem(-36px);
-		margin-left: rem(30px);
-		img {
-			background-color: #fff;
-			border-radius: 100%;
-		}
-	}
+}
+.author-image {
+ 	@extend %custom-date;
+ 	display: inline-block;
+ 	float: none;
+ 	margin: 5px;
+	background-color: #fff;
+	border-radius: 100%;
 }
 
 

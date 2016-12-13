@@ -1,6 +1,9 @@
 .page-header {
 	@extend %page-title-lg;
 }
+.section-title {
+	@extend %page-title;	
+}
 .intro {
 	@extend %base-pad;
 	.img-circle {
@@ -12,63 +15,9 @@
 	@extend %section-intro;
 }
 
-.blog-section {
-	.home & {
-		@extend %gradient-section-green;
-	}
-	// @extend %base-pad;
-	// @extend %contrast-light-text;
-	margin: 0;
-	.blog-list {
-		@include clearfix();
-	}
-	.blog-post {
-		margin-bottom: rem(25px);
-		.home & {
-			// @include multi-column(12,4,4,4);
-		}
-		.blog-overview & {
-			// @include multi-column(12,6,6,6);
-		}
-	}
-	.blog-post-image {
-		position: relative;
-		width: 100%;
-		max-height: 150px;
-		background-color: $brand-tertiary;
-		&:hover {
-			// background-color: $gray-darker;
-		}
-	}
-	.blog-post-inner {
-		text-align: left;
-		padding: rem(35px);
-		background-color: rgba($gray-darker, .8);
-		border-bottom: 4px solid $brand-secondary;
-		@extend %contrast-light-text;
-		.post-title {
-			font-family: $font-family-spec;
-			font-size: rem(20px);
-			font-weight: 600;
-			text-transform: uppercase;
-			border-bottom: 2px solid $brand-secondary;
-			padding: 0 0 15px 0;
-		}
-		P {
-			// font-size: rem(16px);
-		}
-	}
-	h3 a {
-		@extend %contrast-light-text;
-	}
-	.panel-body {
-		// @extend %contrast-dark-text;
-	}
-}
-
 .about-section,
 .blog-section {
-	// @extend %gradient-section-blue;
+	// @extend %gradient-section-green;
 	@extend %gradient-section;
 	@extend %base-pad;
 	@extend %stripe;
