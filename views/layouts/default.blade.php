@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-     <meta name="google-site-verification" content="d02epMDWBw4zvWUiEujRRrF_-2NSm0Ue9HXh3HzAOso" />
+    <meta name="google-site-verification" content="d02epMDWBw4zvWUiEujRRrF_-2NSm0Ue9HXh3HzAOso" />
 
     <meta name="robots" content="noodp,noydir"/>
     <meta name="author" content="Cameron Van Orman"/>
@@ -15,7 +15,7 @@
      <!-- Social Meta -->
     <meta property="og:title" content="Cameron Van Orman — Web Developer - Seattle, WA"/>
     <meta property="og:url" content="{{ $currentUri }}" data-no-instant/>
-    <meta property="og:site_name" content="{{ variable('og-site') }}Van Orman Design" data-no-instant/>
+    <meta property="og:site_name" content="{{ setting('slug') }} Van Orman Design" data-no-instant/>
     <meta property="og:image" content="{{ variable('og-image') }}" data-no-instant/>
 
     {!! SEOMetadata::generate() !!}

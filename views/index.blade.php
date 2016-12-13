@@ -42,31 +42,53 @@
     
     <!-- Blog -->
     @if (! is_null($posts))
-        <div class="spotlight-list blog-section">
+        <div class="blog-section">
             <div class="wrapper">
                 <div class="text-center section-header">    
-                    <h3 class="page-title"><i class="btl bt-notebook bt-fw"></i> Latest Ramblings</h3>
+                    <h3 class="section-title"><i class="btl bt-notebook bt-fw"></i> Latest Ramblings</h3>
                     <hr class="small">
                 </div>
-                <div class="row">
-                    <div class="blog-list">
-                        <div class="masonry" data-columns>
-                            @foreach ($posts as $post)
-                                <div class="blog-post">
-                                    <div class="blog-post-inner">
-                                        <h3 class="js-heading post-title">
-                                            <a href="{{ url($post->uri) }}">{{ $post->title }}</a>
-                                        </h3>
-                                        <p>
-                                            <small><i class="btl bt-calendar bt-fw"></i> {{ $post->created_at->format(setting('date_format')) }}</small>
-                                            <small><i class="btl bt-user bt-fw"></i> {{ $post->creator->full_name }}</small>
-                                        </p>
-                                    
-                                        <a href="{{ url($post->uri) }}" class="btn btn-default center-block">Read More <i class="btl bt-caret-right bt-fw"></i></a>
+                <div class="blog-list">
+                    <div class="masonry" data-columns>
+                        @foreach ($posts as $post)
+                            <div class="blog-post-content">
+                                <div class="blog-post-inner">
+                                    <h3>
+                                        <a href="{{ $post->uri }}">{{ $post->title }}</a>
+                                    </h3>
+
+                                    @if ($post->categories->count())
+                                        <ul class="post-categories">
+                                            @foreach ($post->categories as $key => $category)
+                                                @if ($post->categories->keys()->last() !== $key)
+                                                    <li><a href="{{ url($category->uri) }}">{{ $category->title }}</a></li>
+                                                @else
+                                                    <li><a href="{{ url($category->uri) }}">{{ $category->title }}</a></li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    @endif
+
+                                    <p>
+                                        {!! $post->excerpt !!}
+                                    </p>
+                                    <a href="{{ url($post->uri) }}" class="btn btn-secondary center-block">Read More <i class="btl bt-angle-right bt-sm bt-fw"></i></a>
+                                </div>
+                                <div class="blog-top">
+                                    <div class="date">
+                                        <div class="month">
+                                            {{ $post->created_at->format('M') }}
+                                        </div>
+                                        <div class="day">
+                                            {{ $post->created_at->format('d') }}
+                                        </div>
+                                    </div>
+                                    <div class="post-title">
+                                        <h4>Posted by {{ $post->creator->full_name }}</h4>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

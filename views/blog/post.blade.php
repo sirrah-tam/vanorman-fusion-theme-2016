@@ -10,42 +10,44 @@
 
 @section('subheader')
     <hr class="small">
+    <img src="{{ $entry->creator->gravatar(200) }}" class="author-image"> 
     <p>
-        <small><i class="btl bt-user bt-fw"></i> Posted by {{ $entry->creator->full_name }}</small><br>
-        <small><i class="btl bt-calendar bt-fw"></i> Posted on {{ $entry->created_at->format('F d, Y') }}</small>
+        Posted by {{ $entry->creator->full_name }}
+        <br>
+        <div class="date">
+            <small>
+                {{ $entry->created_at->format('M') }}
+                <br>
+                {{ $entry->created_at->format('d') }}
+            </small>
+        </div>
     </p>
 @stop
     
 @section('content')
-    <div class="blog-section content">
-        <div class="wrapper">
+<div class="blog-section content">
+    <div class="wrapper-fluid">
+        <div class="sidebar-cont">
             <div class="blog-list">
-                <div class="blog-post">
-
+                <div class="blog-post-content">
                     <div class="blog-post-inner">
                         {!! $entry->content !!}
                     </div>
                 </div>
             </div>
-            <div class="wrapper">
-                @if ($categories)
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Categories</h3>
-                        </div>
-
-                        <div class="list-group">
-                            @foreach($categories as $category)
-                                <a href="{{ url($category->uri) }}" class="list-group-item">
-                                    <span class="badge">{{ $category->entries->count() }}</span>
-                                    {{ $category->title }}
-                                </a>
-                            @endforeach
-                        </div>
-
-                    </div>
-                @endif
-            </div>
+        </div>
+        <div class="sidebar">
+            @if ($categories)
+                <h3 class="section-title">Categories</h3>
+                <ul class="blog-categories">
+                    @foreach($categories as $category)
+                        <li><a href="{{ url($category->uri) }}">
+                            <span class="badge">{{ $category->entries->count() }}</span>
+                            {{ $category->title }}
+                        </a></li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     </div>
 @stop

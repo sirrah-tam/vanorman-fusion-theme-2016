@@ -1,7 +1,7 @@
 @php($date = date('Y'))
 
 <footer class="footer">
-    <div class="footer-content">
+    <!-- <div class="footer-content">
         <div class="wrapper">
             <ul class="links">
                 @if (menu_exists('header'))
@@ -9,13 +9,7 @@
                 @endif
             </ul>
         </div>
-    </div>
-    <div class="footer-top">
-        <div class="wrapper text-center">
-            <small>Made with a metric F*ck ton of <i class="btl bt-mug bt-fw"></i> &amp; <i class="btl bt-heart bt-fw"></i> in Seattle, WA.</small>
-            
-        </div>
-    </div>
+    </div> -->
     <div class="footer-bottom">
         <div class="logo">
             <img class="img-responsive center-block" src="{{ variable('logo') }}" alt="{{ setting('website_title') }}" width="60">
@@ -33,6 +27,12 @@
                 <br>
                 <small>App Load Time: {{ app_loading_time() }} / App Memory Usage: {{ app_memory_usage() }} &nbsp; </small>
             </div>    
+        </div>
+    </div>
+    <div class="footer-top">
+        <div class="wrapper text-center">
+            <small>Made with a metric F*ck ton of <a href="http://status.efelle.co/" target="_blank" rel="nofollow"><i class="btl bt-mug bt-fw"></i></a> &amp; <i class="btl bt-heart bt-fw"></i> in Seattle, WA.</small>
+            
         </div>
     </div>
 </footer>
