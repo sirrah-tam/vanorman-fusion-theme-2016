@@ -3,30 +3,29 @@
 @php($categories = categories('blog'))
 
 @section('header')
-    {{ $entry->title }}
+    <h1 class="page-header">{{ $entry->title }}</h1>
 @stop
 
 @section('class', 'blog-post')
 
 @section('subheader')
-    <hr class="small">
-    <img src="{{ $entry->creator->gravatar(200) }}" class="author-image"> 
-    <p>
-        Posted by {{ $entry->creator->full_name }}
-        <br>
+    <div class="author">
+        <img src="{{ $entry->creator->gravatar(200) }}" class="author-image"><div class="author-name">by {{ $entry->creator->full_name }}</div>
+    </div>
+    <div class="page-subtitle">
         <div class="date">
-            <small>
-                {{ $entry->created_at->format('M') }}
+           <small>
+                <i class="btl bt-calendar bt-lg"></i>
                 <br>
-                {{ $entry->created_at->format('d') }}
+                {{ $entry->created_at->format('M d') }}
             </small>
         </div>
-    </p>
+    </div>
 @stop
     
 @section('content')
 <div class="blog-section content">
-    <div class="wrapper-fluid">
+    <div class="wrapper">
         <div class="sidebar-cont">
             <div class="blog-list">
                 <div class="blog-post-content">
@@ -36,12 +35,12 @@
                 </div>
             </div>
         </div>
-        <div class="sidebar">
+        <div class="blog-sidebar">
             @if ($categories)
-                <h3 class="section-title">Categories</h3>
+                <h3 class="sidebar-header">Categories</h3>
                 <ul class="blog-categories">
                     @foreach($categories as $category)
-                        <li><a href="{{ url($category->uri) }}">
+                        <li><a href="{{ url($category->slug) }}">
                             <span class="badge">{{ $category->entries->count() }}</span>
                             {{ $category->title }}
                         </a></li>

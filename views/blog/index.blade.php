@@ -4,14 +4,14 @@
 @php($posts = matrix_entries('blog', 'posts')->paginate(15, ['*'], 'page', Request::get('page')))
 
 @section('header')
-    Blog
+    <h1 class="page-header">Blog</h1>
 @stop
 
 @section('class', 'blog-overview')
 
 @section('content')
 <div class="blog-section content">
-    <div class="wrapper-fluid">
+    <div class="wrapper">
         <div class="sidebar-cont">
             <div class="blog-list">
                 <div class="masonry" data-columns>
@@ -28,17 +28,15 @@
                                 <div class="post-title">
                                      <h3>
                                         <a href="{{ $post->uri }}">{{ $post->title }}</a><br>
-                                        <small class="inline">by {{ $post->creator->full_name }}</small>
                                     </h3>
                                 </div>
                             </div>
                             <div class="blog-post-inner">
-                                <div class="">
-                                    <img src="{{ $post->creator->gravatar(200) }}" class="inline author-image">
+                                <div class="author">
+                                    <img src="{{ $post->creator->gravatar(200) }}" class="inline author-image"><small class="author-name">by {{ $post->creator->full_name }}</small>
                                 </div>
-
                                 @if ($post->categories->count())
-                                    <ul class="post-categories">
+                                    <ul class="post-categories"><small>Posted in:</small> 
                                         @foreach ($post->categories as $key => $category)
                                             @if ($post->categories->keys()->last() !== $key)
                                                 <li><a href="{{ url($category->uri) }}">{{ $category->title }}</a></li>
@@ -48,6 +46,7 @@
                                         @endforeach
                                     </ul>
                                 @endif
+
 
                                 <p>{!! $post->excerpt !!}</p>
 
@@ -64,14 +63,13 @@
             </div>
         </div>
 
-        <div class="sidebar">
+        <div class="blog-sidebar">
             @if ($categories)
-                <h3 class="section-title">Categories</h3>
+                <h3 class="sidebar-header">Categories</h3>
                 <ul class="blog-categories">
                     @foreach($categories as $category)
                         <li><a href="{{ url($category->uri) }}">
-                            <span class="badge">{{ $category->entries->count() }}</span>
-                            {{ $category->title }}
+                            <h4><span class="badge">{{ $category->entries->count() }}</span> Posts about {{ $category->title }}</h4>
                         </a></li>
                     @endforeach
                 </ul>

@@ -34,9 +34,9 @@
         <div class="masthead">
             <div class="wrapper">
                 <div class="masthead-text">
-                    <h1 class="page-header">@yield('header')</h1>
-                    <h2 class="page-subtitle"><small>@yield('subheader')</small></h2>
+                    @yield('header')
                 </div>
+                @yield('subheader')
             </div>
         </div>
             

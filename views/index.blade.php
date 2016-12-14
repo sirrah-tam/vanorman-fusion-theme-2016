@@ -29,7 +29,7 @@
                             <i class="btl bt-globe bt-fw"></i> {{ variable('location') }}
                         </li>
                         <li>
-                            <a href="{{ variable('resume') }}" target="_blank"><i class="btl bt-file bt-fw"></i> Resume</a>
+                            <a href="{{ variable('resume') }}" target="_blank"><i class="btl bt-notebook bt-fw"></i> Resume</a>
                         </li>
                         <li>
                             <i class="btl bt-code bt-fw"></i> {{ variable('job-role') }} @ <a class="brand-efelle" href="{{ variable('employer-url') }}" target="_blank">{{ variable('employer') }}</a>
@@ -45,20 +45,35 @@
         <div class="blog-section">
             <div class="wrapper">
                 <div class="text-center section-header">    
-                    <h3 class="section-title"><i class="btl bt-notebook bt-fw"></i> Latest Ramblings</h3>
+                    <h3 class="section-title"> Latest Ramblings</h3>
                     <hr class="small">
                 </div>
                 <div class="blog-list">
                     <div class="masonry" data-columns>
                         @foreach ($posts as $post)
                             <div class="blog-post-content">
+                                 <div class="blog-top">
+                                    <div class="date">
+                                        <small>
+                                            <i class="btl bt-calendar bt-lg"></i>
+                                            <br>
+                                            {{ $post->created_at->format('M d') }}
+                                        </small>
+                                    </div>
+                                    <div class="post-title">
+                                        <h3>
+                                            <a href="{{ $post->uri }}">{{ $post->title }}</a>
+                                        </h3>
+                                       
+                                    </div>
+                                </div>
                                 <div class="blog-post-inner">
-                                    <h3>
-                                        <a href="{{ $post->uri }}">{{ $post->title }}</a>
-                                    </h3>
-
+                                    
+                                    <div class="author">
+                                        <img src="{{ $post->creator->gravatar(200) }}" class="inline author-image"><small class="author-name">by {{ $post->creator->full_name }}</small>
+                                    </div>
                                     @if ($post->categories->count())
-                                        <ul class="post-categories">
+                                        <ul class="post-categories"><small class="h4">Posted in:</small> 
                                             @foreach ($post->categories as $key => $category)
                                                 @if ($post->categories->keys()->last() !== $key)
                                                     <li><a href="{{ url($category->uri) }}">{{ $category->title }}</a></li>
@@ -68,25 +83,12 @@
                                             @endforeach
                                         </ul>
                                     @endif
-
                                     <p>
                                         {!! $post->excerpt !!}
                                     </p>
                                     <a href="{{ url($post->uri) }}" class="btn btn-secondary center-block">Read More <i class="btl bt-angle-right bt-sm bt-fw"></i></a>
                                 </div>
-                                <div class="blog-top">
-                                    <div class="date">
-                                        <div class="month">
-                                            {{ $post->created_at->format('M') }}
-                                        </div>
-                                        <div class="day">
-                                            {{ $post->created_at->format('d') }}
-                                        </div>
-                                    </div>
-                                    <div class="post-title">
-                                        <h4>Posted by {{ $post->creator->full_name }}</h4>
-                                    </div>
-                                </div>
+
                             </div>
                         @endforeach
                     </div>
@@ -96,7 +98,7 @@
     @endif
 
     <!-- Stars -->
-    <div class="spotlight-list">
+    <div class="spotlight-list bg-custom bg-space">
         <div class="wrapper">
             <div class="caption">
                 <i class="center-block btl bt-quote-left bt-2x"></i>
