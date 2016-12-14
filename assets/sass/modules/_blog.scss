@@ -1,21 +1,46 @@
 .post-date {
 	font-family: $font-family-spec;
 }
+.author {
+	@include clearfix();
+	max-width: 280px;
+	text-align: center;
+	margin: rem(15px) auto 0;
+}
+.author-image {
+ 	@extend %custom-date;
+	background-color: #fff;
+	border-radius: 100%;
+}
+
+.author-name {
+	float: left;
+	padding: 15px;
+}
 
 .blog-section {
 	margin: 0;
+	h3 a,
+	.date {
+		@extend %contrast-dark-text;
+	}
 	.home & {
 		
 	}
+	.blog-overview & {
+		background-color: $gray-dark;
+		color: $gray-lightest;
+	}
 	.blog-post & {
-		background-color: $gray-lightest;
+		color: $gray;
+		background-color: $gray-lighter;
 	}
 	.blog-list {
 		@include clearfix();
 
 	}
 	.blog-post-content {
-		margin: rem(25px) 0;
+		margin: 0 0 rem(25px);
 		box-shadow: $shadow;
 		border-radius: 5px;
 		background-color: #fff;
@@ -23,15 +48,21 @@
 		}
 		.blog-post & {
 			// @include multi-column(12,9,9,9);
+			color: $gray-dark;
 			border-radius: 0;
-			background-color: transparent;
-			box-shadow: none;
-			border-right: 2px solid $brand-secondary;
+			background-color: $gray-lightest;
 		}
 	}
 	.blog-sidebar {
-		// @include multi-column(12,3,3,3);
-		padding: rem(15px) rem(35px);
+		@extend .sidebar;
+		@include multi-column(12,3,3,3);
+		padding: rem(10px) rem(15px);
+		background-color: $gray-lightest;
+		box-shadow: $shadow;
+		color: $gray;
+		.section-title {
+			color: $gray;
+		}
 	}
 	.blog-post-image {
 		position: relative;
@@ -44,9 +75,9 @@
 	}
 	.blog-top {
 		@include clearfix();
-		// background-color: #fff; 
+		// background-color: $brand-primary; 
 		@extend %contrast-dark-text;
-		border-top: 2px solid $gray-lighter;
+		border-bottom: 2px solid $gray-lighter;
 		padding: rem(10px) 0;
 
 		.blog-post & {
@@ -60,17 +91,17 @@
 		margin: 25px 0;
 		padding: 0;
 		.badge {
-			background-color: $gray-lighter;
 			color: $gray;
 			padding: 5px 10px;
-			border-radius: 5px;
-			margin-right: 15px;
+			// border-radius: 5px;
+			// margin-right: 15px;
 		}
 		li {
 			padding: 0;
-			border-bottom: 2px solid $brand-secondary;
+			// border-bottom: 2px solid $gray-lightest;
 			text-transform: uppercase;
 			color: $gray-lightest;
+			.badge { font-weight: 600; } 
 			a {
 				display: block;
 				padding: 10px 15px;
@@ -84,6 +115,9 @@
 		padding: rem(10px) rem(15px);
 		font-size: rem(18px);
 		text-transform: uppercase;
+		h3 {
+			margin: 0;
+		}
 		h4 {
 			padding: rem(5px) 0;
 			margin: 0;
@@ -94,14 +128,15 @@
 		display: inline-block;
 		list-style: none;
 		margin: 0;
-		padding: 0;
+		padding: 10px 0;
 		width: 100%;
 		li {
 			display: inline-block;
 			margin: 0 5px;
 			a {
 				@extend %btn;
-				@extend %btn-secondary;
+				border: 2px solid $gray-lighter;
+				color: $gray;
 				padding: rem(5px) rem(15px);
 				margin: 0;
 				&:hover {
@@ -116,9 +151,8 @@
 		// background-color: #fff;
 		@extend %contrast-dark-text;
 		font-family: $font-family-base;
-		font-weight: 600;
 		.blog-post & {
-			@extend %contrast-light-text;
+			@extend %contrast-dark-text;
 		}
 		h3 {
 			font-family: $font-family-spec;
@@ -127,11 +161,7 @@
 		}
 		P {
 			font-size: rem(20px);
-			font-weight: 600;
 		}
-	}
-	h3 a {
-		@extend %contrast-dark-text;
 	}
 	.panel-body {
 		// @extend %contrast-dark-text;

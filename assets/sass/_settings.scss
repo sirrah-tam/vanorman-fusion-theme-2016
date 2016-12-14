@@ -87,7 +87,8 @@ $font-size-root:             20px !default;
 
 $violet-dark: #828CA6;
 $violet: #53648C;
-$blue: #2E4272;  // Main Primary color */
+$red: #ed5757;
+$blue: lighten(#2E4272, 10%);  // Main Primary color */
 $blue-dark: #132758;
 $blue-darker: #05153E;
 
@@ -107,8 +108,8 @@ $color-secondary-2-4: #315500;
 // 2. Colors
 //
 // Neutral Grays
-$gray-dark:                 #373a3c !default;
-$gray:                      #55595c !default;
+$gray-dark:                 #333 !default;
+$gray:                      #444 !default;
 $gray-light:                #818a91 !default;
 $gray-lighter:              #eceeef !default;
 $gray-lightest:             #f7f7f9 !default;

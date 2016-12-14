@@ -15,11 +15,9 @@
 	@extend %section-intro;
 }
 
-.about-section,
 .blog-section {
 	// @extend %gradient-section-green;
-	@extend %gradient-section;
+	// @extend %gradient-section;
+	background-color: $gray-dark;
 	@extend %base-pad;
-	@extend %stripe;
-	@extend %green;
 }
