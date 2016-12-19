@@ -5,11 +5,14 @@
 	@include clearfix();
 	max-width: 280px;
 	text-align: center;
-	margin: rem(15px) auto 0;
+	margin: rem(15px) 0 0;
+	.blog-post & {
+		margin: rem(25px) auto;
+	}
 }
 .author-image {
  	@extend %custom-date;
-	background-color: #fff;
+	border: 2px soid $gray-lighter;
 	border-radius: 100%;
 }
 
@@ -36,33 +39,38 @@
 		background-color: $gray-lighter;
 	}
 	.blog-list {
-		@include clearfix();
-
+		@include make-row();
 	}
 	.blog-post-content {
+		@extend .sidebar-cont;
 		margin: 0 0 rem(25px);
-		box-shadow: $shadow;
 		border-radius: 5px;
-		background-color: #fff;
-		.home & {
-		}
-		.blog-post & {
-			// @include multi-column(12,9,9,9);
-			color: $gray-dark;
-			border-radius: 0;
-			background-color: $gray-lightest;
+		box-shadow: $shadow;
+		background-color: $gray-lightest;
+		.home &,
+		.blog-overview & {
+			@include make-col(12);
 		}
 	}
 	.blog-sidebar {
 		@extend .sidebar;
+		padding: 0 rem(15px);
 		@include multi-column(12,3,3,3);
-		padding: rem(10px) rem(15px);
-		background-color: $gray-lightest;
-		box-shadow: $shadow;
-		color: $gray;
 		.section-title {
 			color: $gray;
 		}
+		.sidebar-header {
+			text-align: center;
+			border-bottom: 2px solid $gray-lighter;
+			padding: 0 0 rem(10px);
+		}
+	}
+	.blog-sidebar-inner {
+		padding: rem(20px) rem(5px) rem(10px);
+		background-color: $gray-lightest;
+		box-shadow: $shadow;
+		color: $gray;
+		border-radius: 5px;
 	}
 	.blog-post-image {
 		position: relative;
@@ -74,8 +82,7 @@
 		}
 	}
 	.blog-top {
-		@include clearfix();
-		// background-color: $brand-primary; 
+		@include clearfix(); 
 		@extend %contrast-dark-text;
 		border-bottom: 2px solid $gray-lighter;
 		padding: rem(10px) 0;
@@ -135,6 +142,7 @@
 			margin: 0 5px;
 			a {
 				@extend %btn;
+				font-size: rem(12px);
 				border: 2px solid $gray-lighter;
 				color: $gray;
 				padding: rem(5px) rem(15px);

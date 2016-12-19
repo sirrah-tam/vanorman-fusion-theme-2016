@@ -822,7 +822,7 @@ hr.small {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 95vh;
+	height: 45vh;
 	&:before {
 		content: "";
 		position: absolute;
@@ -854,7 +854,7 @@ hr.small {
 	z-index: 1;
 	position: relative;
 	@include breakpoint-up(md) {
-		max-width: 740px;
+		max-width: 990px;
 		margin: 0 auto;
 	}
 	.home & {
@@ -875,7 +875,7 @@ hr.small {
 // 2. Columns used for chamber fusion module
 .info-masthead {
 	@extend %gradient-section;
-	padding: rem(50px) 0 rem(35px);
+	padding: rem(75px) 0;
 	min-height: 25vh;
 	a { color: inherit; }
 	.wrapper {
@@ -1499,15 +1499,15 @@ hr.small {
 
 // Related/Spotlight Highlight Content
 // Structure and style used on Hompage, Service Overview, Service Detail pages
+.section-header {
+	padding-bottom: rem(45px);
+	p { @extend h4; }
+}
 .spotlight-list,
 %spotlight-list {
 	background-color: $gray-dark;
 	padding: rem(90px) 0 rem(80px);
 	text-align: center;
-	.section-header {
-		padding-bottom: rem(45px);
-		p { @extend h4; }
-	}
 	.item-list {
 		@extend %wrapper;
 		@include breakpoint-down(sm) {

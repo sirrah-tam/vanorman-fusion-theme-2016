@@ -73,16 +73,18 @@
         </div>
 
         <div class="blog-sidebar">
-            @if ($categories)
-                <h3 class="section-title">Categories</h3>
-                <ul class="blog-categories">
-                    @foreach($categories as $category)
-                        <li><a href="{{ url($category->slug) }}">
-                            <h4><span class="badge">{{ $category->entries->count() }}</span> Posts about {{ $category->title }}</h4>
-                        </a></li>
-                    @endforeach
-                </ul>
-            @endif
+            <div class="blog-sidebar-inner">
+                @if ($categories)
+                    <h3 class="section-title">Categories</h3>
+                    <ul class="blog-categories">
+                        @foreach($categories as $category)
+                            <li><a href="{{ url($category->slug) }}">
+                                <h4><span class="badge">{{ $category->entries->count() }}</span> Posts about {{ $category->title }}</h4>
+                            </a></li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
         </div>
     </div>
 </div>

@@ -18,6 +18,13 @@ hue-6-2: #c18401
 
 */
 
+pre,
+kbd {
+  padding: rem(35px) rem(15px);
+  background-color: $gray-lighter;
+  white-space: pre-wrap;
+}
+
 .codex-content img {
     max-width: 100%;
     height: auto;
