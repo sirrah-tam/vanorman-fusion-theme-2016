@@ -2021,10 +2021,11 @@ hr.small {
 		color: $gray-lightest;
 		font-family: weather;
 		font-size: rem(150px);
-		font-weight: 600;
+		font-weight: 400;
 		font-style: normal;
 		line-height: 1.0;
 		text-transform: none;
+		vertical-align: text-bottom;
 	}
 
 	.icon-0:before { content: ":"; }
