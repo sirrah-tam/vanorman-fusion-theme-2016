@@ -6,7 +6,6 @@ var elixir = require('laravel-elixir');
  |--------------------------------------------------------------------------
  |
  */
-
 elixir.config.bowerDir         = './bower_components';
 elixir.config.publicPath       = '';
 elixir.config.assetsPath       = './assets';
@@ -31,6 +30,7 @@ var config = {
 var paths = {
     'hydrogen': elixir.config.bowerDir + '/hydrogen/',
     'jquery': elixir.config.bowerDir + '/jquery/',
+    'bootstrap': elixir.config.bowerDir + '/bootstrap-sass/assets/javascripts/',
     'vue': elixir.config.bowerDir + '/vue/dist/',
     'vueresource': config.bowerPath + '/vue-resource/dist/',
     'blacktie': elixir.config.assetsPath + '/sass/vendor/black-tie/',
@@ -40,10 +40,6 @@ var paths = {
     'animate': elixir.config.bowerDir + '/animate.css/',
 };
 
-// elixir(function(mix) {
-//     BrowserSync.init();
-//     mix.BrowserSync();
-// });
 elixir(function(mix) {
 
     // Sass
