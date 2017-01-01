@@ -18,6 +18,10 @@
 .blog-section {
 	// @extend %gradient-section-green;
 	// @extend %gradient-section;
-	background-color: $gray-dark;
+	background-color: $gray-lighter;
 	@extend %base-pad;
+	&,
+	.section-title {
+		color: $gray;
+	}
 }

@@ -1,0 +1,101 @@
+@mixin btn($class,$bg,$color){
+    .btn-#{$class} {
+        &:focus {
+            background-color: $bg;
+        }
+
+        &:hover,
+        &:active:hover {
+            background-color: darken($bg, 6%);
+        }
+
+        &:active {
+            box-shadow: 2px 2px 4px rgba(0,0,0,.4);
+        }
+
+        @include ripple($color);
+    }
+}
+
+@include btn(primary, $btn-primary-bg, $btn-primary-color);
+@include btn(secondary, $btn-secondary-bg, $btn-secondary-color);
+@include btn(success, $btn-success-bg, $btn-success-color);
+@include btn(info, $btn-info-bg, $btn-info-color);
+@include btn(warning, $btn-warning-bg, $btn-warning-color);
+@include btn(danger, $btn-danger-bg, $btn-danger-color);
+@include btn(link, #fff, $btn-secondary-color);
+
+.btn {
+    text-transform: uppercase;
+    border: none;
+    box-shadow: 1px 1px 4px rgba(0,0,0,.4);
+    transition: all 0.4s;
+    font-size: $btn-font-size;
+
+    &-link {
+        box-shadow: none;
+        color: $btn-secondary-color;
+
+        &:hover,
+        &:focus {
+            box-shadow: none;
+            color: $btn-secondary-color;
+            text-decoration: none;
+        }
+
+        .disabled,
+        &[disabled],
+        fieldset[disabled] & {
+            &:hover,
+            &:active:hover {
+                background-color: #fff;
+                color: $btn-secondary-color;
+            }
+        }
+    }
+
+    &-secondary {
+        &.disabled,
+        &[disabled],
+        fieldset[disabled] & {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.4);
+            opacity: 1;
+
+            &:hover,
+            &:focus {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        }
+    }
+
+    &.dropdown-toggle::before {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 0.3em;
+        vertical-align: middle;
+        content: "";
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-left: 0.3em solid transparent;
+    }
+}
+
+.btn-group {
+    .btn + .btn,
+    .btn + .btn-group,
+    .btn-group + .btn,
+    .btn-group + .btn-group {
+        margin-left: 0;
+    }
+
+    &-vertical {
+        > .btn + .btn,
+        > .btn + .btn-group,
+        > .btn-group + .btn,
+        > .btn-group + .btn-group {
+            margin-top: 0;
+        }
+    }
+}

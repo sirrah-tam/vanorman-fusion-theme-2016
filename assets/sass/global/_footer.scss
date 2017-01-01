@@ -1,7 +1,7 @@
 $footer-background: $gray-dark !default;
-$footer-home-color: $gray-lighter !default;
-$footer-color: $gray-lighter !default;
-$footer-contact-color: $gray-lighter !default;
+$footer-home-color: $gray !default;
+$footer-color: $gray !default;
+$footer-contact-color: $gray !default;
 $footer-font: $navbar-font-family;
 .footer {
 	font-size: rem(16px);
@@ -91,6 +91,9 @@ $footer-font: $navbar-font-family;
 	color: $gray;
 	font-weight: 600;
 	background-color: $gray-lighter;
+	img {
+		margin: rem(5px) auto;
+	}
 }
 .footer-content {
 	position: relative;

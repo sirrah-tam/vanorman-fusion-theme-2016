@@ -31,8 +31,8 @@
 		
 	}
 	.blog-overview & {
-		background-color: $gray-dark;
-		color: $gray-lightest;
+		background-color: $gray-lighter;
+		color: $gray;
 	}
 	.blog-post & {
 		color: $gray;
@@ -42,9 +42,9 @@
 		@include make-row();
 	}
 	.blog-post-content {
-		@extend .sidebar-cont;
-		margin: 0 0 rem(25px);
-		border-radius: 5px;
+		@include clearfix();
+		margin-bottom: rem(25px);
+		border-radius: 3px;
 		box-shadow: $shadow;
 		background-color: $gray-lightest;
 		.home &,
@@ -70,7 +70,7 @@
 		background-color: $gray-lightest;
 		box-shadow: $shadow;
 		color: $gray;
-		border-radius: 5px;
+		border-radius: 3px;
 	}
 	.blog-post-image {
 		position: relative;
@@ -100,12 +100,9 @@
 		.badge {
 			color: $gray;
 			padding: 5px 10px;
-			// border-radius: 5px;
-			// margin-right: 15px;
 		}
 		li {
 			padding: 0;
-			// border-bottom: 2px solid $gray-lightest;
 			text-transform: uppercase;
 			color: $gray-lightest;
 			.badge { font-weight: 600; } 

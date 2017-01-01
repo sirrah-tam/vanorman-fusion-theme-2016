@@ -1,14 +1,15 @@
 /**
  * Header Wrapper
  */
-header {
+.main-header {
 	font-family: $navbar-font-family;
 	font-size: rem(17px);
-	background-color: #fff;
+	background-color: $gray-lighter;
 	width: 100%;
 	z-index: $zindex-bar-fixed;
 	transition: all .3s ease-in-out 0s, transform .4s ease;
 	box-shadow: 0 5px 5px 0 rgba(0, 0, 0, .06);
+	padding: rem(25px) 0;
 	&.scroll {
 		transition: all .2s ease,transform .4s ease,background .1s ease,height .2s ease;
 	}
@@ -24,6 +25,15 @@ header {
 	min-height: $navbar-height;
 	background-color: #444;
 	width: 100%;
+}
+
+.navbar-brand {
+	display: block;
+	position: relative;
+	color: $text-color;
+	text-align: center;
+	width: 300px;
+	margin: 0 auto;
 }
 
 /**
@@ -286,13 +296,13 @@ header {
 		.one { 
 			transform: rotate(45deg) translate(3px, 4px); 
 			position: relative;
-			top: 2px;
+			top: 0;
 		}
 		.two { opacity: 0; }
 		.three { 
 			transform: rotate(-45deg) translate(6px, -7px);
 			position: relative;
-			top: -2px; 
+			top: 0; 
 		}
 	}
 }
@@ -343,7 +353,7 @@ button[type="submit"] {
 }
 .nav-search-input {
 	display: inline-block;
-	width: 336px;
+	min-width: 320px;
 	margin: 0 5px;
 	max-width: 100%;
 	vertical-align: middle;
@@ -389,8 +399,8 @@ button[type="submit"] {
 	height: 0;
 	.nav-toggle {
 		position: absolute;
-		top: 32px;
-		right: 15px;
+		top: 25px;
+		left: 15px;
 		float: none;
 		.one,
 		.two,
@@ -398,31 +408,33 @@ button[type="submit"] {
 			transition-duration: .3s;
 			margin: 5px auto;
 			background: #fff;
-			width: 25px;
 			height: 2px;
+			width: 40px;
 		}
 	}
 }
 .menu-overlay.hidden {
-	display: none;
+	// display: none;
 	.main-menu-toggle {
 		display: none;
 	}
 }
-.menu-overlay.on {
-	display: block;
+.menu-overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 99999;
 	background-color: rgba(0,0,0,.95);
 	width: 100%;
 	height: 100%;
-	overflow: hidden;
-	opacity: 1;
-	transition: opacity .3s linear;
+	opacity: 0;
 	padding: 90px 0 15px;
-	overflow-y: scroll;
+	transition: opacity .3s linear;
+	z-index: -99999;
+	&.on {
+		display: block;
+		opacity: 1;
+		z-index: 99999;
+	}
 	ul.mobile-nav {
 		font-size: 30px;
 		padding: 0;
@@ -471,6 +483,7 @@ button[type="submit"] {
 		}
 	}
 }
+
 
 .no-scroll {
 	position: fixed;

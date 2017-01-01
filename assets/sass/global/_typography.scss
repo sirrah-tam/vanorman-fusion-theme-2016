@@ -80,6 +80,10 @@ pre {
 	padding: rem(25px) rem(15px);
 }
 
+small {
+	font-weight: 600;
+}
+
 ul.no-list-style {
 	li {
 		list-style: none;
@@ -121,9 +125,6 @@ ul.no-list-style {
 	letter-spacing: 0.060em;
 	text-transform: uppercase;
 	transition: all .3s linear;
-	&:hover {
-		padding: rem(15px) rem(35px);
-	}
 }
 
 button {
@@ -194,7 +195,7 @@ button[type="submit"] {
     line-height: 1.2;
     color: $gray-lightest;
     background-color: transparent;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    @extend %shadow-hover;
     @extend .bt-fw;
     &:hover {
     	border: 2px solid $blue;
