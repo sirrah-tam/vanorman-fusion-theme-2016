@@ -1,14 +1,23 @@
-<!-- <nav class="menu-overlay">
+<nav class="menu-overlay">
 	<div class="wrapper">
 		<div class="row">
-			<div class="col-md-6">
+			<a class="js-nav-toggle nav-toggle" href="#" title="Mobile Menu">
+				<div class="icon">
+					<div class="one"></div>
+					<div class="two"></div>
+					<div class="three"></div>
+				</div>
+			</a>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
 				<ul class="mobile-nav">
 					@if (menu_exists('header'))
 						@include('vanorman::partials.nav', ['items' => menu('header')->roots()])
 					@endif
 				</ul>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<ul class="mobile-nav">
 					@if ($currentUser)
 						<li class="dropdown">
@@ -32,7 +41,7 @@
 					@else
 						<li class="navbar-right dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Log in <b class="caret"></b></a>
-							<ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+							<ul class="dropdown-menu">
 								<li>
 									<div class="row">
 										<div class="col-md-12">
@@ -70,28 +79,28 @@
 	</div>
 </nav>
 
-<header class="main-header nav navbar-nav navbar-default" role="navigation">
+
+<header class="nav navbar-nav navbar-default main-header" role="navigation">
 	<div class="wrapper">
-		
-		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-			<div class="logo">
-				<a class="nav-logo-link" href="/">
-					<img src="{{ variable('logo') }}" alt="{{ setting('website_title') }}">
-				</a>
-			</div>
+		<div class="navbar-header">
+			<a class="js-nav-toggle nav-toggle" href="#" title="Mobile Menu">
+				<div class="icon">
+					<div class="one"></div>
+					<div class="two"></div>
+					<div class="three"></div>
+				</div>
+			</a>
+			<a class="navbar-brand" href="/">
+				<h1 class="text-center">
+					{{ setting('website_title') }}
+				</h1>
+			</a>
 		</div>
-		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-			<div class="nav navbar-nav navbar-right">
-				<a class="js-nav-toggle nav-toggle" href="#" title="Mobile Menu">
-					<div class="icon">
-						<div class="one"></div>
-						<div class="two"></div>
-						<div class="three"></div>
-					</div>
-				</a>
+		<form class="navbar-form center-block">
+			<div class="form-inline form-group">
+				<input type="text" class="form-control" placeholder="Search">
+				<button type="submit" class="btn btn-secondary"><i class="btl bt-search bt-lg" aria-hidden="true"></i></button>
 			</div>
-		</div>
-		
+		</form>
 	</div>
 </header>
- -->

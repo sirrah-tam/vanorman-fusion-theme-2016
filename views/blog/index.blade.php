@@ -48,7 +48,7 @@
                                 @endif
 
 
-                                <p>{!! $post->excerpt !!}</p>
+                                <p>{{ $post->excerpt }}</p>
 
                                 <a class="btn btn-secondary" href="{{ $post->uri }}">Read More <i class="btl bt-angle-right bt-fw bt-sm"></i></a>
                             </div>

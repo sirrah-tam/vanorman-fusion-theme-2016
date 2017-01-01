@@ -6,6 +6,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv='x-dns-prefetch-control' content='on'>
+
+
 
     <meta name="google-site-verification" content="d02epMDWBw4zvWUiEujRRrF_-2NSm0Ue9HXh3HzAOso" />
 
@@ -19,6 +22,9 @@
     <meta property="og:image" content="{{ variable('og-image') }}" data-no-instant/>
 
     {!! SEOMetadata::generate() !!}
+
+    <link rel='preconnect' href='//fonts.googleapis.com' crossorigin>
+    <link rel='preconnect' href='//ajax.googleapis.com' crossorigin>
 
     <!-- CSS -->
     <link rel="stylesheet" href="/themes/vanorman/assets/css/app.css" media="screen">
