@@ -75,8 +75,11 @@ $footer-font: $navbar-font-family;
 	position: relative;
 	width: 100%;
 	padding: rem(25px) 0;
-	background-color: $gray-dark;
-	color: $gray-lighter;
+	background-color: $brand-secondary;
+	color: $transparent-white;
+	a {
+		color: $transparent-white;
+	}
 	i { font-size: rem(25px); }
 	.bt-heart {
 		border-radius: 50%;

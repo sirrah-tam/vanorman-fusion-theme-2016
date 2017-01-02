@@ -1,6 +1,9 @@
 .page-header {
 	@extend %page-title-lg;
 }
+.page-subtitle {
+	@extend %page-subtitle;
+}
 .section-title {
 	@extend %page-title;	
 }
@@ -16,8 +19,6 @@
 }
 
 .blog-section {
-	// @extend %gradient-section-green;
-	// @extend %gradient-section;
 	background-color: $gray-lighter;
 	@extend %base-pad;
 	&,

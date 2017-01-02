@@ -45,7 +45,8 @@
 		@include clearfix();
 		margin-bottom: rem(25px);
 		border-radius: 3px;
-		box-shadow: $shadow;
+		box-shadow: $shadow-bottom;
+		border: 1px solid #eee;
 		background-color: $gray-lightest;
 		.home &,
 		.blog-overview & {
@@ -61,14 +62,15 @@
 		}
 		.sidebar-header {
 			text-align: center;
-			border-bottom: 2px solid $gray-lighter;
+			border-bottom: 2px solid $brand-primary;
 			padding: 0 0 rem(10px);
 		}
 	}
 	.blog-sidebar-inner {
 		padding: rem(20px) rem(5px) rem(10px);
 		background-color: $gray-lightest;
-		box-shadow: $shadow;
+		box-shadow: $shadow-bottom;
+		border: 1px solid #eee;
 		color: $gray;
 		border-radius: 3px;
 	}
@@ -84,7 +86,7 @@
 	.blog-top {
 		@include clearfix(); 
 		@extend %contrast-dark-text;
-		border-bottom: 2px solid $gray-lighter;
+		border-bottom: 2px solid $brand-primary;
 		padding: rem(10px) 0;
 
 		.blog-post & {
@@ -162,7 +164,6 @@
 		h3 {
 			font-family: $font-family-spec;
 			padding: rem(10px) 0;
-			border-bottom: 2px solid $brand-secondary;
 		}
 		P {
 			font-size: rem(20px);

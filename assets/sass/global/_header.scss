@@ -8,7 +8,7 @@
 	width: 100%;
 	z-index: $zindex-bar-fixed;
 	transition: all .3s ease-in-out 0s, transform .4s ease;
-	box-shadow: 0 5px 5px 0 rgba(0, 0, 0, .06);
+	box-shadow: $shadow;
 	padding: rem(25px) 0;
 	&.scroll {
 		transition: all .2s ease,transform .4s ease,background .1s ease,height .2s ease;
@@ -33,7 +33,10 @@
 	color: $text-color;
 	text-align: center;
 	width: 300px;
-	margin: 0 auto;
+	margin: 50px auto 25px;
+	@include breakpoint-up(sm) {
+		margin: 0 auto;
+	}
 }
 
 /**

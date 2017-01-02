@@ -338,7 +338,7 @@ hr.small {
 // 8. Gradient background with applicable text color
 // 9. Text on Dark Background
 %page-title { // 6
-	color: #fff;
+	color: $gray-lightest;
 	font-size: rem(58px);
 	font-weight: 300;
 	line-height: rem(60px);
@@ -358,6 +358,12 @@ hr.small {
 	line-height: rem(46px);
 	letter-spacing: 0;
 }
+
+%page-subtitle {
+	font-size: rem(20px);
+	color: $gray-lightest;
+	margin: rem(5px) 0;
+} 
 
 %share-link { // 2
 	font-size: 13px;
@@ -483,10 +489,7 @@ hr.small {
 	margin: 0 auto;
 	text-align: center;
 	font-weight: bold;
-	height: 50px;
-	width: 50px;
 	position: relative;
-	float: left;
 	z-index: 3;
 }
 
@@ -509,7 +512,6 @@ hr.small {
 
 .date {
 	@extend %custom-date;
-	// background: $gray-dark;
 	text-transform: uppercase;
 	.blog-post .masthead & {
 		width: 85px;
@@ -527,12 +529,13 @@ hr.small {
 	}
 	.blog-overview &,
 	.home & {
+		float: left;
 		width: 25%;
 		height: 100%;
 		text-align: center;
 		color: $gray-lighter;
 		padding: rem(5px) rem(10px) rem(10px) rem(10px);
-		border-right: 2px solid $gray-lighter;
+		border-right: 2px solid $brand-primary;
 	} 
 }
 
@@ -745,49 +748,6 @@ hr.small {
 	}
 }
 
-// Breadcrumbs
-.bct-wrapper {
-	@include clearfix();
-	background-color: $gray-darker;
-	color: $gray-lightest;
-	min-height: 5vh;
-	.bct {
-		padding: 0;
-		ul {
-			padding: 0;
-			margin: 0;
-			li {
-				display: inline-block;
-				margin: 0;
-				padding: 15px 0 15px 3px;
-				font-size: rem(15px);
-				text-transform: uppercase;
-				&:before {
-					content: $bct-divider;
-				}
-				&:first-child:before {
-					content: none;
-				}
-				
-				a,
-				span {
-					padding: rem(5px) rem(15px);
-					margin: 0;
-					background-color: $gray-dark;
-					color: $gray-lightest;
-				}
-
-				a { font-weight: 600; }
-				
-				a,
-				i {
-					color: $brand-secondary;
-				}
-			}
-		}
-	}
-}
-
 // Masthead container
 .masthead-wrapper {
 	position: relative;
@@ -816,23 +776,14 @@ hr.small {
 	background-size: cover;
 	position: relative;
 	text-align: center;
-	padding: 50px 0;
-	@extend %gradient-section;
+	padding: rem(50px) 0;
+	@extend %gradient-section-blue;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	height: 45vh;
-	&:before {
-		content: "";
-		position: absolute;
-		background-color: rgba(0,0,0,.5);
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 0;
-	}
+	
 	.home & {
 		height: 700px;
 		@media (max-width: $screen-sm-max) {
@@ -1505,7 +1456,7 @@ hr.small {
 }
 .spotlight-list,
 %spotlight-list {
-	background-color: $gray-dark;
+	@extend %gradient-section-blue;
 	padding: rem(90px) 0 rem(80px);
 	text-align: center;
 	.item-list {
@@ -1525,7 +1476,7 @@ hr.small {
 	}
 	.inner-wrapper {
 		background: #fff;
-		box-shadow: 2px 2px 6px 0 rgba(0,0,0,0.2);
+		box-shadow: $shadow;
 		position: relative;
 		height: 100%;
 	}
@@ -1815,7 +1766,7 @@ hr.small {
 //
 .fancybox-wrap {
 	background-color: #f6f6f6;
-	box-shadow: 1px 0 10px -1px rgba(0,0,0,.2);
+	box-shadow: $shadow;
 	border-radius: 10px;
 	border-bottom: 2px solid darken(#f6f6f6, 5%);
 }
@@ -1852,7 +1803,7 @@ hr.small {
 	height: 27px;
 	top: -15px;
 	border: 1px solid #000;
-	box-shadow: 0 5px 5px 0 rgba(0,0,0,.06);
+	box-shadow: $shadow;
 	&:before {
 		position: absolute;
 		top: 7px;
@@ -2211,7 +2162,7 @@ $shadows-big:    multiple-box-shadow(100);
 			content: '4 .col-md-4';
 		}
 		.blog-overview & {
-			content: '2 .col-md-6';
+			content: '1 .col-md-12';
 		}
 
 	}

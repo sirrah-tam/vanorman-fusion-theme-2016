@@ -73,7 +73,7 @@ $enable-table-hover:         false !default;
 
 // Pixel value used to responsively scale all typography, paddings, margins etc. Applied to the `<html>` element.
 // Necessary for use with rem values
-$font-size-root:             20px !default;
+$font-size-root:             16px !default;
 
 // SASS style sheet */
 // Palette color codes */
@@ -83,12 +83,11 @@ $font-size-root:             20px !default;
 
 // As hex codes */
 
+$transparent-white: rgba(255,255,255,.6);
 $violet-dark: #828CA6;
 $violet: #53648C;
 $red: #ed5757;
-$blue: lighten(#2E4272, 10%);  // Main Primary color */
-$blue-dark: #132758;
-$blue-darker: #05153E;
+
 
 $color-secondary-1-0: #802B67;  // Main Secondary color (1) */
 $color-secondary-1-1: #BB8EAD;
@@ -106,22 +105,32 @@ $color-secondary-2-4: #315500;
 // 2. Colors
 //
 // Neutral Grays
-$gray-dark:                 #333 !default;
-$gray:                      #444 !default;
-$gray-light:                #818a91 !default;
-$gray-lighter:              #eceeef !default;
-$gray-lightest:             #f7f7f9 !default;
+
+$gray-base:              #303C41 !default;
+$gray-darker:            darken($gray-base, 40%) !default;
+$gray-dark:              darken($gray-base, 20%) !default;
+$gray:                   lighten($gray-base, 5%) !default;
+$gray-light:             lighten($gray-base, 20%) !default;
+$gray-lighter:           lighten($gray-base, 75%) !default;
+$gray-lightest:          lighten($gray-base, 90%) !default;
+
+// Brand Blue
+$blue: lighten(#2E4272, 10%);  // Main Primary color */
+$blue-dark: #147FD7;
+$blue-darker: #1271c0;
+$blue-light: #3F88E4;
+$blue-lighter: #4BA3FF;
 
 // Base Colors
-$brand-primary:             $blue !default;
-$brand-secondary:           $color-secondary-2-2 !default;
-$brand-tertiary:            $color-secondary-2-3 !default;
+$brand-primary:             $blue-light !default;
+$brand-secondary:           $blue-dark !default;
+$brand-tertiary:            $blue-darker !default;
 
 // Alert Colors
 $brand-success:             #5cb85c !default;
 $brand-info:                #5bc0de !default;
 $brand-warning:             #f0ad4e !default;
-$brand-danger:              #d9534f !default;
+$brand-danger:              #F55B5B !default;
 $brand-inverse:             $gray-dark !default;
 
 // Form Colors
@@ -298,7 +307,9 @@ $border-radius-sm:       rem(2px) !default;
 $component-active-color: #fff !default;
 $component-active-bg:    $brand-primary !default;
 
-$shadow:                 1px 1px 3px 1px rgba(0,0,0,0.1);
+$shadow-bottom: 0 5px 5px 0 rgba(0, 0, 0, 0.06);
+$shadow-regular: 1px 1px 3px 1px rgba(0,0,0,0.1);
+$shadow: $shadow-bottom !default;
 
 $transition-speed:       0.3s;
 $transition-function:    ease;
@@ -332,7 +343,7 @@ $breadcrumb-padding-x: rem(5px) !default;
 //
 // For each buttons, define text, background and border color.
 $btn-padding-x:                  $spacer-x !default;
-$btn-padding-y:                  ($spacer-y / 2) !default;
+$btn-padding-y:                  ($spacer-y - .5) !default;
 $btn-margin:                     rem(15px) rem(15px) rem(15px) 0 !default;
 $btn-font:                       $font-family-base !default;
 $btn-font-size:                  rem(14px) !default;
@@ -509,12 +520,12 @@ $bootstrap-sass-asset-helper: false !default;
 //
 //## Gray and brand colors for use across Bootstrap.
 
-$gray-base:              #000 !default;
-$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
-$gray-dark:              lighten($gray-base, 20%) !default;   // #333
-$gray:                   lighten($gray-base, 33.5%) !default; // #555
-$gray-light:             lighten($gray-base, 46.7%) !default; // #777
-$gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
+$gray-base:              #363641 !default;
+$gray-darker:            darken($gray-base, 13.5%) !default;
+$gray-dark:              darken($gray-base, 20%) !default;
+$gray:                   lighten($gray-base, 13.5%) !default;
+$gray-light:             lighten($gray-base, 20%) !default;
+$gray-lighter:           lighten($gray-base, 43.2%) !default;
 
 
 //== Scaffolding
