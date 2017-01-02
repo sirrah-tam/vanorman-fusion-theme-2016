@@ -54,7 +54,7 @@ elixir(function(mix) {
     // Styles
     mix.styles([   
         paths.animate + 'animate.css',
-        './assets/css/hybrid.css',
+        // './assets/css/hybrid.css',
         // './assets/css/fx-kit.css',
         // './assets/css/cosmo.css',
     ], 'assets/css/app.css', './assets/css/app.css');
