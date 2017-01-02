@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>FusionCMS</title>
-	</head>
-	<body>
-		<h1>403, Be right back.</h1>
-	</body>
-</html>
+@extends(Theme::getLayout())
+
+@section('header')
+    <h1>403, Be right back.</h1>
+@stop
+
+@section('class', '403')
+
+@section('content')
+		
+@endsection

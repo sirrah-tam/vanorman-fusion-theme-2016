@@ -32,9 +32,7 @@
                                 </div>
                             </div>
                             <div class="blog-post-inner">
-                                <div class="author">
-                                    <img src="{{ $post->creator->gravatar(200) }}" class="inline author-image"><small class="author-name">by {{ $post->creator->full_name }}</small>
-                                </div>
+                                <h4>by {{ $post->creator->full_name }}</h4>
                                 @if ($post->categories->count())
                                     <ul class="post-categories"><small>Posted in:</small> 
                                         @foreach ($post->categories as $key => $category)
@@ -48,7 +46,7 @@
                                 @endif
 
 
-                                <p>{{ $post->excerpt }}</p>
+                                {!! $post->excerpt !!}
 
                                 <a class="btn btn-secondary" href="{{ $post->uri }}">Read More <i class="btl bt-angle-right bt-fw bt-sm"></i></a>
                             </div>

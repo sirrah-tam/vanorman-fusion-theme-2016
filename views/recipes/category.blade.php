@@ -12,7 +12,7 @@
 @php($recipes = $entries->paginate(5, ['*'], 'page', Request::get('page')))
 
 @section('content')
-    <div class="container">
+    <div class="wrapper">
         <div class="row">
             <div class="col-md-9">
                 <p class="lead text-center">

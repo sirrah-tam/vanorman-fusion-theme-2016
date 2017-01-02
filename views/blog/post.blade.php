@@ -10,17 +10,10 @@
 
 @section('subheader')
     <div class="author">
-        <img src="{{ $entry->creator->gravatar(200) }}" class="author-image"><div class="author-name">by {{ $entry->creator->full_name }}</div>
+        <img src="{{ $entry->creator->gravatar(100) }}" class="author-image" alt="by {{ $entry->creator->full_name }}">
     </div>
-    <div class="page-subtitle">
-        <div class="date">
-           <small>
-                <i class="btl bt-calendar bt-lg"></i>
-                <br>
-                {{ $entry->created_at->format('M d') }}
-            </small>
-        </div>
-    </div>
+    
+    <h4 class="page-subtitle">{{ $entry->created_at->format('F d, Y') }}</h4>
 @stop
     
 @section('content')

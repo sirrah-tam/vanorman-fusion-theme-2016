@@ -12,10 +12,6 @@
             <li><a href="{{ variable('email') }}" class="btn-social btn-outline"><i class="btl bt-paper-plane bt-fw"></i></a></li>
             <li><a href="{{ variable('social-spotify') }}" class="btn-social btn-outline" target="_blank"><i class="fab fab-spotify bt-fw"></i></a></li>
         </ul> 
-        <hr class="small">
-        <small class="copy">
-            &copy; 2013—{{ $date }} {{ setting('website_title') }}
-        </small>
     </div>
     <div class="footer-bottom">
          <div class="wrapper">
@@ -31,6 +27,10 @@
     <div class="footer-top">
         <div class="wrapper text-center">
             <small>Made with a metric F*ck ton of <a href="http://status.efelle.co/" target="_blank" rel="nofollow"><i class="btl bt-mug bt-fw"></i></a> &amp; <i class="btl bt-heart bt-fw"></i> in Seattle, WA.</small>
+            <hr class="small">
+            <small class="copy">
+                &copy; 2013—{{ $date }} {{ setting('website_title') }}
+            </small>
         </div>
     </div>
 </footer>

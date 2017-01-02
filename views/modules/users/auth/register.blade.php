@@ -1,13 +1,15 @@
 @extends(Theme::getLayout())
 
 @section('header')
-	Login
+	Register
 @stop
+
+@section('class', 'register')
 
 @section('content')
 	<div class="row">
 		<div class="col-md-10 col-md-offset-2">
-			<div class="panel panel-default">
+			<div class="panel panel-default panel-login">
 				<div class="panel-body">
 					{!! Form::open() !!}
 						<fieldset>

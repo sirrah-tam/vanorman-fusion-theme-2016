@@ -4,9 +4,11 @@
 	Login
 @stop
 
+@section('class', 'login')
+
 @section('content')
 	<div class="wrapper">
-		<div class="col-md-4 col-md-offset-4">
+		<div class="col-10">
 			<div class="panel panel-default panel-login">
 				<div class="panel-body">
 					{!! Form::open() !!}

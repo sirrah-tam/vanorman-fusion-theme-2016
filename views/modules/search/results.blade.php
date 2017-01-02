@@ -14,8 +14,10 @@
     @endif
 @stop
 
+@section('class', 'search-results')
+
 @section('content')
-    <div class="container">
+    <div class="wrapper">
         <div class="row">
             <div class="col-md-12">
                 {!! Form::open(['method' => 'GET', 'route' => ['search'], 'role' => 'search']) !!}

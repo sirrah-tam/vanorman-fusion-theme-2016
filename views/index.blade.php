@@ -71,11 +71,10 @@
                                 </div>
                                 <div class="blog-post-inner">
                                     
-                                    <div class="author">
-                                        <img src="{{ $post->creator->gravatar(200) }}" class="inline author-image"><small class="author-name">by {{ $post->creator->full_name }}</small>
-                                    </div>
+                                    <h4>by {{ $post->creator->full_name }}</h4>
+                                    
                                     @if ($post->categories->count())
-                                        <ul class="post-categories"><small class="h4">Posted in:</small> 
+                                        <ul class="post-categories"><small>Posted in:</small> 
                                             @foreach ($post->categories as $key => $category)
                                                 @if ($post->categories->keys()->last() !== $key)
                                                     <li><a href="{{ url($category->uri) }}">{{ $category->title }}</a></li>
@@ -88,7 +87,7 @@
                                     <p>
                                         {!! $post->excerpt !!}
                                     </p>
-                                    <a href="{{ url($post->uri) }}" class="btn btn-secondary center-block">Read More <i class="btl bt-angle-right bt-sm bt-fw"></i></a>
+                                    <a href="{{ url($post->uri) }}" class="btn btn-primary center-block">Read More <i class="btl bt-angle-right bt-sm bt-fw"></i></a>
                                 </div>
 
                             </div>
