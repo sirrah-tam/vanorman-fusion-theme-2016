@@ -1,0 +1,40 @@
+// Breadcrumbs
+.bct-wrapper {
+	@include clearfix();
+	background-color: $brand-secondary;
+	border-top: 2px solid $transparent-white;
+	color: $transparent-white;
+	min-height: 5vh;
+	.bct {
+		padding: 0;
+		ul {
+			padding: 0;
+			margin: 0;
+			li {
+				display: inline-block;
+				margin: 0;
+				padding: 15px 0 15px 3px;
+				font-size: rem(15px);
+				text-transform: uppercase;
+				&:before {
+					content: $bct-divider;
+				}
+				&:first-child:before {
+					content: none;
+				}
+				
+				a,
+				span {
+					margin: 0;
+					color: $gray-lightest;
+				}
+
+				a { font-weight: 600; }
+				
+				i {
+					color: $gray-lightest;
+				}
+			}
+		}
+	}
+}
