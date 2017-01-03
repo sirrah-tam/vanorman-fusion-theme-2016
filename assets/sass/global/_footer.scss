@@ -11,8 +11,6 @@ $footer-font: $navbar-font-family;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-transform: uppercase;
-	@extend %stripe;
-	@extend %green;
 	@media (max-width: $screen-sm-max) {
 		text-align: center;
 		img { margin: 0 auto; }
