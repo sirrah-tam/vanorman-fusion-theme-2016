@@ -1,9 +1,9 @@
 // Breadcrumbs
 .bct-wrapper {
 	@include clearfix();
-	background-color: $brand-secondary;
-	border-top: 2px solid $transparent-white;
-	color: $transparent-white;
+	background-color: $transparent-white;
+	border-bottom: 2px solid $brand-tertiary;
+	color: $gray;
 	min-height: 5vh;
 	.bct {
 		padding: 0;
@@ -14,7 +14,7 @@
 				display: inline-block;
 				margin: 0;
 				padding: 15px 0 15px 3px;
-				font-size: rem(15px);
+				font-size: rem(17px);
 				text-transform: uppercase;
 				&:before {
 					content: $bct-divider;
@@ -22,17 +22,17 @@
 				&:first-child:before {
 					content: none;
 				}
-				
+
 				a,
 				span {
 					margin: 0;
-					color: $gray-lightest;
+					color: $brand-tertiary;
 				}
 
 				a { font-weight: 600; }
 				
 				i {
-					color: $gray-lightest;
+					color: $brand-tertiary;
 				}
 			}
 		}
