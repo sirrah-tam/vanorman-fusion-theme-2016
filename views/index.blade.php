@@ -87,7 +87,7 @@
                                     <p>
                                         {!! $post->excerpt !!}
                                     </p>
-                                    <a href="{{ url($post->uri) }}" class="btn btn-primary center-block">Read More <i class="btl bt-angle-right bt-sm bt-fw"></i></a>
+                                    <a href="{{ url($post->uri) }}">Read More <i class="btl bt-angle-right bt-sm bt-fw"></i></a>
                                 </div>
 
                             </div>

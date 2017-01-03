@@ -27,7 +27,7 @@
     <link rel='preconnect' href='//ajax.googleapis.com' crossorigin>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/themes/vanorman/assets/css/app.css" media="screen">
+    <link rel="stylesheet" href="/themes/vanorman/dist/css/app.css" media="screen">
 </head>
 <body class="@yield('class')">
     @include('vanorman::partials.header')
@@ -60,7 +60,7 @@
     @include('vanorman::partials.footer')
 
     <!-- Javascript -->
-    <script src="/themes/vanorman/assets/js/all.js"></script>
+    <script src="/themes/vanorman/dist/js/all.js"></script>
     <script data-no-instant>InstantClick.init();</script>
 
     @yield('javascript')

@@ -48,7 +48,7 @@
 
                                 {!! $post->excerpt !!}
 
-                                <a class="btn btn-secondary" href="{{ $post->uri }}">Read More <i class="btl bt-angle-right bt-fw bt-sm"></i></a>
+                                <a class="btn btn-primary" href="{{ $post->uri }}">Read More <i class="btl bt-angle-right bt-fw bt-sm"></i></a>
                             </div>
 
                         </div>
