@@ -9,8 +9,8 @@ var elixir = require('laravel-elixir');
 elixir.config.bowerDir         = './bower_components';
 elixir.config.publicPath       = '';
 elixir.config.assetsPath       = './assets';
-elixir.config.css.outputFolder = './assets/css';
-elixir.config.js.outputFolder  = './assets/js';
+elixir.config.css.outputFolder = './dist/css';
+elixir.config.js.outputFolder  = './dist/js';
 
 /*
  |--------------------------------------------------------------------------
@@ -43,7 +43,7 @@ var paths = {
 elixir(function(mix) {
 
     // Sass
-    mix.sass('./assets/sass/app.scss', './assets/css', {
+    mix.sass('./assets/sass/app.scss', elixir.config.css.outputFolder, {
         includePaths: [
             paths.blacktie,
             paths.hydrogen + 'scss/'
@@ -54,10 +54,7 @@ elixir(function(mix) {
     // Styles
     mix.styles([   
         paths.animate + 'animate.css',
-        // './assets/css/hybrid.css',
-        // './assets/css/fx-kit.css',
-        // './assets/css/cosmo.css',
-    ], 'assets/css/app.css', './assets/css/app.css');
+    ], 'assets/css/app.css', elixir.config.css.outputFolder + 'app.css');
 
     // mix.version('public/css/app.css');
 
