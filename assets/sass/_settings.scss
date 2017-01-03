@@ -110,8 +110,8 @@ $gray-base:              #303C41 !default;
 $gray-darker:            darken($gray-base, 40%) !default;
 $gray-dark:              darken($gray-base, 20%) !default;
 $gray:                   lighten($gray-base, 5%) !default;
-$gray-light:             lighten($gray-base, 20%) !default;
-$gray-lighter:           lighten($gray-base, 75%) !default;
+$gray-light:             lighten($gray-base, 70%) !default;
+$gray-lighter:           lighten($gray-base, 80%) !default;
 $gray-lightest:          lighten($gray-base, 90%) !default;
 
 // Brand Blue
@@ -357,7 +357,7 @@ $btn-active-box-shadow:          none !default;
 $btn-primary-color:              $brand-primary !default;
 $btn-primary-bg:                 transparent !default;
 $btn-primary-border:             2px solid $brand-primary !default;
-$btn-primary-hover:              #fff !default;
+$btn-primary-hover:              $transparent-white !default;
 $btn-primary-bg-hover:           darken($brand-primary, 5%) !default;
 $btn-primary-border-hover:       2px solid darken($brand-primary, 5%) !default;
 $btn-primary-radius:             $border-radius-sm !default;
@@ -653,7 +653,7 @@ $table-border-color:            #ddd !default;
 //
 //## For each of Bootstrap's buttons, define text, background and border color.
 
-$btn-font-weight:                normal !default;
+$btn-font-weight:                bold !default;
 
 $btn-default-color:              #333 !default;
 $btn-default-bg:                 #fff !default;

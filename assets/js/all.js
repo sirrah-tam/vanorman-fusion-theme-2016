@@ -39749,7 +39749,7 @@ var coerce = exports.coerce = {
  *  the pages you need it on below.
  *
  * @usage
- *      var FEATURES = {
+ *      let FEATURES = {
  *          yourFunctionName: function() {
  *           -- Write/paste your script here --
  *          },
@@ -39757,13 +39757,17 @@ var coerce = exports.coerce = {
  */
 
 // 'vm' needs to be global.
-// Vue.config.devtools = true;
 
-// var vm = new Vue({
-// 	el: 'body'
-// });
 
-var FUSION = {
+let FUSION = {
+	vueInstance: function() {
+		// Vue.config.devtools = true;
+		let window.instance = new Vue({
+			el: 'body'
+		});
+
+		return window.instance;
+	},
 
 	/**
 	 * Main Menu Toggle (Mobile and Frontpage)
@@ -39771,13 +39775,13 @@ var FUSION = {
 	 * Listens to click event and fire animation classes on click.
 	 */
 	navToggle: function(header) {
-		var $header = $(header);
-		var $navToggle = $('.nav-toggle');
-		var $menuOverlay = $('.menu-overlay');
-		var $menuOverlayItems = $('.menu-overlay > ul');
-		var $body = $('body');
+		let $header = $(header);
+		let $navToggle = $('.nav-toggle');
+		let $menuOverlay = $('.menu-overlay');
+		let $menuOverlayItems = $('.menu-overlay > ul');
+		let $body = $('body');
 		$navToggle.on('click', function(event) {
-			$body.toggleClass('no-scroll');
+			$body.toggleClass('margin-animate');
 			$navToggle.toggleClass('on');
 			$menuOverlay.toggleClass('on');
 			$menuOverlayItems.toggleClass('hidden');
@@ -39786,7 +39790,7 @@ var FUSION = {
 
 		$(document).keyup(function(e) {
 			if (e.keyCode === 27 && $navToggle.hasClass('on')) {
-				$body.toggleClass('no-scroll');
+				$body.toggleClass('margin-animate');
 				$navToggle.toggleClass('on');
 				$menuOverlay.toggleClass('on');
 				event.preventDefault();
@@ -39815,10 +39819,10 @@ var FUSION = {
 	},
 
 	waypoints: function(section) {
-		var $section = $(section);
+		let $section = $(section);
 
 		// $section.css('opacity', 0);
-		var waypoint = new Waypoint({
+		let waypoint = new Waypoint({
 			element: $section,
 			handler: function(direction) {
 				if(direction == "down") {
@@ -39840,8 +39844,8 @@ var FUSION = {
 	 */
 	append: function(grid) {
 
-		var salvGrid = document.querySelector(grid);
-		var item = document.createElement('div');
+		let salvGrid = document.querySelector(grid);
+		let item = document.createElement('div');
 		if (salvGrid) {
 			salvattore.appendElements(salvGrid, [item]);
 		}

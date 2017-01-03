@@ -1,0 +1,88 @@
+@mixin btn($class,$bg,$color){
+    .btn-#{$class} {
+        &:focus {
+            background-color: $bg;
+        }
+
+        &:hover,
+        &:active:hover {
+            background-color: darken($bg, 6%);
+        }
+
+        &:active {
+            box-shadow: 2px 2px 4px rgba(0,0,0,.4);
+        }
+
+        @include ripple($color);
+    }
+}
+
+@include btn(primary, $btn-primary-bg, $btn-primary-color);
+@include btn(secondary, $btn-secondary-bg, $btn-secondary-color);
+@include btn(success, $btn-success-bg, $btn-success-color);
+@include btn(info, $btn-info-bg, $btn-info-color);
+@include btn(warning, $btn-warning-bg, $btn-warning-color);
+@include btn(danger, $btn-danger-bg, $btn-danger-color);
+@include btn(link, #fff, $btn-secondary-color);
+
+//
+/* Buttons */
+//
+// Shared styles for all buttons
+%btn {
+	padding: $btn-padding-y $btn-padding-x;
+	font-size: $btn-font-size;
+	display: inline-block;
+	margin: $btn-margin;
+	line-height: $btn-line-height;
+	font-family: $btn-font;
+	font-weight: $btn-font-weight;
+	box-shadow: $btn-box-shadow;
+	text-decoration: none;
+	@if $enable-transitions {
+		transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+	}
+}
+// Styles per button
+.btn-primary,
+%btn-primary {
+	@extend %btn;
+	@include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border, $btn-primary-hover, $btn-primary-bg-hover, $btn-primary-border-hover, $btn-primary-radius);
+}
+.btn-secondary,
+%btn-secondary {
+	@extend %btn;
+	@include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border, $btn-secondary-hover, $btn-secondary-bg-hover, $btn-secondary-border-hover, $btn-secondary-radius);
+}
+.btn-tertiary,
+%btn-tertiary {
+	@extend %btn;
+	@include button-variant($btn-tertiary-color, $btn-tertiary-bg, $btn-tertiary-border, $btn-tertiary-hover, $btn-tertiary-bg-hover, $btn-tertiary-border-hover, $btn-tertiary-radius);
+}
+.btn-default,
+%btn-default {
+	@extend %btn;
+	@include button-variant($btn-default-color, $btn-default-bg, $btn-default-border, $btn-default-hover, $btn-default-bg-hover, $btn-default-border-hover, $btn-default-radius);
+}
+@if $generate-extra-btns == true {
+	.btn-info,
+	%btn-info {
+		@extend %btn;
+		@include button-variant($btn-info-color, $btn-info-bg, $btn-info-border, $btn-info-hover, $btn-info-bg-hover, $btn-info-border-hover, $btn-info-radius);
+	}
+	.btn-success,
+	%btn-success {
+		@extend %btn;
+		@include button-variant($btn-success-color, $btn-success-bg, $btn-success-border, $btn-success-hover, $btn-success-bg-hover, $btn-success-border-hover, $btn-success-radius);
+	}
+	.btn-warning,
+	%btn-warning {
+		@extend %btn;
+		@include button-variant($btn-warning-color, $btn-warning-bg, $btn-warning-border, $btn-warning-hover, $btn-warning-bg-hover, $btn-warning-border-hover, $btn-warning-radius);
+	}
+	.btn-danger,
+	%btn-danger {
+		@extend %btn;
+		@include button-variant($btn-danger-color, $btn-danger-bg, $btn-danger-border, $btn-danger-hover, $btn-danger-bg-hover, $btn-danger-border-hover, $btn-danger-radius);
+	}
+}

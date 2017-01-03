@@ -70,13 +70,6 @@
  *      };
  */
 
-// 'vm' needs to be global.
-// Vue.config.devtools = true;
-
-// var vm = new Vue({
-// 	el: 'body'
-// });
-
 var FUSION = {
 
 	/**
@@ -91,6 +84,7 @@ var FUSION = {
 		var $menuOverlayItems = $('.menu-overlay > ul');
 		var $body = $('body');
 		$navToggle.on('click', function(event) {
+			$body.toggleClass('overlay-on');
 			$body.toggleClass('no-scroll');
 			$navToggle.toggleClass('on');
 			$menuOverlay.toggleClass('on');
@@ -100,6 +94,7 @@ var FUSION = {
 
 		$(document).keyup(function(e) {
 			if (e.keyCode === 27 && $navToggle.hasClass('on')) {
+				$body.toggleClass('overlay-on');
 				$body.toggleClass('no-scroll');
 				$navToggle.toggleClass('on');
 				$menuOverlay.toggleClass('on');

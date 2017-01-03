@@ -463,15 +463,23 @@ hr.small {
 	
 }
 
+// Gradient Blue
 %blue {
 	&:before {
 		@include linear-gradient(150deg, $blue 0%, $blue 20%, $blue-dark 80%, $blue-dark 100%);
 	}
 }
 
-%green {
+// Large Quote
+%lg-quote {
+	position: relative;
 	&:before {
-		@include linear-gradient(150deg, $brand-secondary 0%, $brand-secondary 20%, $brand-tertiary 80%, $brand-tertiary 100%);
+		position: absolute;
+		left: 0;
+		top: 50px;
+		line-height: 15px;
+		font-size: 150px;
+		content: "&ldquo;";
 	}
 }
 
@@ -729,7 +737,7 @@ hr.small {
 .logo {
 	position: relative;
 	display: block;
-	width: 125px;
+	width: 135px;
 	height: 85px;
 	margin: 0 auto;
 	&:before {
