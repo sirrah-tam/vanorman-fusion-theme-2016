@@ -61,8 +61,8 @@ elixir(function(mix) {
     // Scripts
     mix.scripts([
         paths.jquery + 'dist/jquery.js',
-        paths.vue + 'vue.js',
-        paths.vueresource + 'vue-resource.js',
+        // paths.vue + 'vue.js',
+        // paths.vueresource + 'vue-resource.js',
         paths.hydrogen + 'js/plugins',
         paths.hydrogen + 'js/app.js',
         './assets/js/salvattore.min.js',
@@ -70,7 +70,7 @@ elixir(function(mix) {
         paths.simpleWeather + 'jquery.simpleWeather.js',
         paths.waypoints + 'jquery.waypoints.js',
         './assets/js/highlight.pack.js',
-        './assets/js/fx-kit.js',
+        // './assets/js/fx-kit.js',
         './assets/js/components/*.js'
     ]);
 

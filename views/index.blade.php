@@ -15,7 +15,6 @@
             </div>
             <div class="info-col">
                 <div class="intro-text">
-                    <h1 class="page-header">{{ $pagecontent->title }}</h1>
                     <h2>{{ $pagecontent->subtitle }}</h2>
                     <ul class="contact-menu">
                         <li>
@@ -29,15 +28,6 @@
                         </li>
                     </ul>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Spotlight - Weather -->
-    <div class="spotlight-list weather">
-        <div class="wrapper">
-            <div class="panel panel-transparent">
-                <div id="weather"></div>
             </div>
         </div>
     </div>
