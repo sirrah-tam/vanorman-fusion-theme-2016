@@ -88,6 +88,7 @@
 		common: {
 			init: function() {
 				// JavaScript to be fired on all pages
+				// FUSION.tooltip('[data-toggle="tooltip"]');
 				FUSION.navToggle('.js-nav-toggle');
 				HYDROGEN.UTIL.deferImages('.lazy');
 				setInterval(FUSION.weather, 60000);

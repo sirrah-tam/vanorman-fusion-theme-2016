@@ -110,15 +110,14 @@ var FUSION = {
 			woeid: '',
 			unit: 'f',
 			success: function(weather) {
-				html = '<h2><i class="icon-weather icon-'+weather.code+'"></i> '+weather.temp+'&deg;'+weather.units.temp+'</h2>';
-				html += '<h3><i class="btl bt-map-arrow"></i> '+weather.city+', '+weather.region+'</h3>';
-				html += '<ul><li>'+weather.currently+'</li>';
-				html += '<li>'+weather.wind.direction+' '+weather.wind.speed+' '+weather.units.speed+'</li></ul>';
+				html = '<ul><li><i class="icon-weather icon-' + weather.code + '"></i> ' + weather.temp + '&deg;' + weather.units.temp + '</li>';
+				html += '<li> ' + '</li>';
+				html += '<li><i class="btl bt-map-arrow"></i> ' + weather.city + ', ' + weather.region + '</li></ul>';
 
 				$("#weather").html(html);
 			},
 			error: function(error) {
-				$("#weather").html('<p>'+error+'</p>');
+				$("#weather").html('<p>' + error + '</p>');
 			}
 		});
 	},
@@ -154,6 +153,16 @@ var FUSION = {
 		if (salvGrid) {
 			salvattore.appendElements(salvGrid, [item]);
 		}
+	},
+
+	/**
+	 * Tooltip helper
+	 */
+	tooltip: function(target) {
+		var $target = $(target);
+		$(function () {
+			$target.tooltip();
+		})
 	}
 
 };
