@@ -957,7 +957,7 @@ hr.small {
 // Main Content Wrapper
 .main-cnt,
 .main-content {
-	margin-top: 0;
+	padding-top: $navbar-height;
 }
 
 // Content Wrapper
@@ -1975,16 +1975,24 @@ hr.small {
 
 // Weather
 .weather {
-	min-height: 50vh;
+	padding: rem(35px) rem(15px);
+	margin-bottom: rem(35px);
+	background-color: $brand-tertiary;
+	p {
+		color: $transparent-white;
+		text-align: center;
+		margin: 0;
+	}
 	i.icon-weather {
-		color: $gray-lightest;
+		display: inline-block;
+		font-size: rem(60px);
+		color: $transparent-white;
 		font-family: weather;
-		font-size: rem(150px);
-		font-weight: 400;
+		font-weight: 300;
 		font-style: normal;
-		line-height: 1.0;
+		line-height: .5;
 		text-transform: none;
-		vertical-align: text-bottom;
+		vertical-align: middle;
 	}
 
 	.icon-0:before { content: ":"; }
@@ -2036,40 +2044,25 @@ hr.small {
 	.icon-46:before { content: "U"; }
 	.icon-47:before { content: "S"; }
 
-	h2 {
-		margin: 0 0 8px;
-		color: $gray-lightest;
-		font-size: rem(100px);
-		font-weight: 400;
-		text-align: center;
-		text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
-	}
-
-	h3 {
-		color: $gray-lightest;
-	}
-
 	ul {
 		margin: 0 auto;
 		padding: 0;
-		max-width: 50%;
+		max-width: 100%;
 		text-transform: uppercase;
-		// background-color: rgba(0,0,0, .7); 
-		// border-bottom: 2px solid $gray-lightest;
 	}
 
 	li {
-		display: inline-block;
 		list-style: none;
 		text-align: center;
-		padding: 15px 25px;
+		padding: rem(15px) rem(25px);
 		font-weight: 600;
-		color: $gray-lightest;
+		text-align: center;
+		color: $transparent-white;
+		&:first-child {
+			border-bottom: 2px solid $transparent-white;
+		}
 	}
 
-	.currently {
-			
-	}
 }
 
 //** Space animation

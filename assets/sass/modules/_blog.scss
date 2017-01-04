@@ -142,10 +142,12 @@
 			a {
 				@extend %btn;
 				font-size: rem(12px);
-				border: 2px solid $gray;
-				color: $gray;
+				font-weight: 600;
+				color: $transparent-white;
+				background-color: $brand-tertiary;
 				padding: rem(5px) rem(15px);
 				margin: 0;
+				border-radius: 3px;
 				&:hover {
 					padding: rem(5px) rem(15px);
 				}

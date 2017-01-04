@@ -2,6 +2,9 @@
  * Header Wrapper
  */
 .main-header {
+	position: fixed;
+	top: 0;
+	left: 0;
 	font-family: $navbar-font-family;
 	font-size: rem(17px);
 	background-color: $gray-lighter;
@@ -279,31 +282,50 @@
 	color: $text-color;
 	margin: 0;
 	top: 15px;
-	left: 0;
+	left: 15px;
 	float: none;
 	height: 70px;
 	width: 70px;
 	padding: rem(20px) 0;
-	transition: border .3s linear;
+	transition: border, opacity .3s linear;
 	.overlay-on .main-header & {
 		display: none;
 	}
+	.main-header &:hover {
+		.one {
+			opacity: 0;
+		}
+		.two,
+		.three,
+		.four {
+			width: 36px;
+		}
+	}
 	.one,
 	.two,
-	.three {
+	.three,
+	.four {
 		transition-duration: .2s;
-		margin: 7px 0;
+		margin: 5px 0;
 		background: $gray;
 		height: 2px;
 	}
 	.one {
-		width: 30px;
+		width: 8px;
 	}
 	.two {
-		width: 40px;
+		width: 18px;
 	}
 	.three {
-		width: 30px;
+		width: 36px;
+	}
+	.four {
+		width: 20px;
+	}
+	.text {
+		color: $gray;
+		font-size: 12px;
+		text-transform: uppercase;
 	}
 	&:before {
 		top: 9px;
@@ -322,7 +344,8 @@
 			position: relative;
 			top: 0;
 		}
-		.two { opacity: 0; }
+		.two,
+		.four { opacity: 0; }
 		.three { 
 			transform: rotate(-45deg) translate(6px, -7px);
 			position: relative;
@@ -441,7 +464,7 @@ body {
 
 	transform: translate3d(400px, 0, 0);
 	-webkit-transform: translate3d(400px, 0, 0);
-	transition: all .3s linear;
+	transition: transform .3s linear;
 	&:before {
 		content: "";
 		position: absolute;
@@ -449,6 +472,7 @@ body {
 		height: 100%;
 		background-color: rgba($gray, .8);
 		z-index: 9999;
+		transition: background .3s linear;
 	}
 }
 
@@ -459,7 +483,6 @@ body {
 	top: 0;
 	left: -400px;
 	background-color: $transparent-white;
-	// background-color: $gray-lightest;
 	color: $brand-secondary;
 	padding: 90px 0 15px;
 	z-index: -99999;
@@ -468,8 +491,12 @@ body {
 		display: block;
 		opacity: 1;
 		z-index: 99999;
+		.nav-toggle {
+			opacity: 1;
+		}
 	}
 	.nav-toggle {
+		opacity: 0;
 		position: absolute;
 		top: 15px;
 		left: 99%;
@@ -482,7 +509,8 @@ body {
 		border-bottom-right-radius: 5px;
 		.one,
 		.two,
-		.three {
+		.three,
+		.four {
 			transition-duration: .3s;
 			margin: 5px auto;
 			background: $brand-tertiary;
@@ -492,10 +520,9 @@ body {
 	ul.mobile-nav {
 		font-size: rem(20px);
 		padding: 0;
-		margin-top: rem(25px);
+		margin: rem(25px) 0 0;
 		list-style: none;
 		li {
-			padding: rem(10px) rem(15px);
 			display: block;
 			border-top: 2px solid $gray-light;
 			text-align: center;
@@ -509,6 +536,7 @@ body {
 			}
 			a {
 				display: block;
+				padding: rem(10px) rem(15px);
 				color: $text-color;
 			}
 		}
