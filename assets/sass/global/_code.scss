@@ -25,6 +25,20 @@ kbd {
   white-space: pre-wrap;
 }
 
+code {
+  padding: rem(25px) rem(35px);
+}
+code.css {
+  border-top: 2px solid $brand-primary;
+  position: relative;
+  &:before {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+}
+
 .codex-content img {
     max-width: 100%;
     height: auto;

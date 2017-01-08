@@ -41,6 +41,10 @@ var paths = {
 };
 
 elixir(function(mix) {
+    // Browser Sync
+    mix.browserSync({
+        proxy: 'vanorman.dev'
+    });
 
     // Sass
     mix.sass('./assets/sass/app.scss', elixir.config.css.outputFolder, {
